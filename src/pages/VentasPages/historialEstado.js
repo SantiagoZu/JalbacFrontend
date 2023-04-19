@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import ReactDOMServer from 'react-dom/server';
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
-import { Modal, ModalHeader, ModalBody, ModalFooter, } from '@windmill/react-ui';
-import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 
 import {
   Table,
@@ -17,12 +14,13 @@ import {
   Avatar,
   Button,
   Pagination,
+  Input
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import { Input2 } from '../../components/Input';
-import response from '../../utils/demo/dataHistorialEstadoPedido'
-import responseDetalles from '../../utils/demo/dataHistorialEstadoProducto'
-import { hacker } from 'faker/lib/locales/en';
+import response from '../../utils/demo/dataPedidos'
+import responseDetalles from '../../utils/demo/dataHistorialEstadoPedido'
+import {ModalDetallesProducto} from './components/HistorialPedidosComponents/ModalDetallesProducto';
+
 const response2 = response.concat([])
 const responseDetallesProductos = responseDetalles.concat([])
 
@@ -59,14 +57,14 @@ function HistorialEstadoPedidos() {
 
 
   /* Despliegue modal ver detalle */
-  const [isModalOpenVerDetalle, setIsModalOpenVerDetalle] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
 
-  function openModalVerDetalle() {
-    setIsModalOpenVerDetalle(true)
+  function openModal() {
+    setModalIsOpen(true)
   }
 
-  function closeModalVerDetalle() {
-    setIsModalOpenVerDetalle(false)
+  function closeModal() {
+    setModalIsOpen(false)
   }
 
   /* Confirmación edición */
@@ -127,9 +125,10 @@ function HistorialEstadoPedidos() {
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.Estado}</p>
                 </TableCell>
                 <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModalVerDetalle}>
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModal}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
+                  <ModalDetallesProducto isOpen={modalIsOpen} isClose={closeModal}/>
                 </TableCell>
 
               </TableRow>
@@ -146,86 +145,7 @@ function HistorialEstadoPedidos() {
         </TableFooter>
       </TableContainer>
 
-      <Modal isOpen={isModalOpenVerDetalle} onClose={closeModalVerDetalle}  >
-        <ModalHeader className='mb-8'>Detalles producto</ModalHeader>
-        <ModalBody>
-          <TableContainer >
-            <Table >
-              <TableHeader>
-                <tr >
-                  <TableCell>ID</TableCell>
-                  <TableCell>Nombre anillo</TableCell>
-                  <TableCell>Tipo</TableCell>
-                  <TableCell>Peso</TableCell>
-                  <TableCell>Tamaño anillo</TableCell>
-                  <TableCell>Tamaño piedra</TableCell>
-                  <TableCell>Material</TableCell>
-                  <TableCell>Detalle</TableCell>
-                  <TableCell>Estado</TableCell>
-                  <TableCell>Fecha</TableCell>
-                  <TableCell>Empleado encargado</TableCell>
-                  <TableCell>Motivo devolucion</TableCell>
-                </tr>
-              </TableHeader>
-              <TableBody className="w-12">
-                {dataTable3.map((producto, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.ID}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.nombre}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tipo}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.peso}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tamanoAnillo}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tamanoPiedra}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.material}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.detalle}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.estado}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.fecha}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.empleadoAsignado}</p>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{producto.motivoDevolucion}</p>
-                    </TableCell>
-
-
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-          </TableContainer>
-        </ModalBody>
-
-        <ModalFooter>
-
-          <div className="block w-full sm:hidden">
-            <Button block size="large" layout="outline" onClick={closeModalVerDetalle}>
-              Cerrar
-            </Button>
-          </div>
-
-        </ModalFooter>
-      </Modal>
+      
 
 
     </>

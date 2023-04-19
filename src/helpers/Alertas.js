@@ -1,10 +1,10 @@
 import Swal from 'sweetalert2';
 
-export const showAlertCorrect = (message, icon, timer = 2500, closeModal) => {
+export const showAlertCorrect = (message, icon, closeModal) => {
     return Swal.fire({
         title: message,
         icon: icon,
-        timer: timer,
+        timer: 2500,
         showConfirmButton: false
     })
         .then((value) => {
@@ -12,11 +12,11 @@ export const showAlertCorrect = (message, icon, timer = 2500, closeModal) => {
         })
 }
 
-export const showAlertIncorrect = (message, icon, timer = 2500) => {
+export const showAlertIncorrect = (message, icon) => {
     return Swal.fire({
         title: message,
         icon: icon,
-        timer: timer,
+        timer: 2500,
         showConfirmButton: false
     });
 }
