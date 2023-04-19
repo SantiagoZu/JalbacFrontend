@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import ImageLight from '../../assets/img/login-office.jpeg'
 import { Label, Input, Button } from '@windmill/react-ui'
-import { Input2 } from '../components/Input';
+import { Input2 } from '../../components/Input';
 import Swal from 'sweetalert2'
 
 function recuperarPassword() {

@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import AccessibleNavigationAnnouncer from './components/AccessibleNavigationAnnouncer'
 
 const Layout = lazy(() => import('./containers/Layout'))
-const Login = lazy(() => import('./pages/Login'))
-const CreateAccount = lazy(() => import('./pages/CreateAccount'))
-const recuperarPassword = lazy(() => import('./pages/recuperarPassword'))
-const restablecerPassword = lazy(() => import('./pages/restablecerPassword'))
+const Login = lazy(() => import('./pages/login-accountPages/Login'))
+const CreateAccount = lazy(() => import('./pages/login-accountPages/CreateAccount'))
+const recuperarPassword = lazy(() => import('./pages/login-accountPages/recuperarPassword'))
+const restablecerPassword = lazy(() => import('./pages/login-accountPages/restablecerPassword'))
 
 function App() {
   return (
