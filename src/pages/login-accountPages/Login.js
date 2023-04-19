@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import ImageLight from '../assets/img/create-account-office.jpeg'
-import ImageDark from '../assets/img/create-account-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
-import { Input, Label, Button } from '@windmill/react-ui'
+import ImageLight from '../../assets/img/login-office.jpeg'
+import ImageDark from '../../assets/img/login-office-dark.jpeg'
+import ImageJalbac from '../../assets/img/JalbacLogin.jpg'
+import { GithubIcon, TwitterIcon } from '../../icons'
+import { Label, Input, Button } from '@windmill/react-ui'
 
 function Login() {
   return (
@@ -15,43 +16,31 @@ function Login() {
             <img
               aria-hidden="true"
               className="object-cover w-full h-full dark:hidden"
-              src={ImageLight}
+              src={ImageJalbac}
               alt="Office"
             />
             <img
               aria-hidden="true"
               className="hidden object-cover w-full h-full dark:block"
-              src={ImageDark}
+              src={ImageJalbac}
               alt="Office"
             />
           </div>
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <div className="w-full">
-              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
-                Create account
-              </h1>
+              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Inicio de sesión</h1>
               <Label>
-                <span>Email</span>
-                <Input className="mt-1" type="email" placeholder="john@doe.com" />
-              </Label>
-              <Label className="mt-4">
-                <span>Password</span>
-                <Input className="mt-1" placeholder="***************" type="password" />
-              </Label>
-              <Label className="mt-4">
-                <span>Confirm password</span>
-                <Input className="mt-1" placeholder="***************" type="password" />
+                <span>Correo</span>
+                <Input className="mt-1" type="email" placeholder="Introduzca su correo electrónico..." />
               </Label>
 
-              <Label className="mt-6" check>
-                <Input type="checkbox" />
-                <span className="ml-2">
-                  I agree to the <span className="underline">privacy policy</span>
-                </span>
+              <Label className="mt-4">
+                <span>Contrasena</span>
+                <Input className="mt-1" type="password" placeholder="Introduzca su contraseña..." />
               </Label>
 
-              <Button tag={Link} to="/login" block className="mt-4">
-                Create account
+              <Button className="mt-4" block tag={Link} to="/app">
+                Iniciar sesión
               </Button>
 
               <hr className="my-8" />
@@ -60,7 +49,7 @@ function Login() {
                 <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                 Github
               </Button>
-              <Button block className="mt-4" layout="outline">
+              <Button className="mt-4" block layout="outline">
                 <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                 Twitter
               </Button>
@@ -68,9 +57,17 @@ function Login() {
               <p className="mt-4">
                 <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/login"
+                  to="/recuperar-password"
                 >
-                  Already have an account? Login
+                  Recuperar contraseña
+                </Link>
+              </p>
+              <p className="mt-1">
+                <Link
+                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  to="/create-account"
+                >
+                  Crear una cuenta
                 </Link>
               </p>
             </div>

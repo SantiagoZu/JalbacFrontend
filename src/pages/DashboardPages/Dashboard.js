@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 
-import CTA from '../components/CTA'
-import InfoCard from '../components/Cards/InfoCard'
-import ChartCard from '../components/Chart/ChartCard'
+import CTA from '../../components/CTA'
+import InfoCard from '../../components/Cards/InfoCard'
+import ChartCard from '../../components/Chart/ChartCard'
 import { Doughnut, Line } from 'react-chartjs-2'
-import ChartLegend from '../components/Chart/ChartLegend'
-import PageTitle from '../components/Typography/PageTitle'
-import { ChatIcon, CartIcon, MoneyIcon, PeopleIcon } from '../icons'
-import RoundIcon from '../components/RoundIcon'
-import response from '../utils/demo/tableData'
-import { SearchIcon } from '../icons'
+import ChartLegend from '../../components/Chart/ChartLegend'
+import PageTitle from '../../components/Typography/PageTitle'
+import { ChatIcon, CartIcon, MoneyIcon, PeopleIcon } from '../../icons'
+import RoundIcon from '../../components/RoundIcon'
+import response from '../../utils/demo/tableData'
+import { SearchIcon } from '../../icons'
 import {
   TableBody,
   TableContainer,
@@ -29,7 +29,7 @@ import {
   doughnutLegends,
   lineLegends,
   pedidosEmpleado,
-} from '../utils/demo/chartsData'
+} from '../../utils/demo/chartsData'
 
 function Dashboard() {
   const [page, setPage] = useState(1)

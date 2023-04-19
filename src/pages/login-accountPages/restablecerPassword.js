@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import ImageLight from '../assets/img/forgot-password-office.jpeg'
-import ImageDark from '../assets/img/forgot-password-office-dark.jpeg'
+import ImageLight from '../../assets/img/forgot-password-office.jpeg'
+import ImageDark from '../../assets/img/forgot-password-office-dark.jpeg'
 import { Label, Input, Button } from '@windmill/react-ui'
 
 function restablecerPassword() {
