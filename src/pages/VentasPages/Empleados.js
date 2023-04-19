@@ -66,7 +66,7 @@ function Empleados() {
 
   return (
     <>
-      <PageTitle>CambioGit</PageTitle>
+      <PageTitle>Empleados</PageTitle>
 
 
 
