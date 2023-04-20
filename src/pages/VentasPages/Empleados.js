@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
 
@@ -14,16 +14,12 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
-  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataEmpleados';
-import {CustomInput} from '../../components/CustomInput';
-
 import { showAlertDeleted } from '../../helpers/Alertas';
 
 const response2 = response.concat([])
@@ -81,7 +77,7 @@ function Empleados() {
             </div>
             <Input
               className="pl-8 text-gray-700"
-              placeholder="Buscar usuario"
+              placeholder="Buscar empleado"
             />
           </div>
         </div>
