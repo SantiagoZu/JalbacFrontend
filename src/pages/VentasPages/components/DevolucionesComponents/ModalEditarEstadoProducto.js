@@ -18,7 +18,7 @@ export const ModalEditarEstadoProducto = ({ isOpen, isClose }) => {
         setDataTable3(responseDetallesProductos.slice((pageTable3 - 1) * resultsPerPage, pageTable3 * resultsPerPage))
     }, [pageTable3])
 
-    function AlertaCorrecta(){
+    function AlertaCorrecta() {
         showAlertCorrect('Estado cambiado de manera existosa', 'success', isClose)
     }
 
@@ -60,7 +60,9 @@ export const ModalEditarEstadoProducto = ({ isOpen, isClose }) => {
                                 Cancel
                             </Button>
                         </div>
-                        <div className="block w-full sm:hidden">
+                        <div classNa
+
+                            me="block w-full sm:hidden">
                             <Button block size="large">
                                 Accept
                             </Button>

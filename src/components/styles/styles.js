@@ -1,4 +1,4 @@
-import styled, {css} from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const MensajeError = styled.label`
     font-size: 12px;
@@ -23,4 +23,12 @@ export const MensajeErrorFormulario = styled.label`
     color: red;
     font-weight: bold;
     display: none;
+`;
+
+export const SpanError = styled.span`
+font-size: 12px;
+margin-bottom: 0;
+margin-top: 0;
+color: red;
+font-weight: bold;
 `;

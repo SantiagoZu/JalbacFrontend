@@ -20,8 +20,9 @@ import {
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
-import { SearchIcon } from '../../icons'
-import response from '../../utils/demo/dataEmpleados'
+import { SearchIcon } from '../../icons';
+import response from '../../utils/demo/dataEmpleados';
+import {CustomInput} from '../../components/CustomInput';
 
 import { showAlertDeleted } from '../../helpers/Alertas';
 
