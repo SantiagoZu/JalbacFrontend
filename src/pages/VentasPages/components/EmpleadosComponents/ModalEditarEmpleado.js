@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Label, Select} from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect} from '../../../../helpers/Alertas';
-import { Formik} from 'formik';
+import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputs } from './EmpleadosFormValidations/EmpleadosFormik';
