@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from 'react'
-
+import { ModalCrearProducto } from './ModalCrearProducto';
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { Input2 } from '../../../../components/Input';
 import Swal from 'sweetalert2'
+import {
+    Table,
+    TableHeader,
+    TableCell,
+    TableBody,
+    TableRow,
+    TableFooter,
+    TableContainer,
+    Badge,
+    Avatar,
+    Pagination,
+} from '@windmill/react-ui'
+import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
 
-import { expresiones } from '../../../../helpers/validacionesRegex';
+import { expresionesProducto } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
+import response from '../../../../utils/demo/dataProductos'
+const responseProducto = response.concat([])
 
 export const ModalEditarProducto = ({ isOpen, isClose }) => {
 
@@ -16,6 +31,8 @@ export const ModalEditarProducto = ({ isOpen, isClose }) => {
     const [tamanoPiedra, cambiarTamanoPiedra] = useState({ campo: '', valido: null });
     const [detalle, cambiarDetalle] = useState({ campo: '', valido: null });
     const [motivoDevolucion, cambiarMotivoDevolucion] = useState({ campo: '', valido: true, desactivado: true });
+
+    const [formularioValidoEditarProducto, cambiarFormularioValidoEditarProducto] = useState(null);
 
     const validacionFormularioEditarProducto = (e) => {
         e.preventDefault();
@@ -29,21 +46,22 @@ export const ModalEditarProducto = ({ isOpen, isClose }) => {
             cambiarTamanoPiedra({ campo: '', valido: null });
             cambiarDetalle({ campo: '', valido: null });
             cambiarMotivoDevolucion({ campo: '', valido: true });
+            showAlertCorrect("Producto agregado","success" , isClose);
 
 
 
-            alertEditadoCorrecto("Producto editado");
+           
 
         } else {
             cambiarFormularioValidoEditarProducto(false);
-            alertEditadoIncorrecto();
+            showAlertIncorrect('Digíte el fomulario correctamente', 'error');
         }
     }
 
     return (
         <>
             <form action='' onSubmit={validacionFormularioEditarProducto}>
-                <Modal isOpen={isModalOpenEditarProducto} onClose={closeModalEditarProducto}>
+                <Modal isOpen={isOpen} onClose={isClose}>
                     <ModalHeader className='mb-3'>Editar producto</ModalHeader>
                     <ModalBody>
                         <Label className="mt-4">
@@ -93,15 +111,7 @@ export const ModalEditarProducto = ({ isOpen, isClose }) => {
                         </Label>
                         <Label className="mt-4">
                             <span >Estado</span>
-                            <Select className="mt-1" onChange={(dato) => {
-                                if (dato.target.value == "Devuelto") {
-                                    alertDevuelto("producto", "editarProducto")
-
-                                }
-                                else {
-                                    cambiarMotivoDevolucion({ campo: '', valido: "true", desactivado: true });
-                                }
-                            }}>
+                            <Select className="mt-1">
                                 <option>En produccion</option>
                                 <option >Devuelto</option>
                                 <option>Entregado</option>
@@ -117,7 +127,7 @@ export const ModalEditarProducto = ({ isOpen, isClose }) => {
 
                     <ModalFooter>
                         <div className="hidden sm:block">
-                            <Button layout="outline" onClick={closeModalEditarProducto}>
+                            <Button layout="outline" onClick={isClose}>
                                 Cancelar
                             </Button>
                         </div>
@@ -126,7 +136,7 @@ export const ModalEditarProducto = ({ isOpen, isClose }) => {
                         </div>
 
                         <div className="block w-full sm:hidden">
-                            <Button block size="large" layout="outline" onClick={closeModalEditarProducto}>
+                            <Button block size="large" layout="outline" onClick={isClose}>
                                 Cancel
                             </Button>
                         </div>

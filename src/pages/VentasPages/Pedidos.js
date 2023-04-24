@@ -18,51 +18,68 @@ import {
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataPedidos'
-import responseDetalles from '../../utils/demo/dataProductos'
+import {  showAlertDeleted } from '../../helpers/Alertas';
 import {ModalCrearPedido} from './components/PedidosComponents/ModalCrearPedido';
+import {ModalDetallePedido} from './components/PedidosComponents/ModalDetallePedido';
+import {ModalEditarPedido} from './components/PedidosComponents/ModalEditarPedido';
+const responsePedido = response.concat([])
 
-const response2 = response.concat([])
-const responseDetallesProductos = responseDetalles.concat([])
 
 function Pedidos() {
 
-  const [pageTable2, setPageTable2] = useState(1)
-  const [pageTable3, setPageTable3] = useState(1)
+  const [PageTable, setPageTable] = useState(1)
 
-  const [dataTable2, setDataTable2] = useState([])
-  const [dataTable3, setDataTable3] = useState([])
+
+  const [dataTable, setDataTable] = useState([])
+ 
 
   // pagination setup
   const resultsPerPage = 10
   const totalResults = response.length
-  const totalResults2 = response.length
+ 
 
   // pagination change control
   function onPageChangeTable2(p) {
-    setPageTable2(p)
+    setPageTable(p)
   }
-  function onPageChangeTable3(p) {
-    setPageTable3(p)
-  }
+  
 
   // on page change, load new sliced data
   // here you would make another server request for new data
   useEffect(() => {
-    setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
-  useEffect(() => {
-    setDataTable3(responseDetallesProductos.slice((pageTable3 - 1) * resultsPerPage, pageTable3 * resultsPerPage))
-  }, [pageTable3])
+    setDataTable(responsePedido.slice((PageTable - 1) * resultsPerPage, PageTable * resultsPerPage))
+  }, [PageTable])
+ 
   
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalIsOpenAgregarPedido, setModalIsOpenAgregarPedido] = useState(false)
+  const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
+  const [modalIsOpenEditarPedido, setModalIsOpenEditarPedido] = useState(false)
 
-  function openModal() {
-    setModalIsOpen(true);
+
+  function openModalCrearPedido() {
+    setModalIsOpenAgregarPedido(true);
   }
 
-  function closeModal(){
-    setModalIsOpen(false);
+  function closeModalAgregarPedido(){
+    setModalIsOpenAgregarPedido(false);
   }
+  function openModalDetallePedido() {
+    setModalIsOpenDetallePedido(true);
+  }
+  function closeModalDetallePedido(){
+    setModalIsOpenDetallePedido(false);
+  }
+  function openModalEditarPedido() {
+    setModalIsOpenEditarPedido(true);
+  }
+  function closeModalEditarPedido(){
+    setModalIsOpenEditarPedido(false);
+  }
+
+  function alertaEliminado() {
+    showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success')
+  }
+
 
   return (
     <>
@@ -70,13 +87,13 @@ function Pedidos() {
       <SectionTitle>Tabla pedidos</SectionTitle>
 
       <div className="flex ml-auto mb-6">
-        <Button onClick={openModal}>
+        <Button onClick={openModalCrearPedido}>
           Crear pedido
           <span className="ml-1" aria-hidden="true">
             +
           </span>
         </Button>
-        <ModalCrearPedido isOpen={modalIsOpen} isClose={closeModal}/>
+        <ModalCrearPedido isOpen={modalIsOpenAgregarPedido} isClose={closeModalAgregarPedido}/>
 
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
@@ -105,7 +122,7 @@ function Pedidos() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((pedido, i) => (
+            {dataTable.map((pedido, i) => (
               <TableRow key={i}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.ID}</p>
@@ -126,16 +143,18 @@ function Pedidos() {
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.Estado}</p>
                 </TableCell>
                 <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit">
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModalDetallePedido}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
+                  <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido}/>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={openModal}>
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEditarPedido}>
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete">
+                    <ModalEditarPedido isOpen={modalIsOpenEditarPedido} isClose={closeModalEditarPedido}/>
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>

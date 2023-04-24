@@ -5,7 +5,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/re
 import { Input2 } from '../../../../components/Input';
 import Swal from 'sweetalert2'
 
-import { expresiones } from '../../../../helpers/validacionesRegex';
+import { expresionesProducto } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 
 export const ModalCrearProducto = ({ isOpen, isClose }) => {
@@ -16,6 +16,8 @@ export const ModalCrearProducto = ({ isOpen, isClose }) => {
     const [tamanoPiedra, cambiarTamanoPiedra] = useState({ campo: '', valido: null });
     const [detalle, cambiarDetalle] = useState({ campo: '', valido: null });
     const [motivoDevolucion, cambiarMotivoDevolucion] = useState({ campo: '', valido: true, desactivado: true });
+
+    const [formularioValidoProducto, cambiarFormularioValidoProducto] = useState(null);
 
     const validacionFormularioProducto = (e) => {
         e.preventDefault();
@@ -28,17 +30,17 @@ export const ModalCrearProducto = ({ isOpen, isClose }) => {
             cambiarTamanoPiedra({ campo: '', valido: null });
             cambiarDetalle({ campo: '', valido: null });
             cambiarMotivoDevolucion({ campo: '', valido: true, desactivado: true });
-            alertEditadoCorrecto("Producto agregado");
+            showAlertCorrect("Producto agregado","success" , isClose);
 
         } else {
             cambiarFormularioValidoProducto(false);
-            alertEditadoIncorrecto();
+            showAlertIncorrect('Digíte el fomulario correctamente', 'error');
         }
     }
     return (
         <>
             <form action='' onSubmit={validacionFormularioProducto}>
-                <Modal isOpen={isModalOpenProducto} onClose={closeModalProducto}>
+                <Modal isOpen={isOpen} onClose={isClose}>
                     <ModalHeader className='mb-3'>Agregar producto</ModalHeader>
                     <ModalBody>
                         <Label className="mt-4">
@@ -82,7 +84,7 @@ export const ModalCrearProducto = ({ isOpen, isClose }) => {
 
                     <ModalFooter>
                         <div className="hidden sm:block">
-                            <Button layout="outline" onClick={closeModalProducto}>
+                            <Button layout="outline" onClick={isClose}>
                                 Cancelar
                             </Button>
                         </div>
@@ -91,7 +93,7 @@ export const ModalCrearProducto = ({ isOpen, isClose }) => {
                         </div>
 
                         <div className="block w-full sm:hidden">
-                            <Button block size="large" layout="outline" onClick={closeModalProducto}>
+                            <Button block size="large" layout="outline" onClick={isClose}>
                                 Cancel
                             </Button>
                         </div>

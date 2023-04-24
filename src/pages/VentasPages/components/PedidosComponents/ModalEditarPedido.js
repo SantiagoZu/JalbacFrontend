@@ -1,65 +1,137 @@
 import React, { useState, useEffect } from 'react'
-
+import { ModalCrearProducto } from './ModalCrearProducto';
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { Input2 } from '../../../../components/Input';
 import Swal from 'sweetalert2'
+import {
+    Table,
+    TableHeader,
+    TableCell,
+    TableBody,
+    TableRow,
+    TableFooter,
+    TableContainer,
+    Badge,
+    Avatar,
+    Pagination,
+} from '@windmill/react-ui'
+import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
 
+import { ModalEditarProducto } from './ModalEditarProducto';
 import { expresiones } from '../../../../helpers/validacionesRegex';
-import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
+import { showAlertCorrect, showAlertIncorrect, showAlertDeleted } from '../../../../helpers/Alertas';
+import response from '../../../../utils/demo/dataProductos'
+const responseProducto = response.concat([])
+
 
 export const ModalEditarPedido = ({ isOpen, isClose }) => {
+    const [dataTable, setDataTable] = useState([])
 
+    const [pageTable, setPageTable] = useState(1)
+    const resultsPerPage = 10
+
+    const totalResults = response.length
+      useEffect(() => {
+        setDataTable(responseProducto.slice((pageTable - 1) * resultsPerPage, pageTable * resultsPerPage))
+      }, [pageTable])
+
+      function onPageChangeTable(p) {
+        setPageTable(p)
+      }
+    
+    const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
+
+    function openModalCrearProducto() {
+      setModalIsOpen(true);
+    }
+  
+    function closeModal(){
+      setModalIsOpen(false);
+    }
+    
+      
+    function openModalEditarProducto() {
+        setModalIsOpenEditarProducto(true);
+      }
+    
+      function closeModalEditarProducto(){
+        setModalIsOpenEditarProducto(false);
+      }
+    
+      function alertaEliminado() {
+        showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success')
+      }
+    
+  
+
+    const date = new Date()
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
     const [cliente, cambiarCliente] = useState({ campo: '', valido: null });
     const [fechaPedido, cambiarFechaPedido] = useState({ campo: `${year}-${month}-${day}`, valido: null });
+    const [nombre, cambiarNombre] = useState({ campo: '', valido: null });
+    const [peso, cambiarPeso] = useState({ campo: '', valido: null });
+    const [tamanoAnillo, cambiarTamanoAnillo] = useState({ campo: '', valido: null });
+    const [tamanoPiedra, cambiarTamanoPiedra] = useState({ campo: '', valido: null });
+    const [detalle, cambiarDetalle] = useState({ campo: '', valido: null });
+    const [motivoDevolucion, cambiarMotivoDevolucion] = useState({ campo: '', valido: true, desactivado: true });
+ 
+
+
 
     const [clienteEditarPedido, cambiarClienteEditarPedido] = useState({ campo: '', valido: null });
     const [motivoDevolucionEditarPedido, cambiarMotivoDevolucionEditarPedido] = useState({ campo: '', valido: true, desactivado: true });
     const [fechaPedidoEditar, cambiarFechaPedidoEditar] = useState({ campo: `${year}-${month}-${day}`, valido: null });
+    // const [estadoPedido, cambiarEstadoPedido] = useState({ campo: '', valido: null, desactivado: true });
 
     const [formularioValido, cambiarFormularioValido] = useState(null);
-    const [formularioValidoProducto, cambiarFormularioValidoProducto] = useState(null);
+    
     const [formularioValidoEditarProducto, cambiarFormularioValidoEditarProducto] = useState(null);
 
-    const validacionFormularioEditarPedido = (e) => {
+    const validacionFormulario = (e) => {
         e.preventDefault();
-        if (clienteEditarPedido.valido === 'true' && fechaPedidoEditar.valido === "true" && motivoDevolucionEditarPedido.valido === "true") {
+        if (cliente.valido === 'true' && fechaPedido.valido === "true" && motivoDevolucion.valido === true) {
 
             cambiarFormularioValido(true);
             cambiarCliente({ campo: '', valido: null });
+            cambiarFechaPedido({ campo: '', valido: null });
 
-
-            alertEditadoCorrecto("Pedido agregado");
+            showAlertCorrect("Pedido agregado","success" , isClose);
 
         } else {
             cambiarFormularioValido(false);
-            alertEditadoIncorrecto();
+            showAlertIncorrect('Digíte el fomulario correctamente', 'error');
         }
     }
 
     return (
         <>
-            <form action='' onSubmit={validacionFormularioEditarPedido}>
-                <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <form action='' onSubmit={validacionFormulario}>
+                <Modal isOpen={isOpen} onClose={isClose}>
                     <ModalHeader className='mb-3'>Editar pedido</ModalHeader>
                     <ModalBody>
                         <Label className="mt-4">
-                            <span>Cliente</span>
-                            <Input2 placeholder={"ingrese un cliente"} className="mt-1" estado={clienteEditarPedido} type={"text"} cambiarEstado={cambiarClienteEditarPedido} expresionRegular={expresionesEditarPedido.clienteEditarPedido} mensajeError={"El nombre no puede tener numeros"} />
+                            <Input2 placeholder={"ingrese un cliente"} className="mt-1" estado={cliente} type={"text"} cambiarEstado={cambiarCliente} expresionRegular={expresiones.cliente} mensajeError={"El nombre no puede tener numeros"} />
                         </Label>
+
                         <Label className="mt-4">
                             <span>Fecha Entrega</span>
 
                             <Input2
                                 placeholder="ingrese una fecha"
-                                estado={fechaPedidoEditar}
+                                estado={fechaPedido}
                                 type="date"
-                                cambiarEstado={cambiarFechaPedidoEditar}
+                                cambiarEstado={cambiarFechaPedido}
                                 expresionRegular={false}
                                 mensajeError={"La fecha debe ser mayor que el dia de hoy"}
 
-                                id="fechaEditarPedido"
+                                id="fechaEditar"
                             />
+
+
                         </Label>
                         <Label className="mt-4">
                             <span>Asignar empleado</span>
@@ -71,25 +143,20 @@ export const ModalEditarPedido = ({ isOpen, isClose }) => {
                         </Label>
                         <Label className="mt-4">
                             <span >Estado</span>
-                            <Select onChange={(dato) => {
-                                if (dato.target.value == "Devuelto") {
-                                    alertDevuelto("pedido", "editarPedido")
-
-                                }
-                                else {
-                                    cambiarMotivoDevolucionEditarPedido({ campo: '', valido: "true", desactivado: true });
-                                }
-                            }}>
+                            <Select className="mt-1">
                                 <option>En produccion</option>
                                 <option >Devuelto</option>
                                 <option>Entregado</option>
                             </Select>
                         </Label>
-                        <Label className='mt-4' >
-                            <span>Motivo devolucion</span>
-                            <Input2 placeholder={"ingrese motivo"} className="mt-1" estado={motivoDevolucionEditarPedido} type={"text"} cambiarEstado={cambiarMotivoDevolucionEditarPedido} expresionRegular={expresionesEditarPedido.motivoDevolucionEditarPedido} mensajeError={"el texto no puede  contener mas de 100 caracteres"} desactivado={motivoDevolucionEditarPedido.desactivado} />
-                        </Label>
 
+                        <Button className="mb-4 mt-4" onClick={openModalCrearProducto}>
+                            Agregar producto
+                            <span className="mb-1" aria-hidden="true">
+                                +
+                            </span>
+                        </Button>
+                        <ModalCrearProducto  isOpen={modalIsOpen} isClose={closeModal} />
 
                         <div >
                             <TableContainer >
@@ -104,14 +171,14 @@ export const ModalEditarPedido = ({ isOpen, isClose }) => {
                                             <TableCell>Tamaño piedra</TableCell>
                                             <TableCell>Material</TableCell>
                                             <TableCell>Detalle</TableCell>
+                                            <TableCell>Cantidad</TableCell>
                                             <TableCell>Empleado encargado</TableCell>
-                                            <TableCell>Estado</TableCell>
                                             <TableCell>Motivo devolucion</TableCell>
                                             <TableCell>acciones</TableCell>
                                         </tr>
                                     </TableHeader>
                                     <TableBody className="w-12">
-                                        {dataTable3.map((producto, i) => (
+                                        {dataTable.map((producto, i) => (
                                             <TableRow key={i}>
                                                 <TableCell>
                                                     <p className="text-xs text-gray-600 dark:text-gray-400">{producto.ID}</p>
@@ -138,20 +205,21 @@ export const ModalEditarPedido = ({ isOpen, isClose }) => {
                                                     <p className="text-xs text-gray-600 dark:text-gray-400">{producto.detalle}</p>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <p className="text-xs text-gray-600 dark:text-gray-400">{producto.empleadoAsignado}</p>
+                                                    <p className="text-xs text-gray-600 dark:text-gray-400">5</p>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <p className="text-xs text-gray-600 dark:text-gray-400">{producto.estado}</p>
+                                                    <p className="text-xs text-gray-600 dark:text-gray-400">{producto.empleadoAsignado}</p>
                                                 </TableCell>
                                                 <TableCell>
                                                     <p className="text-xs text-gray-600 dark:text-gray-400">{producto.motivoDevolucion}</p>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-4">
-                                                        <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEditarProducto}>
+                                                        <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEditarProducto} >
                                                             <EditIcon className="w-5 h-5" aria-hidden="true" />
                                                         </Button>
-                                                        <Button layout="link" size="icon" aria-label="Delete" onClick={alertEliminadoProducto}>
+                                                        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} />
+                                                        <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado} >
                                                             <TrashIcon className="w-5 h-5" aria-hidden="true" />
                                                         </Button>
                                                     </div>
@@ -162,122 +230,26 @@ export const ModalEditarPedido = ({ isOpen, isClose }) => {
                                         ))}
                                     </TableBody>
                                 </Table>
+                            
 
                             </TableContainer>
-                            <form action='' onSubmit={validacionFormularioEditarProducto}>
-                                <Modal isOpen={isModalOpenEditarProducto} onClose={closeModalEditarProducto}>
-                                    <ModalHeader className='mb-3'>Editar producto</ModalHeader>
-                                    <ModalBody>
-                                        <Label className="mt-4">
-                                            <span>Nombre</span>
-                                            <Input2 placeholder={"ingrese un nombre"} className="mt-1" estado={nombre} type={"text"} cambiarEstado={cambiarNombre} expresionRegular={expresionesProducto.nombre} mensajeError={"El nombre no puede tener caracteres especiales"} />
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Tipo</span>
-                                            <Select className="mt-1">
-                                                <option>3D</option>
-                                                <option>A mano</option>
-                                                <option>Vaceado</option>
-                                            </Select>
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Peso</span>
-                                            <Input2 placeholder={"ingrese un peso en gramos"} className="mt-1" estado={peso} type={"number"} cambiarEstado={cambiarPeso} expresionRegular={expresionesProducto.peso} mensajeError={"No puede ingresar letras"} />
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Tamaño anillo</span>
-                                            <Input2 placeholder={"ingrese un numero"} className="mt-1" estado={tamanoAnillo} type={"number"} cambiarEstado={cambiarTamanoAnillo} expresionRegular={expresionesProducto.tamanoAnillo} mensajeError={"La medida no puede tener letras"} />
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Tamaño piedra</span>
-                                            <Input2 placeholder={"ingrese un numero en mm"} className="mt-1" estado={tamanoPiedra} type={"number"} cambiarEstado={cambiarTamanoPiedra} expresionRegular={expresionesProducto.tamanoPiedra} mensajeError={"el numero no puede tener letras"} />
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Material</span>
-                                            <Select className="mt-1">
-                                                <option>Oro</option>
-                                                <option>Oro rosado</option>
-                                                <option>Plata</option>
 
-                                            </Select>
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Detalles</span>
-                                            <Input2 placeholder={"ingrese detalles"} className="mt-1" estado={detalle} type={"text"} cambiarEstado={cambiarDetalle} expresionRegular={expresionesProducto.detalle} mensajeError={"el texto no puede  contener mas de 100 caracteres"} />
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Asignar empleado</span>
-                                            <Select>
-                                                <option>Josue</option>
-                                                <option>Barreto</option>
-                                                <option>Portela</option>
-                                            </Select>
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span >Estado</span>
-                                            <Select className="mt-1" onChange={(dato) => {
-                                                if (dato.target.value == "Devuelto") {
-                                                    alertDevuelto("producto", "editarProducto")
-
-                                                }
-                                                else {
-                                                    cambiarMotivoDevolucion({ campo: '', valido: "true", desactivado: true });
-                                                }
-                                            }}>
-                                                <option>En produccion</option>
-                                                <option >Devuelto</option>
-                                                <option>Entregado</option>
-                                            </Select>
-                                        </Label>
-                                        <label className="block text-sm text-gray-700 dark:text-gray-400" >
-                                            <span>Motivo devolucion</span>
-                                            <Input2 placeholder={"ingrese motivo"} className="mt-1" estado={motivoDevolucion} type={"text"} cambiarEstado={cambiarMotivoDevolucion} expresionRegular={expresionesProducto.motivoDevolucion} mensajeError={"el texto no puede  contener mas de 100 caracteres"} desactivado={motivoDevolucion.desactivado} />
-                                        </label>
-
-
-                                    </ModalBody>
-
-                                    <ModalFooter>
-                                        <div className="hidden sm:block">
-                                            <Button layout="outline" onClick={closeModalEditarProducto}>
-                                                Cancelar
-                                            </Button>
-                                        </div>
-                                        <div className="hidden sm:block">
-                                            <Button onClick={validacionFormularioEditarProducto}>Editar producto</Button>
-                                        </div>
-
-                                        <div className="block w-full sm:hidden">
-                                            <Button block size="large" layout="outline" onClick={closeModalEditarProducto}>
-                                                Cancel
-                                            </Button>
-                                        </div>
-                                        <div className="block w-full sm:hidden">
-                                            <Button block size="large">
-                                                Accept
-                                            </Button>
-                                        </div>
-
-
-                                    </ModalFooter>
-                                </Modal>
-                            </form>
                         </div>
 
                     </ModalBody>
 
                     <ModalFooter>
                         <div className="hidden sm:block">
-                            <Button layout="outline" onClick={closeModal}>
+                            <Button layout="outline" onClick={isClose} >
                                 Cancelar
                             </Button>
                         </div>
                         <div className="hidden sm:block">
-                            <Button onClick={validacionFormularioEditarPedido}>Enviar</Button>
+                            <Button onClick={validacionFormulario}>Enviar</Button>
                         </div>
 
                         <div className="block w-full sm:hidden">
-                            <Button block size="large" layout="outline" onClick={closeModal}>
+                            <Button block size="large" layout="outline" onClick={isClose}>
                                 Cancel
                             </Button>
                         </div>
@@ -289,7 +261,6 @@ export const ModalEditarPedido = ({ isOpen, isClose }) => {
                     </ModalFooter>
                 </Modal>
             </form>
-
         </>
     );
 }

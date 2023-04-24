@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import { ModalCrearProducto } from './ModalCrearProducto';
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { Input2 } from '../../../../components/Input';
@@ -18,11 +18,53 @@ import {
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
 
-
+import { ModalEditarProducto } from './ModalEditarProducto';
 import { expresiones } from '../../../../helpers/validacionesRegex';
-import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
+import { showAlertCorrect, showAlertIncorrect, showAlertDeleted } from '../../../../helpers/Alertas';
+import response from '../../../../utils/demo/dataProductos'
+const responseProducto = response.concat([])
+
 
 export const ModalCrearPedido = ({ isOpen, isClose }) => {
+    const [dataTable, setDataTable] = useState([])
+
+    const [pageTable, setPageTable] = useState(1)
+    const resultsPerPage = 10
+
+    const totalResults = response.length
+      useEffect(() => {
+        setDataTable(responseProducto.slice((pageTable - 1) * resultsPerPage, pageTable * resultsPerPage))
+      }, [pageTable])
+
+      function onPageChangeTable(p) {
+        setPageTable(p)
+      }
+    
+    const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
+    const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
+
+    function openModalCrearProducto() {
+      setModalIsOpenCrearProducto(true);
+    }
+  
+    function closeModalCrearProducto(){
+      setModalIsOpenCrearProducto(false);
+    }
+
+    
+    function openModalEditarProducto() {
+        setModalIsOpenEditarProducto(true);
+      }
+    
+      function closeModalEditarProducto(){
+        setModalIsOpenEditarProducto(false);
+      }
+    
+      function alertaEliminado() {
+        showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success')
+      }
+    
+  
 
     const date = new Date()
     let day = date.getDate();
@@ -36,7 +78,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
     const [tamanoPiedra, cambiarTamanoPiedra] = useState({ campo: '', valido: null });
     const [detalle, cambiarDetalle] = useState({ campo: '', valido: null });
     const [motivoDevolucion, cambiarMotivoDevolucion] = useState({ campo: '', valido: true, desactivado: true });
-  const [dataTable3, setDataTable3] = useState([])
+ 
 
 
 
@@ -46,8 +88,8 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
     // const [estadoPedido, cambiarEstadoPedido] = useState({ campo: '', valido: null, desactivado: true });
 
     const [formularioValido, cambiarFormularioValido] = useState(null);
-    const [formularioValidoProducto, cambiarFormularioValidoProducto] = useState(null);
-    const [formularioValidoEditarProducto, cambiarFormularioValidoEditarProducto] = useState(null);
+    
+    
 
     const validacionFormulario = (e) => {
         e.preventDefault();
@@ -57,15 +99,11 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
             cambiarCliente({ campo: '', valido: null });
             cambiarFechaPedido({ campo: '', valido: null });
 
-            if (motivoDevolucion.valido) {
-                showAlertCorrect("Pedido agregado");
-            }
-            showAlertCorrect("Pedido editado");
-
+            showAlertCorrect("Pedido agregado","success" , isClose);
 
         } else {
             cambiarFormularioValido(false);
-            showAlertIncorrect();
+            showAlertIncorrect('Digíte el fomulario correctamente', 'error');
         }
     }
 
@@ -104,12 +142,13 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                             </Select>
                         </Label>
 
-                        <Button className="mb-4 mt-4">
+                        <Button className="mb-4 mt-4" onClick={openModalCrearProducto}>
                             Agregar producto
                             <span className="mb-1" aria-hidden="true">
                                 +
                             </span>
                         </Button>
+                        <ModalCrearProducto  isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} />
 
                         <div >
                             <TableContainer >
@@ -131,7 +170,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                         </tr>
                                     </TableHeader>
                                     <TableBody className="w-12">
-                                        {dataTable3.map((producto, i) => (
+                                        {dataTable.map((producto, i) => (
                                             <TableRow key={i}>
                                                 <TableCell>
                                                     <p className="text-xs text-gray-600 dark:text-gray-400">{producto.ID}</p>
@@ -169,9 +208,10 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                                 <TableCell>
                                                     <div className="flex items-center space-x-4">
                                                         <Button layout="link" size="icon" aria-label="Edit" >
-                                                            <EditIcon className="w-5 h-5" aria-hidden="true" />
+                                                            <EditIcon className="w-5 h-5" aria-hidden="true" onClick={openModalEditarProducto}/>
                                                         </Button>
-                                                        <Button layout="link" size="icon" aria-label="Delete" >
+                                                        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} />
+                                                        <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
                                                             <TrashIcon className="w-5 h-5" aria-hidden="true" />
                                                         </Button>
                                                     </div>
@@ -182,6 +222,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                         ))}
                                     </TableBody>
                                 </Table>
+                            
 
                             </TableContainer>
 
@@ -191,7 +232,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
 
                     <ModalFooter>
                         <div className="hidden sm:block">
-                            <Button layout="outline" >
+                            <Button layout="outline" onClick={isClose} >
                                 Cancelar
                             </Button>
                         </div>
@@ -200,7 +241,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                         </div>
 
                         <div className="block w-full sm:hidden">
-                            <Button block size="large" layout="outline" >
+                            <Button block size="large" layout="outline" onClick={isClose}>
                                 Cancel
                             </Button>
                         </div>
