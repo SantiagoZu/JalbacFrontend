@@ -27,8 +27,8 @@ export const ModalAgregarUsuario = ({ isOpen, isClose }) => {
         showAlertCorrect("Usuario creado correctamente", "success", isClose);
       }}
     >
-      {({ errors, usuarioSubmit, touched }) => (
-        <form onSubmit={usuarioSubmit}>
+      {({ errors, handleSubmit, touched }) => (
+        <form onSubmit={handleSubmit}>
           <Modal isOpen={isOpen} onClose={isClose}>
             <ModalHeader className="mb-3">Registrar usuario</ModalHeader>
             <ModalBody>
@@ -71,7 +71,7 @@ export const ModalAgregarUsuario = ({ isOpen, isClose }) => {
                 </Button>
               </div>
               <div className="hidden sm:block">
-                <Button onClick={usuarioSubmit}>Enviar</Button>
+                <Button onClick={handleSubmit}>Enviar</Button>
               </div>
             </ModalFooter>
           </Modal>
