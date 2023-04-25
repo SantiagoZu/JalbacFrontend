@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
+import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
-import { Input2 } from '../../components/Input';
+
+import { ModalEditarRol } from './components/RolComponents/ModalEditarRol'
+import { ModalCrearRol } from './components/RolComponents/ModalCrearRol'
+
 import {
   Table,
   TableHeader,
@@ -11,20 +15,13 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
   Button,
   Pagination,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Label,
-  Select
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataRoles'
-import Swal from 'sweetalert2'
+import { EditIcon, TrashIcon } from '../../icons';
+import { SearchIcon } from '../../icons';
+import response from '../../utils/demo/dataRoles';
+import { showAlertDeleted } from '../../helpers/Alertas';
 
 
 const response2 = response.concat([])
@@ -44,121 +41,30 @@ function Roles() {
   useEffect(() => {
     setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
   }, [pageTable2])
-
-  const [nombre, cambiarNombre] = useState({ campo: '', valido: null });
-  const [apellido, cambiarApellido] = useState({ campo: '', valido: null });
-  const [documento, cambiarDocumento] = useState({ campo: '', valido: null });
-  const [correo, cambiarCorreo] = useState({ campo: '', valido: null });
-  const [telefono, cambiarTelefono] = useState({ campo: '', valido: null });
-  const [rol, cambiarRol] = useState({ campo: '', valido: null });
-  const [formularioValido, cambiarFormularioValido] = useState(null);
-
-  const expresiones = {
-    nombre: /^[a-zA-ZÀ-ÿ\s]{1,25}$/, // Letras y espacios, pueden llevar acentos.
-    apellido: /^[a-zA-ZÀ-ÿ\s]{1,25}$/, // Letras y espacios, pueden llevar acentos.
-    documento: /^\d{1,10}$/, // 7 a 14 numeros.
-    correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-    telefono: /^\d{6,14}$/, // 7 a 14 numeros.
-    rol: /^[a-zA-ZÀ-ÿ\s]{1,25}$/, // Letras
-  }
-
-  // CREAR 
-
-  const [isModalCreateOpen, setIsModalCreateOpen] = useState(false)
+  
+  const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
 
   function openModalCreate() {
-    setIsModalCreateOpen(true)
+    setModalIsOpenCreate(true);
   }
 
-  function closeModalCreate() {
-    setIsModalCreateOpen(false)
+  function closeModal() {
+    setModalIsOpenCreate(false);
   }
 
-  const ValidacionFormCreate = (e) => {
-    e.preventDefault();
-    if (rol.valido === 'true') {
-
-      cambiarFormularioValido(true);
-
-      Swal.fire({
-        title: "Rol registrado correctamente",
-        icon: "success"
-      })
-        .then((value) => {
-          closeModalCreate();
-        })
-    } else {
-      cambiarFormularioValido(false);
-      Swal.fire({
-        title: "Digíte correctamente el formulario",
-        icon: "error"
-      })
-    }
-  }
-
-
-
-
-  // EDITAR
-
-  const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
 
   function openModalEdit() {
-    setIsModalEditOpen(true)
+    setModalIsOpenEdit(true);
   }
 
   function closeModalEdit() {
-    setIsModalEditOpen(false)
+    setModalIsOpenEdit(false);
   }
 
-  const ValidacionFormEdit = (e) => {
-    e.preventDefault();
-    if (rol.valido === 'true') {
-
-      cambiarFormularioValido(true);
-      cambiarRol({ campo: '', valido: null });
-
-      Swal.fire({
-        title: "Rol editado correctamente",
-        icon: "success"
-      })
-        .then((value) => {
-          closeModalEdit();
-        })
-    } else {
-      cambiarFormularioValido(false);
-      Swal.fire({
-        title: "Digíte correctamente el formulario",
-        icon: "error"
-      })
-    }
+  function alertaEliminado() {
+    showAlertDeleted('¿Estás seguro que deseas eliminar el cliente?', 'warning', 'Eliminado correctamente', 'success')
   }
-
-
-
-  // ELIMINAR
-
-
-  function EliminarRol() {
-    Swal.fire({
-      title: '¿Seguro que deseas eliminar este rol?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#7e3af2',
-      confirmButtonText: '¡Sí, eliminar!',
-      cancelButtonColor: '#d33'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          '¡Eliminado!',
-          'El rol se ha eliminado correctamente.',
-          'success'
-        )
-      }
-    })
-  }
-
-
 
   return (
     <>
@@ -166,8 +72,9 @@ function Roles() {
 
       <SectionTitle>Tabla Roles</SectionTitle>
       <div className="flex ml-auto mb-6">
+      <ModalCrearRol isOpen={modalIsOpenCreate} isClose={closeModal} />
         <Button onClick={openModalCreate}>
-          Crear Roles
+          Registrar Rol
           <span className="ml-2" aria-hidden="true">
             +
           </span>
@@ -212,10 +119,11 @@ function Roles() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
+                  <ModalEditarRol isOpen={modalIsOpenEdit} isClose={closeModalEdit} />
                     <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEdit}>
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={EliminarRol}>
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>
@@ -233,112 +141,6 @@ function Roles() {
           />
         </TableFooter>
       </TableContainer>
-
-
-
-      {/* CREAR */}
-
-
-
-      <form action='' onSubmit={ValidacionFormCreate}>
-        <Modal isOpen={isModalCreateOpen} onClose={closeModalCreate}>
-          <ModalHeader>Crear Rol</ModalHeader>
-          <ModalBody>
-            <Label>
-              <span>Rol</span>
-              <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                <Input2 placeholder="Ingrese el rol..." type="text" estado={rol} cambiarEstado={cambiarRol} expresionRegular={expresiones.rol} mensajeError={"El rol no puede tener números"} />
-                <div className="absolute inset-y-0 flex items-center ml-3 pointer-events-none">
-                </div>
-              </div>
-            </Label>
-
-            <Label className="mt-4">
-              <span>Permisos</span> <br />
-              <Input type="checkbox" className='ml-3' /> Dashboard <br />
-              <Input type="checkbox" className='ml-3' /> Backup <br />
-              <Input type="checkbox" className='ml-3' /> Roles <br />
-              <Input type="checkbox" className='ml-3' /> Usuarios <br />
-              <Input type="checkbox" className='ml-3' /> Empleados <br />
-              <Input type="checkbox" className='ml-3' /> Clientes <br />
-              <Input type="checkbox" className='ml-3' /> Pedidos <br />
-              <Input type="checkbox" className='ml-3' /> Devoluciones <br />
-            </Label>
-
-
-            <Label className="mt-4">
-              <span>Estado</span>
-              <Select className="mt-1">
-                <option>Activo</option>
-                <option>Inactivo</option>
-              </Select>
-            </Label>
-          </ModalBody>
-          <ModalFooter>
-            <div className="hidden sm:block">
-              <Button layout="outline" onClick={closeModalCreate}>
-                Cancelar
-              </Button>
-            </div>
-            <div className="hidden sm:block">
-              <Button type="submit" onClick={ValidacionFormCreate}>Aceptar</Button>
-            </div>
-          </ModalFooter>
-        </Modal>
-      </form>
-
-
-
-      {/* EDITAR */}
-
-
-
-      <form action='' onSubmit={ValidacionFormEdit}>
-        <Modal isOpen={isModalEditOpen} onClose={closeModalEdit}>
-          <ModalHeader>Editar Rol</ModalHeader>
-          <ModalBody>
-            <Label>
-              <span>Rol</span>
-              <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                <Input2 placeholder="Ingrese el rol..." type="text" estado={rol} cambiarEstado={cambiarRol} expresionRegular={expresiones.rol} mensajeError={"El rol no puede tener números"} />
-                <div className="absolute inset-y-0 flex items-center ml-3 pointer-events-none">
-                </div>
-              </div>
-            </Label>
-
-            <Label className="mt-4">
-              <span>Permisos</span> <br />
-              <Input type="checkbox" className='ml-3' /> Dashboard <br />
-              <Input type="checkbox" className='ml-3' /> Backup <br />
-              <Input type="checkbox" className='ml-3' /> Roles <br />
-              <Input type="checkbox" className='ml-3' /> Usuarios <br />
-              <Input type="checkbox" className='ml-3' /> Empleados <br />
-              <Input type="checkbox" className='ml-3' /> Clientes <br />
-              <Input type="checkbox" className='ml-3' /> Pedidos <br />
-              <Input type="checkbox" className='ml-3' /> Devoluciones <br />
-            </Label>
-
-
-            <Label className="mt-4">
-              <span>Estado</span>
-              <Select className="mt-1">
-                <option>Activo</option>
-                <option>Inactivo</option>
-              </Select>
-            </Label>
-          </ModalBody>
-          <ModalFooter>
-            <div className="hidden sm:block">
-              <Button layout="outline" onClick={closeModalEdit}>
-                Cancelar
-              </Button>
-            </div>
-            <div className="hidden sm:block">
-              <Button type="submit" onClick={ValidacionFormEdit}>Aceptar</Button>
-            </div>
-          </ModalFooter>
-        </Modal>
-      </form>
     </>
   )
 }

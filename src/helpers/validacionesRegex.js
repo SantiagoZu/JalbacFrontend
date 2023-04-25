@@ -7,6 +7,11 @@ export const expresiones = {
     documento: /^[a-zA-Z0-9\_\-\.]{4,16}$/
 }
 
+export const expresionesRol = {
+    rol: /^[a-zA-Z0-9\_\-]{4,16}$/,
+    checked: /^[a-zA-Z0-9\_\-]{4,16}$/, // Letras, numeros, guion y guion_bajo
+}
+
 
 const expresionesProducto = {
     nombre: /^[A-Za-z0-9 ]+$/, // no caracteres especiales

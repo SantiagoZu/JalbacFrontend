@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
+import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
-import { Input2 } from '../../components/Input';
-import {ModalCrearCliente} from './components/ClientesComponents/ModalCrearCliente';
-import {showAlertDeleted, showAlertIncorrect, showAlertCorrect} from '../../helpers/Alertas';
+
+import { ModalEditarCliente } from './components/ClientesComponents/ModalEditarCliente'
+import { ModalCrearCliente } from './components/ClientesComponents/ModalCrearCliente'
+
 import {
   Table,
   TableHeader,
@@ -13,21 +15,13 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
   Button,
   Pagination,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Label,
-  Select
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import Swal from 'sweetalert2'
-
-import response from '../../utils/demo/dataClientes'
+import { EditIcon, TrashIcon } from '../../icons';
+import { SearchIcon } from '../../icons';
+import response from '../../utils/demo/dataClientes';
+import { showAlertDeleted } from '../../helpers/Alertas';
 
 const response2 = response.concat([])
 
@@ -55,19 +49,22 @@ function Clientes() {
     setModalIsOpenCreate(true);
   }
 
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-
-  function openModalEdit() {
-    setModalIsOpenCreate(true);
-  }
-
   function closeModal() {
-    setModalIsOpenEdit(false);
     setModalIsOpenCreate(false);
   }
 
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
+
+  function openModalEdit() {
+    setModalIsOpenEdit(true);
+  }
+
+  function closeModalEdit() {
+    setModalIsOpenEdit(false);
+  }
+
   function alertaEliminado() {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success')
+    showAlertDeleted('¿Estás seguro que deseas eliminar el cliente?', 'warning', 'Eliminado correctamente', 'success')
   }
 
 
@@ -83,7 +80,7 @@ function Clientes() {
       <div className="flex ml-auto mb-6">
         <ModalCrearCliente isOpen={modalIsOpenCreate} isClose={closeModal} />
         <Button onClick={openModalCreate}>
-          Crear Cliente
+          Registrar Cliente
           <span className="ml-2" aria-hidden="true">
             +
           </span>
@@ -141,6 +138,7 @@ function Clientes() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
+                    <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} />
                     <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEdit}>
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
