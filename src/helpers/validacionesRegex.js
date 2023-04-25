@@ -17,6 +17,11 @@ export const expresionesProducto = {
     motivoDevolucion: /^[A-Za-z0-9]{0,100}$/,     // solo acepta de 0 a 200 caracteres
 
 }
+export const expresionesCrearPedido = {
+    cliente: /^[A-Za-z0-9 ]+$/, // no caracteres especiales
+    fechaEntrega: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos decimal   
+}
+
 
 const expresionesEditarPedido = {
     clienteEditarPedido: /^[a-zA-ZÀ-ÿ\s]{1,25}$/, // Letras, numeros, guion y guion_bajo
