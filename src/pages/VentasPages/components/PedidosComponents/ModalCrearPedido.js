@@ -25,7 +25,7 @@ import response from '../../../../utils/demo/dataProductos'
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { initialValues, validateInputs } from './PedidosFormValidations/CrearPedidosFormik';
+import { initialValues, validateInputs } from './PedidosFormValidations/PedidosFormik';
 const responseProducto = response.concat([])
 
 
