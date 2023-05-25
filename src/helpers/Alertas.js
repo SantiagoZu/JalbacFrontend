@@ -40,6 +40,24 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
     });
 
 }
+export const showAlertEstadoDevuelto = (message, icon, secondMessage, secondIcon) => {
+    Swal.fire({
+        title: message,
+        icon: icon,
+        showCancelButton: true,
+        confirmButtonColor: '#7e3af2',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Devolver'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Devuelto',
+                secondMessage,
+                secondIcon,
+            )
+        }
+    });
+}
 
 
 

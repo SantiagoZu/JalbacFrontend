@@ -10,7 +10,7 @@ import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alerta
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { initialValues, validateInputs } from './PedidosFormValidations/ProductosFormik';
+import { initialValues,  validateInputsAgregarProducto } from './PedidosFormValidations/ProductosFormik';
 
 export const ModalCrearProducto = ({ isOpen, isClose }) => {
 
@@ -18,7 +18,7 @@ export const ModalCrearProducto = ({ isOpen, isClose }) => {
         <>
          <Formik
                 initialValues={initialValues}
-                validate={(values) => validateInputs(values)}
+                validate={(values) => validateInputsAgregarProducto(values)}
                 onSubmit={(valores, { resetForm }) => {
                     resetForm();
                     showAlertCorrect('Producto agregado correctamente', 'success', isClose)
