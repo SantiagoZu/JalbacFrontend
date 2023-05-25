@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useClientes } from '../../services/hooks/UseClientes'
 
 import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'
@@ -23,6 +24,7 @@ import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataClientes';
 import { showAlertDeleted } from '../../helpers/Alertas';
 
+
 const response2 = response.concat([])
 
 function Clientes() {
@@ -41,7 +43,6 @@ function Clientes() {
   useEffect(() => {
     setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
   }, [pageTable2])
-
 
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
 
@@ -68,8 +69,9 @@ function Clientes() {
   }
 
 
-  // EDITAR
+  const {clientes} = useClientes();
 
+  console.log(clientes)
 
   return (
 
@@ -103,7 +105,6 @@ function Clientes() {
             <tr >
               <TableCell>ID</TableCell>
               <TableCell>Documento</TableCell>
-              <TableCell>Correo</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Apellidos</TableCell>
               <TableCell>Teléfono</TableCell>
@@ -112,43 +113,45 @@ function Clientes() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((cliente, i) => (
-              <TableRow key={i}>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.ID}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Documento}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Correo}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Nombre}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Apellidos}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Telefono}</p>
-                </TableCell>
+            {clientes.map((cliente, i) => {
+              
+              return (
+            <TableRow key={i}>
+              <TableCell>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.idCliente}</p>
+              </TableCell>
+              <TableCell>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.documento}</p>
+              </TableCell>
 
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Estado}</p>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center space-x-4">
-                    <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} />
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEdit}>
-                      <EditIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
-                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+              <TableCell>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.nombre}</p>
+              </TableCell>
+              <TableCell>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.apellido}</p>
+              </TableCell>
+              <TableCell>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.telefono}</p>
+              </TableCell>
+              <TableCell>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.estado ? 'Activo' : 'Inactivo'}</p>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-4">
+                  <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} />
+                  <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEdit}>
+                    <EditIcon className="w-5 h-5" aria-hidden="true" />
+                  </Button>
+                  <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
+                    <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>);
+        
+              }
+            )
+            }
           </TableBody>
         </Table>
         <TableFooter>
