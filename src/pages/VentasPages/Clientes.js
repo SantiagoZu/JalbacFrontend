@@ -24,15 +24,16 @@ import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataClientes';
 import { showAlertDeleted } from '../../helpers/Alertas';
 
-
 const response2 = response.concat([])
 
 function Clientes() {
 
+  const { clientes, deleteClientes } = useClientes();
+  const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
+  const [dataCliente, setDataCliente] = useState([]);
   const [pageTable2, setPageTable2] = useState(1)
-
   const [dataTable2, setDataTable2] = useState([])
-
   const resultsPerPage = 10
   const totalResults = response.length
 
@@ -44,7 +45,9 @@ function Clientes() {
     setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
   }, [pageTable2])
 
-  const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
+  useEffect(() => {
+    sexo();
+  }, []);
 
   function openModalCreate() {
     setModalIsOpenCreate(true);
@@ -54,24 +57,23 @@ function Clientes() {
     setModalIsOpenCreate(false);
   }
 
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-
-  function openModalEdit() {
+  function openModalEdit(obj) {
     setModalIsOpenEdit(true);
+    setData(obj);
   }
 
   function closeModalEdit() {
     setModalIsOpenEdit(false);
   }
 
-  function alertaEliminado() {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el cliente?', 'warning', 'Eliminado correctamente', 'success')
+
+  function setData(obj) {
+    setDataCliente(obj);
   }
 
-
-  const {clientes} = useClientes();
-
-  console.log(clientes)
+  function alertaEliminado(idCliente) {
+    showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success', () => deleteClientes(idCliente))
+  }
 
   return (
 
@@ -114,42 +116,40 @@ function Clientes() {
           </TableHeader>
           <TableBody>
             {clientes.map((cliente, i) => {
-              
-              return (
-            <TableRow key={i}>
-              <TableCell>
-                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.idCliente}</p>
-              </TableCell>
-              <TableCell>
-                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.documento}</p>
-              </TableCell>
 
-              <TableCell>
-                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.nombre}</p>
-              </TableCell>
-              <TableCell>
-                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.apellido}</p>
-              </TableCell>
-              <TableCell>
-                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.telefono}</p>
-              </TableCell>
-              <TableCell>
-                <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.estado ? 'Activo' : 'Inactivo'}</p>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center space-x-4">
-                  <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} />
-                  <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEdit}>
-                    <EditIcon className="w-5 h-5" aria-hidden="true" />
-                  </Button>
-                  <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
-                    <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>);
-        
-              }
+              return (
+                <TableRow key={i}>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.idCliente}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.documento}</p>
+                  </TableCell>
+
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.nombre}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.apellido}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.telefono}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.estado ? 'Activo' : 'Inactivo'}</p>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-4">
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEdit(cliente)}>
+                        <EditIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => alertaEliminado(cliente.idCliente)}>
+                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>);
+            }
             )
             }
           </TableBody>
@@ -163,6 +163,9 @@ function Clientes() {
           />
         </TableFooter>
       </TableContainer>
+      {modalIsOpenEdit && (
+        <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} object={dataCliente} />
+      )}
     </>
   )
 }

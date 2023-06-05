@@ -21,7 +21,7 @@ export const showAlertIncorrect = (message, icon) => {
     });
 }
 
-export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
+export const showAlertDeleted = (message, icon, secondMessage, secondIcon, onDelete) => {
     Swal.fire({
         title: message,
         icon: icon,
@@ -31,6 +31,7 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
         confirmButtonText: '¡Sí, eliminar!'
     }).then((result) => {
         if (result.isConfirmed) {
+            onDelete();
             Swal.fire(
                 'Eliminado',
                 secondMessage,
@@ -38,7 +39,6 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
             )
         }
     });
-
 }
 
 

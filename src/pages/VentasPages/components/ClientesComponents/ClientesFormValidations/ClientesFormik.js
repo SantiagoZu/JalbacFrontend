@@ -4,15 +4,16 @@ export const initialValues = {
     nombre: '',
     apellido: '',
     documento: '',
-    correo: ''
+    telefono: '',
+    estado: ''
 };
 
 export const validationScheme = {
     nombre: regex.nombre,
     apellido: regex.nombre,
     documento: regex.documento,
-    correo: regex.correo
-}
+    telefono: regex.telefono,
+};
 
 export const validateInputs = (values) => {
 
@@ -36,10 +37,10 @@ export const validateInputs = (values) => {
         errores.apellido = 'El campo apellido no debe tener números ni caracteres especiales.'
     }
 
-    if (!values.correo) {
-        errores.correo = 'El campo correo es oblígatorio.'
-    } else if (!validationScheme.correo.test(values.correo)) {
-        errores.correo = 'El campo correo debe ser válido.'
+    if (!values.telefono) {
+        errores.telefono = 'El campo telefono es oblígatorio.'
+    } else if (!validationScheme.telefono.test(values.telefono)) {
+        errores.telefono = 'El campo telefono debe ser válido.'
     }
 
     return errores;
