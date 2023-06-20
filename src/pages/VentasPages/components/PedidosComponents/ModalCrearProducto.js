@@ -8,20 +8,42 @@ import Swal from 'sweetalert2'
 import { expresionesProducto } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik } from 'formik';
-import { CustomInput } from '../../../../components/CustomInput';
+import { CustomInput, CustomInputDropDown } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues,  validateInputsAgregarProducto } from './PedidosFormValidations/ProductosFormik';
-
+import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 export const ModalCrearProducto = ({ isOpen, isClose }) => {
-
+    const { postDetallePedidos, getDetallePedidos } = useDetallePedidos();
+    const tipos = [
+        { value: '', label: 'Seleccione un tipo de anillo' },
+        { value: '3D',label: '3D' },
+        { value: 'A mano', label: 'A mano' },
+        { value: 'Vaceado', label: 'Vaceado' },
+    ];
+    
     return (
         <>
          <Formik
                 initialValues={initialValues}
                 validate={(values) => validateInputsAgregarProducto(values)}
-                onSubmit={(valores, { resetForm }) => {
+                onSubmit={(values, { resetForm }) => {
+                    const convertedValue = values.estado === 'true'; // Cambiar a booleano  
+                    const updatedValues = {
+                    ...values,
+                    estado: convertedValue,
+                    };
+
+                    console.log(updatedValues);
+                    postDetallePedidos(updatedValues).then(response => {
+                        resetForm();
+                        showAlertCorrect('Producto creado correctamente', 'success', isClose)
+                        console.log(response);
+                    }).catch(response => {
+                        showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
+                        console.log(response);
+                    });
                     resetForm();
-                    showAlertCorrect('Producto agregado correctamente', 'success', isClose)
+                    getDetallePedidos();
                 }}
         >
             {({ errors, handleSubmit, touched }) => (
@@ -42,11 +64,12 @@ export const ModalCrearProducto = ({ isOpen, isClose }) => {
                             </Label>
                             <Label className="mt-4">
                                 <span>Tipo</span>
-                                <Select className="mt-1">
-                                    <option>3D</option>
-                                    <option>A mano</option>
-                                    <option>Vaceado</option>
-                                </Select>
+                                <CustomInputDropDown
+                                    type="select"
+                                    id="estado"
+                                    name="estado"
+                                    options={tipos}
+                                />
                             </Label>
                             <Label className="mt-4">
                                 <span>peso</span>                 

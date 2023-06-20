@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
+import { usePedidos } from '../../services/hooks/usePedidos'
 import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 
 import {
@@ -27,25 +28,23 @@ const responsePedido = response.concat([])
 
 function Pedidos() {
 
-  const [PageTable, setPageTable] = useState(1)
-
-
-  const [dataTable, setDataTable] = useState([])
+  const [dataPedido, setDataPedidos] = useState([]);
+  const {pedidos, deletePedidos } = usePedidos();
  
 
-  // pagination setup
+  const [PageTable, setPageTable] = useState(1)
+  const [dataTable, setDataTable] = useState([])
+ 
+ 
+
   const resultsPerPage = 10
   const totalResults = response.length
  
 
-  // pagination change control
   function onPageChangeTable2(p) {
     setPageTable(p)
   }
   
-
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
     setDataTable(responsePedido.slice((PageTable - 1) * resultsPerPage, PageTable * resultsPerPage))
   }, [PageTable])
@@ -69,17 +68,21 @@ function Pedidos() {
   function closeModalDetallePedido(){
     setModalIsOpenDetallePedido(false);
   }
-  function openModalEditarPedido() {
+  function openModalEditarPedido(obj) {
     setModalIsOpenEditarPedido(true);
+    setData(obj)
   }
   function closeModalEditarPedido(){
     setModalIsOpenEditarPedido(false);
   }
-
-  function alertaEliminado() {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success')
+  
+  function setData(obj) {
+    setDataPedidos(obj);
   }
 
+  function alertaEliminado(idPedido) {
+    showAlertDeleted('¿Estás seguro que deseas eliminar el Pedido?', 'warning', 'Eliminado correctamente', 'success', () => deletePedidos(idPedido))
+  }
 
   return (
     <>
@@ -89,11 +92,11 @@ function Pedidos() {
       <div className="flex ml-auto mb-6">
         <Button onClick={openModalCrearPedido}>
           Crear pedido
-          <span className="ml-1" aria-hidden="true">
-            +
-          </span>
+          <span className="ml-1" aria-hidden="true">+</span>
         </Button>
-        <ModalCrearPedido isOpen={modalIsOpenAgregarPedido} isClose={closeModalAgregarPedido}/>
+        {modalIsOpenAgregarPedido && 
+          (<ModalCrearPedido isOpen={modalIsOpenAgregarPedido} isClose={closeModalAgregarPedido}/>)
+        }
 
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
@@ -112,7 +115,7 @@ function Pedidos() {
           <TableHeader>
             <tr >
               <TableCell>ID</TableCell>
-              <TableCell>Fecha Pedido</TableCell>
+              <TableCell>Fecha Recibido</TableCell>
               <TableCell>Cliente</TableCell>
               <TableCell>Empleado encargado</TableCell>
               <TableCell>Fecha Entrega</TableCell>
@@ -122,10 +125,10 @@ function Pedidos() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable.map((pedido, i) => (
-              <TableRow key={i}>
+            {pedidos.map((pedido) => (
+              <TableRow key={pedido.id}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.ID}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.id}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.FechaPedido}</p>
@@ -146,15 +149,15 @@ function Pedidos() {
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModalDetallePedido}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
-                  <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido}/>
+                  
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEditarPedido}>
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEditarPedido(pedido)}>
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <ModalEditarPedido isOpen={modalIsOpenEditarPedido} isClose={closeModalEditarPedido}/>
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
+                    
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => alertaEliminado(pedidos.id)}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>
@@ -172,6 +175,12 @@ function Pedidos() {
           />
         </TableFooter>
       </TableContainer>
+      {modalIsOpenDetallePedido && (
+        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido}/>
+      )}
+      {modalIsOpenEditarPedido && (
+        <ModalEditarPedido isOpen={modalIsOpenEditarPedido} isClose={closeModalEditarPedido} object={dataPedido}/>
+      )}
       
     </>
   )

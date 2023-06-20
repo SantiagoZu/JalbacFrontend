@@ -19,17 +19,38 @@ import {
 import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
 
 import { expresionesProducto } from '../../../../helpers/validacionesRegex';
-import { showAlertCorrect, showAlertEstadoDevuelto } from '../../../../helpers/Alertas';
+import { showAlertCorrect, showAlertEstadoDevuelto, showAlertIncorrect } from '../../../../helpers/Alertas';
 import response from '../../../../utils/demo/dataProductos'
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
-
+import { usePedidos } from '../../../../services/hooks/usePedidos'
+import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 const responseProducto = response.concat([])
 
 
-export const ModalEditarProducto = ({ isOpen, isClose }) => {
+export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
+
+    
+    const { updateDetallePedidos } = useDetallePedidos();
+    const updateValues = {
+        nombre : object.nombre || '',
+        tipo: object.tipo || '',
+        peso: object.peso || '',
+        tamanoAnillo: object.tamanoAnillo || '',
+        tamanoPiedra: object.tamanoPiedra || '',
+        material: object.material || '',
+        detalle: object.detalle || '',
+        empleado: object.empleado || '',
+        estado: object.estado || '',
+        motivoDevolucion: object.motivoDevolucion || '',
+    };
+    const empleados = [
+        { value: '', label: 'Seleccione un empleado' },
+        { value: '',label: 'Josue' },
+        { value: '', label: 'Santiago' }
+    ]
     function alertaEstadoProducto() {
         showAlertEstadoDevuelto('¿Estás seguro que deseas devolver este producto?', 'warning', 'Producto devuelto correctamente', 'success')
     }
@@ -37,18 +58,31 @@ export const ModalEditarProducto = ({ isOpen, isClose }) => {
     return (
         <>
              <Formik
-                initialValues={initialValues}
+                initialValues={updateValues}
                 validate={(values) => validateInputsEditarProducto(values)}
-                onSubmit={(valores, { resetForm }) => {
-                    resetForm();
-                    showAlertCorrect('Producto agregado correctamente', 'success', isClose)
+                onSubmit={(values, { resetForm }) => {
+                    const convertedValue = values.estado === 'true'; // Cambiar a booleano
+
+                    const updatedValues = {
+                        ...values,
+                        estado: convertedValue,
+                    };
+
+                    updateDetallePedidos(object.idDetallePedido, updatedValues).then(response => {
+                        resetForm();
+                        showAlertCorrect('Producto editado correctamente', 'success', isClose)
+                        console.log(response);
+                    }).catch(response => {
+                        showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
+                        console.log(response);
+                    })
                 }}
             >
             {({ errors, handleSubmit, touched }) => (
 
                 <form  onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
-                        <ModalHeader className='mb-3'>Editaraaaaa producto</ModalHeader>
+                        <ModalHeader className='mb-3'>Editar producto</ModalHeader>
                         <ModalBody>
                             <div className='flex gap-5'>
                                 <div className='flex-auto'>
@@ -122,11 +156,12 @@ export const ModalEditarProducto = ({ isOpen, isClose }) => {
                                     </Label>
                                     <Label className="mt-5">
                                         <span>Asignar empleado</span>
-                                        <Select>
-                                            <option>Josue</option>
-                                            <option>Barreto</option>
-                                            <option>Portela</option>
-                                        </Select>
+                                        <CustomInput 
+                                        type="select"
+                                        id="empleados"
+                                        name="epleados"
+                                        options={empleados}
+                                        />
                                     </Label>
                                     <Label className="mt-5">
                                         <span >Estado</span>

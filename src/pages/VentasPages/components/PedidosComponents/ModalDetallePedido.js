@@ -19,9 +19,12 @@ import {
 import { expresiones } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import response from '../../../../utils/demo/dataProductos'
+import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 const responseDetallePedido = response.concat([])
 export const ModalDetallePedido = ({ isOpen, isClose }) => {
     const [dataTable, setDataTable] = useState([])
+
+    const [dataDetallePedidos, deleteDetallePedidos] = useDetallePedidos();
 
     const [pageTable, setPageTable] = useState(1)
     const resultsPerPage = 10
@@ -44,7 +47,7 @@ export const ModalDetallePedido = ({ isOpen, isClose }) => {
     function closeModal(){
       setModalIsOpen(false);
     }
-  
+    
     
     return (
         <>
@@ -69,40 +72,40 @@ export const ModalDetallePedido = ({ isOpen, isClose }) => {
                                 </tr>
                             </TableHeader>
                             <TableBody className="w-12">
-                                {dataTable.map((producto, i) => (
+                                {dataDetallePedidos.map((detallePedido, i) => (
                                     <TableRow key={i}>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.ID}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.id}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.nombre}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombre}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tipo}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.peso}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tamanoAnillo}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoAnillo}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tamanoPiedra}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoPiedra}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.material}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.material}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.detalle}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.estado}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.estado}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.empleadoAsignado}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.empleadoAsignado}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.motivoDevolucion}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.motivoDevolucion}</p>
                                         </TableCell>
 
 
