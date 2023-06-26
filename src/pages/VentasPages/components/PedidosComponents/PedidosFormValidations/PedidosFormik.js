@@ -3,7 +3,7 @@ import { expresionesCrearPedido as regex } from '../../../../../helpers/validaci
 export const initialValues = {
     cliente: '',
     fechaEntrega: '',
-    estado: ''
+    estado: 'Recibido'
 };
 
 export const validationScheme = {
@@ -14,16 +14,16 @@ export const validationScheme = {
 
 export const validateInputs = (values) => {
 
-    let diaForm = values.fechaEntrega.slice(8,10)
-    let mesForm = parseInt((values.fechaEntrega.slice(5,7))) - 1 
-    let yearForm = values.fechaEntrega.slice(0,4) 
+    let diaForm = values.fechaEntrega.slice(8,10) // obtengo el dia desde el form
+    let mesForm = parseInt((values.fechaEntrega.slice(5,7))) - 1 //obtengo el mes desde el form
+    let yearForm = values.fechaEntrega.slice(0,4) // obtengo el año desde form
     let fechaHoy = new Date()
-    let diaHoy =  fechaHoy.getDate()
-    let mesHoy =  fechaHoy.getMonth()
-    let yearHoy = fechaHoy.getFullYear() 
+    let diaHoy =  fechaHoy.getDate() //obtengo el dia desde el sistema
+    let mesHoy =  fechaHoy.getMonth() //obtengo el mes desde el sistema
+    let yearHoy = fechaHoy.getFullYear()  //obtengo el año desde el sistema
     console.log(` ${diaForm} ${mesForm} ${yearForm} ${diaHoy} ${mesHoy} ${yearHoy}`)
-    let fechaComparar = new Date(yearForm, mesForm, diaForm)
-    let fechaCompararHoy = new Date(yearHoy, mesHoy, diaHoy)
+    let fechaComparar = new Date(yearForm, mesForm, diaForm) //creo el objeto fecha del form
+    let fechaCompararHoy = new Date(yearHoy, mesHoy, diaHoy) //creo la fecha de hoy desde sistema
     console.log(fechaComparar > fechaCompararHoy)
     let errores = {};
     if (!values.cliente) {

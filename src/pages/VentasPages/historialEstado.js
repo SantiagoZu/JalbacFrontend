@@ -20,7 +20,7 @@ import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataPedidos'
 import responseDetalles from '../../utils/demo/dataHistorialEstadoPedido'
 import {ModalDetallesProducto} from './components/HistorialPedidosComponents/ModalDetallesProducto';
-
+import { useHisEstadoPedido } from '../../services/hooks/useHisEstadoPedido'
 const response2 = response.concat([])
 const responseDetallesProductos = responseDetalles.concat([])
 
@@ -67,7 +67,7 @@ function HistorialEstadoPedidos() {
     setModalIsOpen(false)
   }
 
-  /* Confirmación edición */
+  const {hisEstadoPedido} = useHisEstadoPedido()
 
 
 
@@ -95,34 +95,30 @@ function HistorialEstadoPedidos() {
           <TableHeader>
             <tr >
               <TableCell>ID</TableCell>
-              <TableCell>Fecha Pedido</TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Empleado encargado</TableCell>
-              <TableCell>Fecha</TableCell>
+              <TableCell>Fecha pedido recibido</TableCell>
+              <TableCell>Cliente</TableCell>              
+              <TableCell>Fecha entrega</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Detalles Producto</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((pedido, i) => (
+            {hisEstadoPedido.map((pedido, i) => (
               <TableRow key={i}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.ID}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idHisEstadoPedido}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.FechaPedido}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.fechaPedido}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.Cliente}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idCliente}</p>
+                </TableCell>               
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.fechaEntrega}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.EmpleadosAsignado}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.Fecha}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.Estado}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
                 <TableCell >
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModal}>

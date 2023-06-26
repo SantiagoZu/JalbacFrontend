@@ -78,21 +78,16 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
         setDataDetallePedidos(obj);
       }
     const [dataDetallePedido, setDataDetallePedidos] = useState([])
-    const [detallePedidos, deleteDetallePedidos] = useDetallePedidos()
+    const {detallePedidos, deleteDetallePedidos} = useDetallePedidos()
     const { updatePedidos } = usePedidos();
     const updateValues = {
         idPedido : object.idPedido || '',
-        idCliente : object.idCliente || '',
-        idEstado : object.idEstado || '',
+        nombreCliente : object.idClienteNavigation.nombre || '',
+        idEstado : object.idEstadoNavigation.nombre || '',
         fechaPedido : object.fechaPedido || '',
         fechaEntrega : object.fechaEntrega || ''
 
     };
-    const empleados = [
-        { value: '', label: 'Seleccione un empleado' },
-        { value: '',label: 'Josue' },
-        { value: '', label: 'Santiago' }
-      ];
     console.log(object.idPedido)
     return (
         <>
@@ -135,7 +130,7 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                 <Label className="mt-4">
                                     <span>Fecha Entrega</span>
                               
-                                      <CustomInput
+                                    <CustomInput
                                         type="date"
                                         id="fechaEntrega"
                                         name="fechaEntrega"
@@ -144,16 +139,7 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                     {touched.fechaEntrega && errors.fechaEntrega && <SpanError>{errors.fechaEntrega}</SpanError>}
 
 
-                                </Label>
-                                <Label className="mt-4">
-                                    <span>Asignar empleado</span>
-                                    <CustomInput 
-                                        type="select"
-                                        id="empleados"
-                                        name="epleados"
-                                        options={empleados}
-                                    />
-                                </Label>
+                                </Label>                               
                                 <Label className="mt-4">
                                     <span>Estado</span>
                                     <Select>
@@ -195,10 +181,10 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                                 {detallePedidos.map((detallePedido, i) => (
                                                     <TableRow key={i}>
                                                         <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.ID}</p>
+                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombre}</p>
+                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
                                                         </TableCell>
                                                         <TableCell>
                                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
@@ -222,7 +208,7 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                                             <p className="text-xs text-gray-600 dark:text-gray-400">5</p>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.empleadoAsignado}</p>
+                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleadoNavigation.nombre}</p>
                                                         </TableCell>
                                                         <TableCell>
                                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.motivoDevolucion}</p>

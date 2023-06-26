@@ -14,6 +14,7 @@ export const expresionesProducto = {
     tamanoAnillo: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos
     tamanoPiedra: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos
     detalle: /^[A-Za-z0-9]{0,100}$/,
+    cantidad : /^\d+(\.\d{1,12})?$/, 
     motivoDevolucion: /^[A-Za-z0-9]{0,100}$/,     // solo acepta de 0 a 200 caracteres
 
 }

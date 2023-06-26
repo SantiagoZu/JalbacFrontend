@@ -23,9 +23,10 @@ import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 const responseDetallePedido = response.concat([])
 export const ModalDetallePedido = ({ isOpen, isClose }) => {
     const [dataTable, setDataTable] = useState([])
-
-    const [dataDetallePedidos, deleteDetallePedidos] = useDetallePedidos();
-
+    const [dataDetallePedido, setDataDetallePedidos] = useState([]);
+    const {detallePedidos} = useDetallePedidos()
+    
+    
     const [pageTable, setPageTable] = useState(1)
     const resultsPerPage = 10
 
@@ -66,19 +67,20 @@ export const ModalDetallePedido = ({ isOpen, isClose }) => {
                                     <TableCell>Tamaño piedra</TableCell>
                                     <TableCell>Material</TableCell>
                                     <TableCell>Detalle</TableCell>
+                                    <TableCell>Cantidad</TableCell>
                                     <TableCell>Estado</TableCell>
                                     <TableCell>Empleado encargado</TableCell>
                                     <TableCell>Motivo devolucion</TableCell>
                                 </tr>
                             </TableHeader>
                             <TableBody className="w-12">
-                                {dataDetallePedidos.map((detallePedido, i) => (
+                                {detallePedidos.map((detallePedido, i) => (
                                     <TableRow key={i}>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.id}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombre}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
                                         </TableCell>
                                         <TableCell>
                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
@@ -99,16 +101,18 @@ export const ModalDetallePedido = ({ isOpen, isClose }) => {
                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.estado}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">5</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.empleadoAsignado}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEstadoNavigation.nombre}</p>
+                                        </TableCell>
+                                        <TableCell>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleadoNavigation.nombre}</p>
                                         </TableCell>
                                         <TableCell>
                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.motivoDevolucion}</p>
                                         </TableCell>
-
-
+                                        
                                     </TableRow>
                                 ))}
                             </TableBody>

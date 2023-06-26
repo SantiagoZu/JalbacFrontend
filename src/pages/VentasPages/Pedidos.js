@@ -38,7 +38,7 @@ function Pedidos() {
  
 
   const resultsPerPage = 10
-  const totalResults = response.length
+  const totalResults = pedidos.length
  
 
   function onPageChangeTable2(p) {
@@ -46,7 +46,7 @@ function Pedidos() {
   }
   
   useEffect(() => {
-    setDataTable(responsePedido.slice((PageTable - 1) * resultsPerPage, PageTable * resultsPerPage))
+    setDataTable(pedidos.slice((PageTable - 1) * resultsPerPage, PageTable * resultsPerPage))
   }, [PageTable])
  
   
@@ -116,8 +116,7 @@ function Pedidos() {
             <tr >
               <TableCell>ID</TableCell>
               <TableCell>Fecha Recibido</TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Empleado encargado</TableCell>
+              <TableCell>Cliente</TableCell>          
               <TableCell>Fecha Entrega</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Detalles Producto</TableCell>
@@ -128,22 +127,19 @@ function Pedidos() {
             {pedidos.map((pedido) => (
               <TableRow key={pedido.id}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.id}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedido}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.FechaPedido}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.fechaPedido}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.Cliente}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idClienteNavigation.nombre}</p>
+                </TableCell>           
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.fechaEntrega}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.EmpleadosAsignado}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.FechaEntrega}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.Estado}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
                 <TableCell >
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModalDetallePedido}>
@@ -157,7 +153,7 @@ function Pedidos() {
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                     
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => alertaEliminado(pedidos.id)}>
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => alertaEliminado(pedidos.idPedido)}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>

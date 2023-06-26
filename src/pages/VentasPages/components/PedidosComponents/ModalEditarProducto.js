@@ -35,15 +35,15 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
     
     const { updateDetallePedidos } = useDetallePedidos();
     const updateValues = {
-        nombre : object.nombre || '',
+        nombreAnillo : object.nombreAnillido || '',
         tipo: object.tipo || '',
         peso: object.peso || '',
         tamanoAnillo: object.tamanoAnillo || '',
         tamanoPiedra: object.tamanoPiedra || '',
         material: object.material || '',
         detalle: object.detalle || '',
-        empleado: object.empleado || '',
-        estado: object.estado || '',
+        empleado: object.idEmpleado || '',
+        estado: object.idEstado || '',
         motivoDevolucion: object.motivoDevolucion || '',
     };
     const empleados = [
@@ -61,11 +61,9 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                 initialValues={updateValues}
                 validate={(values) => validateInputsEditarProducto(values)}
                 onSubmit={(values, { resetForm }) => {
-                    const convertedValue = values.estado === 'true'; // Cambiar a booleano
-
+                   
                     const updatedValues = {
-                        ...values,
-                        estado: convertedValue,
+                        ...values,                        
                     };
 
                     updateDetallePedidos(object.idDetallePedido, updatedValues).then(response => {
@@ -133,6 +131,16 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                                             placeholder="12 1/2"
                                         />
                                         {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-4">
+                                        <span>Cantidad</span>        
+                                        <CustomInput
+                                            type="text"
+                                            id="cantidad"
+                                            name="cantidad"
+                                            placeholder="1"
+                                        />
+                                        {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                     </Label>
                                 </div>
                                 <div className='flex-auto'>
