@@ -12,11 +12,11 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
 
     const { postClientes, getClientes } = useClientes();
     const estados = [
-        { value: '',label: 'Seleccione un estado' },
-        { value: true,label: 'Activo' },
+        { value: '', label: 'Seleccione un estado' },
+        { value: true, label: 'Activo' },
         { value: false, label: 'Inactivo' }
-      ];
-      
+    ];
+
 
     return (
         <Formik
@@ -24,10 +24,10 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
             validate={(values) => validateInputs(values)}
             onSubmit={(values, { resetForm }) => {
                 const convertedValue = values.estado === 'true'; // Cambiar a booleano
-  
+
                 const updatedValues = {
-                  ...values,
-                  estado: convertedValue,
+                    ...values,
+                    estado: convertedValue,
                 };
 
                 console.log(updatedValues);

@@ -11,22 +11,27 @@ import { useClientes } from '../../../../services/hooks/UseClientes';
 export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
 
     const { updateClientes } = useClientes();
-    const updateValues = {
+    const initialValues = {
         idCliente: object.idCliente,
         nombre: object.nombre || '',
         apellido: object.apellido || '',
         documento: object.documento || '',
         telefono: object.telefono || '',
-        estado: object.estado || ''
+        estado: object.estado ? true : false
     };
 
-    console.log(object.idCliente)
+    const estados = [
+        { value: '', label: 'Seleccione un estado' },
+        { value: true, label: 'Activo' },
+        { value: false, label: 'Inactivo' }
+    ];
+
     return (
         <Formik
-            initialValues={updateValues}
+            initialValues={initialValues}
             validate={(values) => validateInputs(values)}
             onSubmit={(values, { resetForm }) => {
-                const convertedValue = values.estado === 'true'; // Cambiar a booleano
+                const convertedValue = values.estado === 'true';
 
                 const updatedValues = {
                     ...values,
@@ -36,8 +41,7 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
                 updateClientes(object.idCliente, updatedValues).then(response => {
                     resetForm();
                     showAlertCorrect('Empleado editado correctamente', 'success', isClose)
-                    console.log(response);
-                }).catch(response => {
+                    }).catch(response => {
                     showAlertIncorrect('No se pudo editar el empleado', 'error', isClose);
                     console.log(response);
                 })
@@ -97,10 +101,12 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
                             </Label>
                             <Label className="mt-4">
                                 <span>Estado</span>
-                                <Select className="mt-1">
-                                    <option value={true}>Activo</option>
-                                    <option value={false}>Inactivo</option>
-                                </Select>
+                                <CustomInput
+                                    type="select"
+                                    id="estado"
+                                    name="estado"
+                                    options={estados}
+                                />
                             </Label>
                         </ModalBody>
                         <ModalFooter>

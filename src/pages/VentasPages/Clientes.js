@@ -46,7 +46,7 @@ function Clientes() {
   }, [pageTable2])
 
   useEffect(() => {
-    sexo();
+    setData();
   }, []);
 
   function openModalCreate() {
