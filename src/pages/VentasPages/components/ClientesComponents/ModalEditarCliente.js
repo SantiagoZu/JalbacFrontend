@@ -35,15 +35,17 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
 
                 const updatedValues = {
                     ...values,
+                    documento: values.documento.toString(),
                     estado: convertedValue,
                 };
-
                 updateClientes(object.idCliente, updatedValues).then(response => {
                     resetForm();
-                    showAlertCorrect('Empleado editado correctamente', 'success', isClose)
-                    }).catch(response => {
-                    showAlertIncorrect('No se pudo editar el empleado', 'error', isClose);
-                    console.log(response);
+                    showAlertCorrect('Cliente editado correctamente', 'success', isClose)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }).catch(response => {
+                    showAlertIncorrect('No se pudo editar el cliente', 'error', isClose);
                 })
             }}>
             {({ errors, handleSubmit, touched }) => (
@@ -116,7 +118,7 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
                                 </Button>
                             </div>
                             <div className="hidden sm:block">
-                                <Button type="button" onClick={() => handleSubmit()}>Guardar cambios</Button>
+                                <Button type="button" onClick={() => handleSubmit()}>Enviar</Button>
                             </div>
                         </ModalFooter>
                     </Modal>

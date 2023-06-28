@@ -19,9 +19,8 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
         estado: empleado.estado ? 'true' : 'false',
     };
 
-    const { editarEmpleado, cargarEmpleados } = useEmpleados();
+    const { editarEmpleado } = useEmpleados();
 
-    // console.log(empleado);
     return (
         <Formik
             initialValues={initialValues}
@@ -37,12 +36,13 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     apellido: valores.apellido,
                     cargo: valores.cargo
                 };
-                console.log(empleadoEditado)
                 editarEmpleado(empleado.idEmpleado, empleadoEditado)
                     .then(response => {
                         showAlertCorrect('Empleado editado correctamente', 'success', isClose);
                         resetForm();
-                        window.location.reload();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
                     })
                     .catch(response => {
                         showAlertIncorrect('Hubo un error en la edición del empleado', 'error');

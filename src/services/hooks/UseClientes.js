@@ -17,7 +17,7 @@ export const useClientes = () => {
     }
 
     const postClientes = async(obj) =>{
-        await instance.post("/", obj)
+        await instance.post("", obj)
     }
 
     const updateClientes = async(id, obj) =>{

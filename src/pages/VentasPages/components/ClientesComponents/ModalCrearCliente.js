@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Label, Select } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { showAlertCorrect } from '../../../../helpers/Alertas';
+import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
@@ -34,10 +34,9 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                 postClientes(updatedValues).then(response => {
                     resetForm();
                     showAlertCorrect('Empleado creado correctamente', 'success', isClose)
-                    console.log(response);
+                    window.location.reload();
                 }).catch(response => {
                     showAlertIncorrect('No se pudo crear el empleado', 'error', isClose);
-                    console.log(response);
                 });
                 resetForm();
                 getClientes();

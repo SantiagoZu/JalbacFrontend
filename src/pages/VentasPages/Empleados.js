@@ -29,18 +29,12 @@ const response2 = response.concat([])
 function Empleados() {
 
   const { empleados, eliminarEmpleado } = useEmpleados()
-
-
   const empleados2 = empleados.concat([])
-
-
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
-
   const [dataTable2, setDataTable2] = useState([])
-
   // pagination setup
-  const resultsPerPage = 2
+  const resultsPerPage = 5
   const totalResults = empleados2.length
 
   // pagination change control

@@ -22,28 +22,48 @@ import {
 import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataClientes';
-import { showAlertDeleted } from '../../helpers/Alertas';
+import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
 
 const response2 = response.concat([])
 
 function Clientes() {
 
   const { clientes, deleteClientes } = useClientes();
+  const clientes2 = clientes.concat([])
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   const [dataCliente, setDataCliente] = useState([]);
   const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
-  const resultsPerPage = 10
-  const totalResults = response.length
+  const [search, setSearch] = useState("")
+
+
+  const resultsPerPage = 5
+  const totalResults = clientes2.length
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
 
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+
+    return data.filter((cliente) => (
+      cliente.nombre.toLowerCase().includes(searchTerm) ||
+      cliente.apellido.toLowerCase().includes(searchTerm) ||
+      cliente.documento.toLowerCase().includes(searchTerm) ||
+      cliente.telefono.toLowerCase().includes(searchTerm)
+    ));
+  };
+
   useEffect(() => {
-    setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
+    const filteredData = searchFilter(clientes2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
+  }, [clientes, pageTable2, search])
 
   useEffect(() => {
     setData();
@@ -71,8 +91,26 @@ function Clientes() {
     setDataCliente(obj);
   }
 
-  function alertaEliminado(idCliente) {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success', () => deleteClientes(idCliente))
+  function eliminarCliente(idCliente) {
+    showAlertDeleted(
+      '¿Estás seguro que deseas eliminar el cliente?',
+      'warning',
+      'Eliminado correctamente',
+      'success'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        deleteClientes(idCliente)
+          .then(response => {
+            showAlertCorrect('Cliente eliminado correctamente.', 'success');
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          })
+          .catch(response => {
+            showAlertIncorrect('Error al eliminar el cliente.', 'error');
+          });
+      }
+    });
   }
 
   return (
@@ -115,7 +153,7 @@ function Clientes() {
             </tr>
           </TableHeader>
           <TableBody>
-            {clientes.map((cliente, i) => {
+            {dataTable2.map((cliente, i) => {
 
               return (
                 <TableRow key={i}>
@@ -143,7 +181,7 @@ function Clientes() {
                       <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEdit(cliente)}>
                         <EditIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>
-                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => alertaEliminado(cliente.idCliente)}>
+                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarCliente(cliente.idCliente)}>
                         <TrashIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>
                     </div>
@@ -155,12 +193,14 @@ function Clientes() {
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
       {modalIsOpenEdit && (
