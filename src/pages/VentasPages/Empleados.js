@@ -20,35 +20,72 @@ import {
 import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataEmpleados';
-import { showAlertDeleted } from '../../helpers/Alertas';
+import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
+import { useEmpleados } from '../../services/hooks/UseEmpleados';
 
 const response2 = response.concat([])
 
+
 function Empleados() {
 
+  const { empleados, eliminarEmpleado } = useEmpleados()
+
+
+  const empleados2 = empleados.concat([])
+
+
   const [pageTable2, setPageTable2] = useState(1)
+  const [search, setSearch] = useState("")
 
   const [dataTable2, setDataTable2] = useState([])
 
   // pagination setup
-  const resultsPerPage = 10
-  const totalResults = response.length
+  const resultsPerPage = 2
+  const totalResults = empleados2.length
 
   // pagination change control
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
 
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+    
+    const searchTerm = searchValue.toLowerCase();
+    
+    return data.filter((empleado) => (
+      empleado.nombre.toLowerCase().includes(searchTerm) ||
+      empleado.apellido.toLowerCase().includes(searchTerm) ||
+      empleado.documento.toLowerCase().includes(searchTerm) ||
+      empleado.cargo.toLowerCase().includes(searchTerm) ||
+      empleado.idUsuarioNavigation.correo.toLowerCase().includes(searchTerm)
+    ));
+  };
+
   // on page change, load new sliced data
   // here you would make another server request for new data
   useEffect(() => {
-    setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
+    const filteredData = searchFilter(empleados2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  }, [empleados, pageTable2, search]);
+
+  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({});
 
   /* Despliegue modal editar */
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  function openModal() {
+  //funcion para buscar
+  const searcher = (e) => {
+    setSearch(e.target.value)
+  }
+
+  
+
+
+  function openModal(empleado) {
+    setEmpleadoSeleccionado(empleado);
     setModalIsOpen(true);
   }
 
@@ -56,8 +93,24 @@ function Empleados() {
     setModalIsOpen(false);
   }
 
-  function alertaEliminado() {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success')
+  function eliminarEmpleados(idEmpleado) {
+    showAlertDeleted(
+      '¿Estás seguro que deseas eliminar el empleado?',
+      'warning',
+      'Eliminado correctamente',
+      'success'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        eliminarEmpleado(idEmpleado)
+          .then(response => {
+            showAlertCorrect('Empleado eliminado correctamente.', 'success');
+            window.location.reload()
+          })
+          .catch(response => {
+            showAlertIncorrect('Error al eliminar el empleado.', 'error');
+          });
+      }
+    });
   }
 
 
@@ -78,6 +131,8 @@ function Empleados() {
             <Input
               className="pl-8 text-gray-700"
               placeholder="Buscar empleado"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>
@@ -86,72 +141,68 @@ function Empleados() {
         <Table>
           <TableHeader>
             <tr >
-              <TableCell>ID</TableCell>
-              <TableCell>Usuario</TableCell>
-              <TableCell>Rol</TableCell>
+              <TableCell>Cargo</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Apellidos</TableCell>
               <TableCell>Documento</TableCell>
               <TableCell>Correo</TableCell>
-              <TableCell>Cargo</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Acciones</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((empleado, i) => (
-              <TableRow key={i}>
+            {dataTable2.map((empleado) => (
+              <TableRow key={empleado.idEmpleado}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.ID}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.cargo}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.Usuario}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400" id="nombre" name="nombre">{empleado.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.Rol}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.apellido}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.Nombre}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.documento}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.Apellidos}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.correo}</p>
                 </TableCell>
+
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.Documento}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.Correo}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.Cargo}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400" type={empleado.status}>{empleado.Estado}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400" type={empleado.status}>{empleado.estado ? 'Activo' : 'Inactivo'}</p>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={openModal}>
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModal(empleado)}>
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <ModalEditarEmpleado isOpen={modalIsOpen} isClose={closeModal} />
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
+
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarEmpleados(empleado.idEmpleado)}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>
                 </TableCell>
               </TableRow>
+
             ))}
           </TableBody>
+
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
+      {modalIsOpen && (
+        <ModalEditarEmpleado isOpen={modalIsOpen} isClose={closeModal} empleado={empleadoSeleccionado} />
+      )}
     </>
   )
 }
