@@ -2,20 +2,45 @@ import React, { useState, useEffect } from 'react'
 import { Label, Select } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect } from '../../../../helpers/Alertas';
-import { Formik } from 'formik';
+import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputs } from './ClientesFormValidations/ClientesFormik';
+import { useClientes } from '../../../../services/hooks/UseClientes';
 
 export const ModalCrearCliente = ({ isOpen, isClose }) => {
+
+    const { postClientes, getClientes } = useClientes();
+    const estados = [
+        { value: '', label: 'Seleccione un estado' },
+        { value: true, label: 'Activo' },
+        { value: false, label: 'Inactivo' }
+    ];
+
 
     return (
         <Formik
             initialValues={initialValues}
             validate={(values) => validateInputs(values)}
-            onSubmit={(valores, { resetForm }) => {
+            onSubmit={(values, { resetForm }) => {
+                const convertedValue = values.estado === 'true'; // Cambiar a booleano
+
+                const updatedValues = {
+                    ...values,
+                    estado: convertedValue,
+                };
+
+                console.log(updatedValues);
+                postClientes(updatedValues).then(response => {
+                    resetForm();
+                    showAlertCorrect('Empleado creado correctamente', 'success', isClose)
+                    console.log(response);
+                }).catch(response => {
+                    showAlertIncorrect('No se pudo crear el empleado', 'error', isClose);
+                    console.log(response);
+                });
                 resetForm();
-                showAlertCorrect('Empleado editado correctamente', 'success', isClose)
+                getClientes();
             }}>
             {({ errors, handleSubmit, touched }) => (
                 <form onSubmit={handleSubmit}>
@@ -43,6 +68,7 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                                         id="apellido"
                                         name="apellido"
                                         placeholder="Zuluaga Muñoz"
+
                                     />
                                     {touched.apellido && errors.apellido && <SpanError>{errors.apellido}</SpanError>}
                                 </div>
@@ -51,32 +77,34 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                                 <span>Documento</span>
                                 <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
                                     <CustomInput
-                                        type="number"
+                                        type="text"
                                         id="documento"
                                         name="documento"
-                                        placeholder="1 234567"
+                                        placeholder="1234567"
                                     />
                                     {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
                                 </div>
                             </Label>
                             <Label className="mt-4">
-                                <span>Correo</span>
+                                <span>Teléfono</span>
                                 <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
                                     <CustomInput
-                                        type="email"
-                                        id="correo"
-                                        name="correo"
-                                        placeholder="email@email.com"
+                                        type="text"
+                                        id="telefono"
+                                        name="telefono"
+                                        placeholder="3004838916"
                                     />
-                                    {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
+                                    {touched.telefono && errors.telefono && <SpanError>{errors.telefono}</SpanError>}
                                 </div>
                             </Label>
                             <Label className="mt-4">
                                 <span>Estado</span>
-                                <Select className="mt-1">
-                                    <option>Activo</option>
-                                    <option>Inactivo</option>
-                                </Select>
+                                <CustomInput
+                                    type="select"
+                                    id="estado"
+                                    name="estado"
+                                    options={estados}
+                                />
                             </Label>
                         </ModalBody>
                         <ModalFooter>

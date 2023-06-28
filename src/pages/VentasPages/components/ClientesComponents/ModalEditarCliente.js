@@ -1,96 +1,127 @@
 import React, { useState, useEffect } from 'react'
-import { Label, Select} from '@windmill/react-ui'
+import { Label, Select } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { showAlertCorrect} from '../../../../helpers/Alertas';
+import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { initialValues, validateInputs } from './ClientesFormValidations/ClientesFormik';
+import { validateInputs } from './ClientesFormValidations/ClientesFormik';
+import { useClientes } from '../../../../services/hooks/UseClientes';
 
-export const ModalEditarCliente = ({ isOpen, isClose }) => {
+export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
+
+    const { updateClientes } = useClientes();
+    const initialValues = {
+        idCliente: object.idCliente,
+        nombre: object.nombre || '',
+        apellido: object.apellido || '',
+        documento: object.documento || '',
+        telefono: object.telefono || '',
+        estado: object.estado ? true : false
+    };
+
+    const estados = [
+        { value: '', label: 'Seleccione un estado' },
+        { value: true, label: 'Activo' },
+        { value: false, label: 'Inactivo' }
+    ];
 
     return (
         <Formik
-        initialValues={initialValues}
-        validate={(values) => validateInputs(values)}
-        onSubmit={(valores, { resetForm }) => {
-            resetForm();
-            showAlertCorrect('Empleado editado correctamente', 'success', isClose)
-        }}>
-        {({ errors, handleSubmit, touched }) => (
-             <form onSubmit={handleSubmit}>
-             <Modal isOpen={isOpen} onClose={isClose}>
-                 <ModalHeader className='mb-3'>Editar cliente</ModalHeader>
-                 <ModalBody>
-                     <Label className="mt-4">
-                         <span>Nombre</span>
-                         <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                             <CustomInput
-                                 type="text"
-                                 id="nombre"
-                                 name="nombre"
-                                 placeholder="Santiago"
-                             />
-                             {touched.nombre && errors.nombre && <SpanError>{errors.nombre}</SpanError>}
-                         </div>
-                     </Label>
-                     <Label className="mt-4">
-                         <span>Apellidos</span>
-                         <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                             <CustomInput
-                                 type="text"
-                                 id="apellido"
-                                 name="apellido"
-                                 placeholder="Zuluaga Muñoz"
-                             />
-                             {touched.apellido && errors.apellido && <SpanError>{errors.apellido}</SpanError>}
-                         </div>
-                     </Label>
-                     <Label className="mt-4">
-                         <span>Documento</span>
-                         <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                             <CustomInput
-                                 type="number"
-                                 id="documento"
-                                 name="documento"
-                                 placeholder="1234567"
-                             />
-                             {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
-                         </div>
-                     </Label>
-                     <Label className="mt-4">
-                         <span>Correo</span>
-                         <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                             <CustomInput
-                                 type="email"
-                                 id="correo"
-                                 name="correo"
-                                 placeholder="email@email.com"
-                             />
-                             {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
-                         </div>
-                     </Label>
-                     <Label className="mt-4">
-                         <span>Estado</span>
-                         <Select className="mt-1">
-                             <option>Activo</option>
-                             <option>Inactivo</option>
-                         </Select>
-                     </Label>
-                 </ModalBody>
-                 <ModalFooter>
-                     <div className="hidden sm:block">
-                         <Button layout="outline" onClick={isClose}>
-                             Cancelar
-                         </Button>
-                     </div>
-                     <div className="hidden sm:block">
-                         <Button type="button" onClick={handleSubmit}>Enviar</Button>
-                     </div>
-                 </ModalFooter>
-             </Modal>
-         </form>
-        )}
+            initialValues={initialValues}
+            validate={(values) => validateInputs(values)}
+            onSubmit={(values, { resetForm }) => {
+                const convertedValue = values.estado === 'true';
+
+                const updatedValues = {
+                    ...values,
+                    estado: convertedValue,
+                };
+
+                updateClientes(object.idCliente, updatedValues).then(response => {
+                    resetForm();
+                    showAlertCorrect('Empleado editado correctamente', 'success', isClose)
+                    }).catch(response => {
+                    showAlertIncorrect('No se pudo editar el empleado', 'error', isClose);
+                    console.log(response);
+                })
+            }}>
+            {({ errors, handleSubmit, touched }) => (
+                <form onSubmit={handleSubmit}>
+                    <Modal isOpen={isOpen} onClose={isClose}>
+                        <ModalHeader className='mb-3'>Editar cliente</ModalHeader>
+                        <ModalBody>
+                            <Label className="mt-4">
+                                <span>Nombre</span>
+                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                                    <CustomInput
+                                        type="text"
+                                        id="nombre"
+                                        name="nombre"
+                                        placeholder=""
+                                    />
+                                    {touched.nombre && errors.nombre && <SpanError>{errors.nombre}</SpanError>}
+                                </div>
+                            </Label>
+                            <Label className="mt-4">
+                                <span>Apellidos</span>
+                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                                    <CustomInput
+                                        type="text"
+                                        id="apellido"
+                                        name="apellido"
+                                        placeholder="Zuluaga Muñoz"
+                                    />
+                                    {touched.apellido && errors.apellido && <SpanError>{errors.apellido}</SpanError>}
+                                </div>
+                            </Label>
+                            <Label className="mt-4">
+                                <span>Documento</span>
+                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                                    <CustomInput
+                                        type="number"
+                                        id="documento"
+                                        name="documento"
+                                        placeholder="1234567"
+                                    />
+                                    {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
+                                </div>
+                            </Label>
+                            <Label className="mt-4">
+                                <span>Teléfono</span>
+                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                                    <CustomInput
+                                        type="text"
+                                        id="telefono"
+                                        name="telefono"
+                                        placeholder="3004838916"
+                                    />
+                                    {touched.telefono && errors.telefono && <SpanError>{errors.telefono}</SpanError>}
+                                </div>
+                            </Label>
+                            <Label className="mt-4">
+                                <span>Estado</span>
+                                <CustomInput
+                                    type="select"
+                                    id="estado"
+                                    name="estado"
+                                    options={estados}
+                                />
+                            </Label>
+                        </ModalBody>
+                        <ModalFooter>
+                            <div className="hidden sm:block">
+                                <Button layout="outline" onClick={isClose}>
+                                    Cancelar
+                                </Button>
+                            </div>
+                            <div className="hidden sm:block">
+                                <Button type="button" onClick={() => handleSubmit()}>Guardar cambios</Button>
+                            </div>
+                        </ModalFooter>
+                    </Modal>
+                </form>
+            )}
         </Formik>
     )
 };
