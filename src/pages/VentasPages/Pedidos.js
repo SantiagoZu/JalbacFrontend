@@ -19,7 +19,7 @@ import {
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataPedidos'
-import {  showAlertDeleted } from '../../helpers/Alertas';
+import {  showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
 import {ModalCrearPedido} from './components/PedidosComponents/ModalCrearPedido';
 import {ModalDetallePedido} from './components/PedidosComponents/ModalDetallePedido';
 import {ModalEditarPedido} from './components/PedidosComponents/ModalEditarPedido';
@@ -80,10 +80,29 @@ function Pedidos() {
     setDataPedidos(obj);
   }
 
-  function alertaEliminado(idPedido) {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el Pedido?', 'warning', 'Eliminado correctamente', 'success', () => deletePedidos(idPedido))
+  
+  function eliminarPedido(idPedido) {
+    showAlertDeleted(
+      '¿Estás seguro que deseas eliminar el pedido?',
+      'warning',
+      'Eliminado correctamente',
+      'success'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        deletePedidos(idPedido)
+          .then(response => {
+            showAlertCorrect('Pedido eliminado correctamente.', 'success');
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          })
+          .catch(response => {
+            showAlertIncorrect('Error al eliminar el pedido.', 'error');
+            console.log(response)
+          });
+      }
+    });
   }
-
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -153,7 +172,7 @@ function Pedidos() {
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                     
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => alertaEliminado(pedidos.idPedido)}>
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarPedido(parseInt(pedido.idPedido))}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>

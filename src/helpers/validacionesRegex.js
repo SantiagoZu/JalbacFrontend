@@ -9,7 +9,7 @@ export const expresiones = {
 
 
 export const expresionesProducto = {
-    nombre: /^[A-Za-z0-9 ]+$/, // no caracteres especiales
+    nombreAnillido: /^[A-Za-z0-9 ]+$/, // no caracteres especiales
     peso: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos decimal
     tamanoAnillo: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos
     tamanoPiedra: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos

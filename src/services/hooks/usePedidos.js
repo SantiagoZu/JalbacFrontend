@@ -17,11 +17,15 @@ export const usePedidos = () => {
     }
 
     const postPedidos = async(obj) =>{
-        await instance.post("/", obj)
+        return await instance.post("/", obj).then((response) => {           
+            return response
+        })
     }
 
     const updatePedidos = async(id, obj) =>{
-        await instance.put(`/${id}`, obj)
+        return await instance.put(`/${id}`, obj).then((response) => {
+            return response
+        })
     }
 
     const deletePedidos = async(id) =>{

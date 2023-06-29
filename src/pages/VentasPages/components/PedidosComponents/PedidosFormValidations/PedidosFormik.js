@@ -1,13 +1,12 @@
 import { expresionesCrearPedido as regex } from '../../../../../helpers/validacionesRegex';
 
 export const initialValues = {
-    cliente: '',
+    
     fechaEntrega: '',
-    estado: 'Recibido'
+    idEstado: 1
 };
 
 export const validationScheme = {
-    cliente: regex.cliente,
     fechaEntrega: regex.fechaEntrega,
     estado: regex.estado,
 }
@@ -25,12 +24,7 @@ export const validateInputs = (values) => {
     let fechaComparar = new Date(yearForm, mesForm, diaForm) //creo el objeto fecha del form
     let fechaCompararHoy = new Date(yearHoy, mesHoy, diaHoy) //creo la fecha de hoy desde sistema
     console.log(fechaComparar > fechaCompararHoy)
-    let errores = {};
-    if (!values.cliente) {
-        errores.cliente = 'El campo Cliente es oblígatorio'
-    } else if (!validationScheme.cliente.test(values.cliente)) {
-        errores.cliente = 'El nombre no puede tener numeros'
-    }
+    let errores = {};    
     if (!values.fechaEntrega) {
         errores.fechaEntrega = 'El campo Fecha entrega es oblígatorio'
     } else if (!(fechaComparar > fechaCompararHoy)) {

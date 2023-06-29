@@ -27,7 +27,10 @@ import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputs } from './PedidosFormValidations/PedidosFormik';
 
 import { usePedidos } from '../../../../services/hooks/usePedidos'
+import { useClientes } from '../../../../services/hooks/useClientes'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
+import id from 'faker/lib/locales/id_ID';
+
 const responseProducto = response.concat([])
 
 
@@ -69,22 +72,49 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
     
     function closeModalEditarProducto(){
         setModalIsOpenEditarProducto(false);
-    }
-    
-    function alertaEliminado(idDetallePedido) {
-        showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success', () => deleteDetallePedidos(idDetallePedido))
-    }
+    }    
     function setData(obj) {
         setDataDetallePedidos(obj);
     }
+    function showEliminarDetallePedido(idDetallePedido) {
+        showAlertDeleted(
+          '¿Estás seguro que deseas eliminar este producto?',
+          'warning',
+          'Eliminado correctamente',
+          'success'
+        ).then((result) => {
+          if (result.isConfirmed) {
+            deleteDetallePedidos(idDetallePedido)
+              .then(response => {
+                showAlertCorrect('Producto eliminado correctamente.', 'success');
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
+              })
+              .catch(response => {
+                showAlertIncorrect('Error al eliminar el producto.', 'error');
+                console.log(response)
+              });
+          }
+        });
+    }
   
-    const { postPedidos, getPedidos } = usePedidos();
-    const empleados = [
-        { value: '1', label: 'Seleccione un empleado' },
-        { value: '2',label: 'Josue' },
-        { value: '3', label: 'Santiago' }
-      ];
-
+    const { postPedidos, getPedidos} = usePedidos();
+    const {clientes} = useClientes()
+    const clientesDropdown = [
+        {value : '', label : 'Elija el cliente'}
+    ]
+    for (const id in clientes) {   
+        const cliente = {
+            value : parseInt(clientes[id].idCliente),
+            label : clientes[id].nombre
+        }    
+        clientesDropdown.push(cliente)
+    }
+    const [idPedidoActual, setIdPedidoActual] = useState('')
+    function changeIdPedidoActual(id) {
+        setIdPedidoActual(id)
+    }
     return (
         <>
             <Formik
@@ -93,23 +123,27 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                 onSubmit={(values, { resetForm }) => {
                     
                     const updatedValues = {
-                    ...values,                 
+                        ...values,                 
                     };
 
                     console.log(updatedValues);
-                    postPedidos(updatedValues).then(response => {
+                    let responseCrearPedido = postPedidos(updatedValues).then( (response) => {
                         resetForm();
-                        showAlertCorrect('Pedido creado correctamente', 'success', isClose)
-                        console.log(response);
+                        
+                        changeIdPedidoActual(response.data.resultado.idPedido)
+                       
+                        openModalCrearProducto()
+                        return response
+                
                     }).catch(response => {
                         showAlertIncorrect('No se pudo crear el pedido', 'error', isClose);
+                        console.log(updatedValues)
                         console.log(response);
                     });
                     resetForm();
                     getPedidos();
-                    
-                    showAlertCorrect('Pedido agregado correctamente', 'success', isClose)
-                }}
+               
+                }}  
             >
                 {({ errors, handleSubmit, touched }) => (
 
@@ -119,12 +153,13 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                             <ModalBody>
                                 <Label className="mt-4">                                
                                     <CustomInput
-                                        type="text"
-                                        id="cliente"
-                                        name="cliente"
+                                        type="select"
+                                        id="idCliente"
+                                        name="idCliente"
                                         placeholder="Cliente ejemplo"
+                                        options={clientesDropdown}
                                     />
-                                    {touched.cliente && errors.cliente && <SpanError>{errors.cliente}</SpanError>}
+                                    
                                 </Label>
 
                                 <Label className="mt-4">
@@ -144,19 +179,23 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                     <span>Estado</span>
                                     <Field
                                         type="Text"
-                                        id="estadoPedido"
+                                        id="idEstado"
+                                        name="idEstado"
                                         disabled={true}
-                                        placeholder="Recibido"
-                                        value = "Recibido"
+                                        placeholder={1}
+                                        value ={1}
                                         className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
                                     />
                                 </Label>
 
-                                <Button className="mb-4 mt-4" onClick={openModalCrearProducto}>
+                                <Button className="mb-4 mt-4" onClick={() => {
+                                    handleSubmit()
+                                    
+                                }}>
                                     Agregar producto
                                     <span className="mb-1" aria-hidden="true">+</span>
                                 </Button>
-                                <ModalCrearProducto  isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} />
+                                
 
                                 <div >
                                     <TableContainer >
@@ -205,7 +244,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">5</p>
+                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
                                                         </TableCell>
                                                         <TableCell>
                                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleadoNavigation.nombre}</p>
@@ -219,7 +258,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                                                     <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)}/>
                                                                 </Button>
                                                                 
-                                                                <Button layout="link" size="icon" aria-label="Delete" onClick={() => alertaEliminado(detallePedido.idDetallePedido)}>
+                                                                <Button layout="link" size="icon" aria-label="Delete" onClick={() => showEliminarDetallePedido(parseInt(detallePedido.idDetallePedido))}>
                                                                     <TrashIcon className="w-5 h-5" aria-hidden="true" />
                                                                 </Button>
                                                             </div>  
@@ -245,7 +284,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                     </Button>
                                 </div>
                                 <div className="hidden sm:block">
-                                    <Button onClick={handleSubmit}>Enviar</Button>
+                                    <Button onClick={() => showAlertCorrect('Pedido creado correctamente', 'success', isClose)}>Enviar</Button>
                                 </div>
 
                                 <div className="block w-full sm:hidden">
@@ -263,7 +302,9 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                     </form>
                 )}
             </Formik>
-            
+            {modalIsOpenCrearProducto && (
+                <ModalCrearProducto  isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedidoActual}/>
+            )}
             {modalIsOpenEditarProducto && (
                 <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} object={dataDetallePedido}/>
             )}                                        

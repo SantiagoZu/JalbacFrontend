@@ -27,14 +27,18 @@ import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
+import { useEmpleados } from '../../../../services/hooks/useEmpleados'
+import { useEstados } from '../../../../services/hooks/useEstados'
 const responseProducto = response.concat([])
 
 
 export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
 
-    
+    console.log(object)
     const { updateDetallePedidos } = useDetallePedidos();
     const updateValues = {
+        idDetallePedido : parseInt(object.idDetallePedido) || '',
+        idPedido : parseInt(object.idPedidoNavigation.idPedido) || '',
         nombreAnillo : object.nombreAnillido || '',
         tipo: object.tipo || '',
         peso: object.peso || '',
@@ -42,19 +46,49 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
         tamanoPiedra: object.tamanoPiedra || '',
         material: object.material || '',
         detalle: object.detalle || '',
-        empleado: object.idEmpleado || '',
-        estado: object.idEstado || '',
+        detalle: object.cantidad || '',
+        idEmpleado: object.idEmpleadoNavigation.idEmpleado || '',
+        idEstado: object.idEstadoNavigation.idEstado || '',
         motivoDevolucion: object.motivoDevolucion || '',
     };
-    const empleados = [
-        { value: '', label: 'Seleccione un empleado' },
-        { value: '',label: 'Josue' },
-        { value: '', label: 'Santiago' }
+    const {empleados} = useEmpleados()
+    const empleadosDropdown = [
+        {value : '', label : 'Elija el empleado'}
     ]
+    for (const id in empleados) {   
+        const empleado = {
+            value : parseInt(empleados[id].idEmpleado),
+            label : empleados[id].nombre
+        }    
+        empleadosDropdown.push(empleado)
+    }
+    const tiposDropDown = [
+        { value: '', label: 'Seleccione un tipo de anillo' },
+        { value: '3D',label: '3D' },
+        { value: 'A mano', label: 'A mano' },
+        { value: 'Vaceado', label: 'Vaceado' },
+    ];
+    const materialDropDown = [
+        { value: '', label: 'Seleccione un material' },
+        { value: 'oroRosado',label: 'Oro rosado' },
+        { value: 'oro', label: 'Oro' },
+        { value: 'plata', label: 'Plata' },
+    ];
+    const {estados} = useEstados()
+    const estadosDropdown = [
+        {value : '', label : 'Elija el estado'}
+    ]
+    for (const id in estados) {   
+        const estado = {
+            value : parseInt(estados[id].idEstado),
+            label : estados[id].nombre
+        }    
+        estadosDropdown.push(estado)
+    }
     function alertaEstadoProducto() {
         showAlertEstadoDevuelto('¿Estás seguro que deseas devolver este producto?', 'warning', 'Producto devuelto correctamente', 'success')
     }
-    
+    let updateDetallePedido = []
     return (
         <>
              <Formik
@@ -65,8 +99,8 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                     const updatedValues = {
                         ...values,                        
                     };
-
-                    updateDetallePedidos(object.idDetallePedido, updatedValues).then(response => {
+                    updateDetallePedido.push(updatedValues)
+                    updateDetallePedidos(parseInt(object.idDetallePedido), updatedValues).then(response => {
                         resetForm();
                         showAlertCorrect('Producto editado correctamente', 'success', isClose)
                         console.log(response);
@@ -74,6 +108,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                         showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
                         console.log(response);
                     })
+                    console.log(updatedValues)
                 }}
             >
             {({ errors, handleSubmit, touched }) => (
@@ -88,19 +123,20 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                                     <span>Nombre</span>               
                                     <CustomInput
                                         type="text"
-                                        id="nombre"
-                                        name="nombre"
-                                        placeholder="Nombre ejemplo"
+                                        id="nombreAnillido"
+                                        name="nombreAnillido"
+                                        placeholder="nombre ejemplo"
                                     />
-                                    {touched.nombre && errors.nombre && <SpanError>{errors.nombre}</SpanError>}
+                                    {touched.nombreAnillido && errors.nombreAnillido && <SpanError>{errors.nombreAnillido}</SpanError>}
                                     </Label>
                                     <Label className="mt-4">
                                         <span>Tipo</span>
-                                        <Select >
-                                            <option>3D</option>
-                                            <option>A mano</option>
-                                            <option>Vaceado</option>
-                                        </Select>
+                                        <CustomInput
+                                            type="select"
+                                            id="tipo"
+                                            name="tipo"
+                                            options={tiposDropDown}
+                                        />
                                     </Label>
                                     <Label className="mt-4">
                                         <span>peso</span>                 
@@ -132,26 +168,18 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                                         />
                                         {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
                                     </Label>
-                                    <Label className="mt-4">
-                                        <span>Cantidad</span>        
+                                    <Label className="mt-5">
+                                        <span>Material</span>
                                         <CustomInput
-                                            type="text"
-                                            id="cantidad"
-                                            name="cantidad"
-                                            placeholder="1"
+                                            type="select"
+                                            id="material"
+                                            name="material"
+                                            options={materialDropDown}
                                         />
-                                        {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                     </Label>
                                 </div>
                                 <div className='flex-auto'>
-                                    <Label className="mt-5">
-                                        <span>Material</span>
-                                        <Select>
-                                            <option>Oro</option>
-                                            <option>Oro rosado</option>
-                                            <option>Plata</option>
-                                        </Select>
-                                    </Label>
+                                   
                                     <Label className="mt-5">
                                         <span>Detalle</span>        
                                         <CustomInput
@@ -163,21 +191,32 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                                         {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                     </Label>
                                     <Label className="mt-5">
+                                        <span>Cantidad</span>        
+                                        <CustomInput
+                                            type="text"
+                                            id="cantidad"
+                                            name="cantidad"
+                                            placeholder="2"
+                                        />
+                                        {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-5">
                                         <span>Asignar empleado</span>
                                         <CustomInput 
                                         type="select"
-                                        id="empleados"
-                                        name="epleados"
-                                        options={empleados}
+                                        id="idEmpleado"
+                                        name="idEmpleado"
+                                        options={empleadosDropdown}
                                         />
                                     </Label>
                                     <Label className="mt-5">
                                         <span >Estado</span>
-                                        <Select  >
-                                            <option>En produccion</option>
-                                            <option   onFocus={alertaEstadoProducto}>Devuelto</option>
-                                            <option>Entregado</option>
-                                        </Select>
+                                        <CustomInput 
+                                        type="select"
+                                        id="idEstado"
+                                        name="idEstado"
+                                        options={estadosDropdown}
+                                        />
                                     </Label>
                                     <Label  className="mt-5">
                                         <span>Motivo devolucion</span>                       
@@ -203,7 +242,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                                 </Button>
                             </div>
                             <div className="hidden sm:block">
-                                <Button onClick={handleSubmit}>Agregar producto</Button>
+                                <Button onClick={handleSubmit}>Editar producto</Button>
                             </div>
 
                             <div className="block w-full sm:hidden">
