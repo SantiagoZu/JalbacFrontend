@@ -69,6 +69,10 @@ function Clientes() {
     setData();
   }, []);
 
+  const searcher = (e) => {
+    setSearch(e.target.value)
+  }
+
   function openModalCreate() {
     setModalIsOpenCreate(true);
   }
@@ -135,6 +139,8 @@ function Clientes() {
             <Input
               className="pl-8 text-gray-700"
               placeholder="Buscar cliente"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>

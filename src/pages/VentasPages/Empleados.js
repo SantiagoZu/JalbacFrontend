@@ -46,9 +46,9 @@ function Empleados() {
     if (!searchValue) {
       return data;
     }
-    
+
     const searchTerm = searchValue.toLowerCase();
-    
+
     return data.filter((empleado) => (
       empleado.nombre.toLowerCase().includes(searchTerm) ||
       empleado.apellido.toLowerCase().includes(searchTerm) ||
@@ -75,7 +75,7 @@ function Empleados() {
     setSearch(e.target.value)
   }
 
-  
+
 
 
   function openModal(empleado) {
@@ -98,10 +98,17 @@ function Empleados() {
         eliminarEmpleado(idEmpleado)
           .then(response => {
             showAlertCorrect('Empleado eliminado correctamente.', 'success');
-            window.location.reload()
+            setTimeout(() => {
+              window.location.reload();
+          }, 1000);
           })
           .catch(response => {
-            showAlertIncorrect('Error al eliminar el empleado.', 'error');
+            if (response.response.data.errorMessages[0] !== null) {
+              showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+            } else {
+              showAlertIncorrect('Error al eliminar el empleado', 'error');
+            }
+
           });
       }
     });
