@@ -4,7 +4,6 @@ import { FetchData } from "../GenericAxios";
 export const useDetallePedidos = () => {
     const [detallePedidos, setDetallePedidos] = useState([]);
     const instance = FetchData('DetallePedido')
-
     useEffect(() => {
         getDetallePedidos();       
     }, []);
@@ -17,7 +16,10 @@ export const useDetallePedidos = () => {
     }
 
     const postDetallePedidos = async(obj) =>{
-        await instance.post("/", obj)
+        await instance.post("/", obj).then((response) => {           
+            return response
+        })
+ 
     }
 
     const updateDetallePedidos = async(id, obj) =>{

@@ -13,8 +13,8 @@ import { SpanError } from '../../../../components/styles/styles';
 import { initialValuesAgregarProducto,  validateInputsAgregarProducto } from './PedidosFormValidations/ProductosFormik';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
-export const ModalCrearProducto = ({ isOpen, isClose, idPedido }) => {
-    const { postDetallePedidos, getDetallePedidos } = useDetallePedidos();
+export const ModalCrearProducto = ({ isOpen, isClose, idPedido, updateTable }) => {
+    const { postDetallePedidos, getDetallePedidos, detallePedidos } = useDetallePedidos();
     const tiposDropDown = [
         { value: '', label: 'Seleccione un tipo de anillo' },
         { value: '3D',label: '3D' },
@@ -37,6 +37,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido }) => {
         empleadosDropdown.push(empleado)
     }
     const updateDetallePedido = []
+   
     return (
         <>
          <Formik
@@ -44,6 +45,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido }) => {
                 validate={(values) => validateInputsAgregarProducto(values)}
                 onSubmit={(values, { resetForm }) => {
                     console.log(values)
+           
                     const updatedValues = {
                         ...values,
                         idEstado : 1,
@@ -51,13 +53,17 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido }) => {
                         motivoDevolucion: "ninguno",
                     
                     };
+                   
                     updatedValues.idEmpleado = parseInt(updatedValues.idEmpleado)
                     updatedValues.cantidad = parseInt(updatedValues.cantidad)
                     updateDetallePedido.push(updatedValues)
                     postDetallePedidos(updateDetallePedido).then(response => {
+                        getDetallePedidos();
+                        updateTable(updatedValues)
                         resetForm();
+                        console.log(response)
                         showAlertCorrect('Producto creado correctamente', 'success', isClose)
-                        console.log(response);
+                     
                         console.log(updatedValues)
                     }).catch(error => {
                         showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
@@ -65,7 +71,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido }) => {
                         console.log(updatedValues)
                     });
                     resetForm();
-                    getDetallePedidos();
+                    
                 }}
         >
             {({ errors, handleSubmit, touched }) => (

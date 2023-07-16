@@ -54,7 +54,7 @@ function Pedidos() {
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarPedido, setModalIsOpenEditarPedido] = useState(false)
 
-
+  const [idPedidoForDetalle, setIdPedidoForDetalle] = useState()
   function openModalCrearPedido() {
     setModalIsOpenAgregarPedido(true);
   }
@@ -62,8 +62,12 @@ function Pedidos() {
   function closeModalAgregarPedido(){
     setModalIsOpenAgregarPedido(false);
   }
-  function openModalDetallePedido() {
+  function openModalDetallePedido(idPedido) {
     setModalIsOpenDetallePedido(true);
+    setIdPedido(idPedido)
+  }
+  function setIdPedido(idPedido) {
+    setIdPedidoForDetalle(idPedido)
   }
   function closeModalDetallePedido(){
     setModalIsOpenDetallePedido(false);
@@ -161,7 +165,7 @@ function Pedidos() {
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
                 <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModalDetallePedido}>
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido.idPedido)}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
                   
@@ -191,7 +195,7 @@ function Pedidos() {
         </TableFooter>
       </TableContainer>
       {modalIsOpenDetallePedido && (
-        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido}/>
+        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedidoForDetalle}/>
       )}
       {modalIsOpenEditarPedido && (
         <ModalEditarPedido isOpen={modalIsOpenEditarPedido} isClose={closeModalEditarPedido} object={dataPedido}/>

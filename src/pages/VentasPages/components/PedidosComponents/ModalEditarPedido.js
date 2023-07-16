@@ -226,7 +226,7 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                                 </tr>
                                             </TableHeader>
                                             <TableBody className="w-12">
-                                                {detallePedidos.map((detallePedido, i) => (
+                                                {detallePedidos.map((detallePedido, i) => object.idPedido == detallePedido.idPedido ?(
                                                     <TableRow key={i}>
                                                         <TableCell>
                                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
@@ -275,7 +275,8 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
 
 
                                                     </TableRow>
-                                                ))}
+                                                ) : null
+                                                )}
                                             </TableBody>
                                         </Table>
                                     

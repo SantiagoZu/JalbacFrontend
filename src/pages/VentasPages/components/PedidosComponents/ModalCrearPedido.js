@@ -42,99 +42,113 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
     const resultsPerPage = 10
 
     const totalResults = response.length
-      useEffect(() => {
+    useEffect(() => {
         setDataTable(responseProducto.slice((pageTable - 1) * resultsPerPage, pageTable * resultsPerPage))
-      }, [pageTable])
+    }, [pageTable])
 
-      function onPageChangeTable(p) {
+    function onPageChangeTable(p) {
         setPageTable(p)
-      }
-    
+    }
+
     const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
     const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
 
     const [dataDetallePedido, setDataDetallePedidos] = useState([]);
-    const {detallePedidos, deleteDetallePedidos } = useDetallePedidos();
- 
+    const { detallePedidos, deleteDetallePedidos, getDetallePedidos } = useDetallePedidos();
+
     function openModalCrearProducto() {
-      setModalIsOpenCrearProducto(true);
-    }
-  
-    function closeModalCrearProducto(){
-      setModalIsOpenCrearProducto(false);
+        setModalIsOpenCrearProducto(true);
     }
 
-    
+    function closeModalCrearProducto() {
+        setModalIsOpenCrearProducto(false);
+    }
+
+
     function openModalEditarProducto(obj) {
         setModalIsOpenEditarProducto(true);
         setData(obj)
     }
-    
-    function closeModalEditarProducto(){
+
+    function closeModalEditarProducto() {
         setModalIsOpenEditarProducto(false);
-    }    
+    }
     function setData(obj) {
         setDataDetallePedidos(obj);
     }
     function showEliminarDetallePedido(idDetallePedido) {
         showAlertDeleted(
-          '¿Estás seguro que deseas eliminar este producto?',
-          'warning',
-          'Eliminado correctamente',
-          'success'
+            '¿Estás seguro que deseas eliminar este producto?',
+            'warning',
+            'Eliminado correctamente',
+            'success'
         ).then((result) => {
-          if (result.isConfirmed) {
-            deleteDetallePedidos(idDetallePedido)
-              .then(response => {
-                showAlertCorrect('Producto eliminado correctamente.', 'success');
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1000);
-              })
-              .catch(response => {
-                showAlertIncorrect('Error al eliminar el producto.', 'error');
-                console.log(response)
-              });
-          }
+            if (result.isConfirmed) {
+                deleteDetallePedidos(idDetallePedido)
+                    .then(response => {
+                        showAlertCorrect('Producto eliminado correctamente.', 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    })
+                    .catch(response => {
+                        showAlertIncorrect('Error al eliminar el producto.', 'error');
+                        console.log(response)
+                    });
+            }
         });
     }
-  
-    const { postPedidos, getPedidos} = usePedidos();
-    const {clientes} = useClientes()
+
+    const { postPedidos, getPedidos } = usePedidos();
+    const { clientes } = useClientes()
     const clientesDropdown = [
-        {value : '', label : 'Elija el cliente'}
+        { value: '', label: 'Elija el cliente' }
     ]
-    for (const id in clientes) {   
+    for (const id in clientes) {
         const cliente = {
-            value : parseInt(clientes[id].idCliente),
-            label : clientes[id].nombre
-        }    
+            value: parseInt(clientes[id].idCliente),
+            label: clientes[id].nombre
+        }
         clientesDropdown.push(cliente)
     }
     const [idPedidoActual, setIdPedidoActual] = useState('')
     function changeIdPedidoActual(id) {
         setIdPedidoActual(id)
     }
+
+    const [tableProducts, setTableProducts] = useState([])
+    const [createPedidoOnce, setCreatePedidoOnce] = useState(null)
+    useEffect(() => {
+        setCreatePedidoOnce(true)
+    }, [])   
+    function getDataFromChild(product) {              
+        setTableProducts([
+            ...tableProducts,
+            product
+            ]
+        )
+    }
+    
     return (
         <>
             <Formik
                 initialValues={initialValues}
                 validate={(values) => validateInputs(values)}
                 onSubmit={(values, { resetForm }) => {
-                    
+
                     const updatedValues = {
-                        ...values,                 
+                        ...values,
                     };
 
                     console.log(updatedValues);
-                    let responseCrearPedido = postPedidos(updatedValues).then( (response) => {
+                    let responseCrearPedido = postPedidos(updatedValues).then((response) => {
                         resetForm();
-                        
+
                         changeIdPedidoActual(response.data.resultado.idPedido)
-                       
+
                         openModalCrearProducto()
                         return response
-                
+
                     }).catch(response => {
                         showAlertIncorrect('No se pudo crear el pedido', 'error', isClose);
                         console.log(updatedValues)
@@ -142,16 +156,16 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                     });
                     resetForm();
                     getPedidos();
-               
-                }}  
+
+                }}
             >
                 {({ errors, handleSubmit, touched }) => (
 
-                    <form  onSubmit={ handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
                             <ModalHeader className='mb-3'>Agregar pedido</ModalHeader>
                             <ModalBody>
-                                <Label className="mt-4">                                
+                                <Label className="mt-4">
                                     <CustomInput
                                         type="select"
                                         id="idCliente"
@@ -159,13 +173,13 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                         placeholder="Cliente ejemplo"
                                         options={clientesDropdown}
                                     />
-                                    
+
                                 </Label>
 
                                 <Label className="mt-4">
                                     <span>Fecha Entrega</span>
-                              
-                                      <CustomInput
+
+                                    <CustomInput
                                         type="date"
                                         id="fechaEntrega"
                                         name="fechaEntrega"
@@ -183,19 +197,26 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                         name="idEstado"
                                         disabled={true}
                                         placeholder={1}
-                                        value ={1}
+                                        value={1}
                                         className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
                                     />
                                 </Label>
 
                                 <Button className="mb-4 mt-4" onClick={() => {
-                                    handleSubmit()
-                                    
+                                    if (createPedidoOnce) {
+                                        handleSubmit()
+                                        setCreatePedidoOnce(false)
+                                    } else {
+
+                                        openModalCrearProducto()
+                                        getPedidos()
+                                    }
+
                                 }}>
                                     Agregar producto
                                     <span className="mb-1" aria-hidden="true">+</span>
                                 </Button>
-                                
+
 
                                 <div >
                                     <TableContainer >
@@ -217,59 +238,61 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                                                 </tr>
                                             </TableHeader>
                                             <TableBody className="w-12">
-                                                {detallePedidos.map((detallePedido, i) => (
-                                                    <TableRow key={i}>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoAnillo}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoPiedra}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.material}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleadoNavigation.nombre}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.motivoDevolucion}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <div className="flex items-center space-x-4">
-                                                                <Button layout="link" size="icon" aria-label="Edit" >
-                                                                    <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)}/>
-                                                                </Button>
-                                                                
-                                                                <Button layout="link" size="icon" aria-label="Delete" onClick={() => showEliminarDetallePedido(parseInt(detallePedido.idDetallePedido))}>
-                                                                    <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                                                                </Button>
-                                                            </div>  
-                                                        </TableCell>
+                                                {tableProducts.length > 0 ?
+                                                    tableProducts.map((detallePedido, i) => (
+                                                        <TableRow key={i}>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoAnillo}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoPiedra}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.material}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleado}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.motivoDevolucion}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <div className="flex items-center space-x-4">
+                                                                    <Button layout="link" size="icon" aria-label="Edit" >
+                                                                        <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
+                                                                    </Button>
+
+                                                                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => showEliminarDetallePedido(parseInt(detallePedido.idDetallePedido))}>
+                                                                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                                                                    </Button>
+                                                                </div>
+                                                            </TableCell>
 
 
-                                                    </TableRow>
-                                                ))}
+                                                        </TableRow>
+                                                    )
+                                                    ) : null}
                                             </TableBody>
                                         </Table>
-                                    
+
 
                                     </TableContainer>
 
@@ -303,12 +326,12 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                 )}
             </Formik>
             {modalIsOpenCrearProducto && (
-                <ModalCrearProducto  isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedidoActual}/>
+                <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedidoActual} updateTable={(product) => getDataFromChild(product)} />
             )}
             {modalIsOpenEditarProducto && (
-                <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} object={dataDetallePedido}/>
-            )}                                        
-            
+                <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} object={dataDetallePedido} />
+            )}
+
         </>
     );
 }

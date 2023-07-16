@@ -21,12 +21,13 @@ import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alerta
 import response from '../../../../utils/demo/dataProductos'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 const responseDetallePedido = response.concat([])
-export const ModalDetallePedido = ({ isOpen, isClose }) => {
+export const ModalDetallePedido = ({ isOpen, isClose, idPedido }) => {
     const [dataTable, setDataTable] = useState([])
     const [dataDetallePedido, setDataDetallePedidos] = useState([]);
     const {detallePedidos} = useDetallePedidos()
     
-    
+    console.log(detallePedidos)
+    console.log(idPedido)
     const [pageTable, setPageTable] = useState(1)
     const resultsPerPage = 10
 
@@ -74,7 +75,7 @@ export const ModalDetallePedido = ({ isOpen, isClose }) => {
                                 </tr>
                             </TableHeader>
                             <TableBody className="w-12">
-                                {detallePedidos.map((detallePedido, i) => (
+                                {detallePedidos.map((detallePedido, i) => idPedido == detallePedido.idPedido ? (
                                     <TableRow key={i}>
                                         <TableCell>
                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
@@ -114,7 +115,8 @@ export const ModalDetallePedido = ({ isOpen, isClose }) => {
                                         </TableCell>
                                         
                                     </TableRow>
-                                ))}
+                                ) : null
+                                )}
                             </TableBody>
                         </Table>
 
