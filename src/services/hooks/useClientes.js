@@ -5,21 +5,34 @@ export const useClientes = () => {
     const [clientes, setClientes] = useState([]);
     const instance = FetchData('Cliente')
 
-    //llamado a la api de clientes
     useEffect(() => {
-        const cargarClientes = async () => {
-            const response = await instance.get()
-            const data = response.data.resultado;
-           
-            setClientes(data)
-        }
-        cargarClientes();
+        getClientes();       
     }, []);
 
+    const getClientes = async () => {
+        const response = await instance.get()
+        const data = response.data.resultado;
+        setClientes(data)
+        return clientes;
+    }
 
+    const postClientes = async(obj) =>{
+        await instance.post("", obj)
+    }
 
+    const updateClientes = async(id, obj) =>{
+        await instance.put(`/${id}`, obj)
+    }
+
+    const deleteClientes = async(id) =>{
+        await instance.delete(`/${id}`);
+    }
 
     return {
         clientes,
+        getClientes,
+        postClientes,
+        updateClientes,
+        deleteClientes
     }
 }
