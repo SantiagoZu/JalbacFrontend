@@ -7,12 +7,14 @@ import Header from '../components/Header'
 import Main from '../containers/Main'
 import ThemedSuspense from '../components/ThemedSuspense'
 import { SidebarContext } from '../context/SidebarContext'
+import Cookies from "js-cookie";
 
 const Page404 = lazy(() => import('../pages/404'))
 
 function Layout() {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
   let location = useLocation()
+  const cookie = Cookies.get('CookieJalbac')
 
   useEffect(() => {
     closeSidebar()
@@ -28,20 +30,38 @@ function Layout() {
         <Header />
         <Main>
           <Suspense fallback={<ThemedSuspense />}>
-            <Switch>
-              {routes.map((route, i) => {
-                return route.component ? (
-                  <Route
-                    key={i}
-                    exact={true}
-                    path={`/app${route.path}`}
-                    render={(props) => <route.component {...props} />}
-                  />
-                ) : null
-              })}
-              <Redirect exact from="/app" to="/app/dashboard" />
-              <Route component={Page404} />
-            </Switch>
+            {
+              cookie !== '' ? 
+                <Switch>
+                  {routes.map((route, i) => {
+                    return route.component ? (
+                      <Route
+                        key={i}
+                        exact={true}
+                        path={`/app${route.path}`}
+                        render={(props) => <route.component {...props} />}
+                      />
+                    ) : null
+                  })}
+                  <Redirect exact from="/app" to="/app/dashboard" />
+                  <Route component={Page404} />
+                </Switch> 
+              : 
+                <Switch>
+                  {routes.map((route, i) => {
+                    return route.component ? (
+                      <Route
+                        key={i}
+                        exact={true}
+                        path={`/app${route.path}`}
+                        render={(props) => <route.component {...props} />}
+                      />
+                    ) : null
+                  })}
+                  <Redirect exact from="/app" to="/app/404" />
+                  <Route component={Page404} />
+                </Switch>
+            }
           </Suspense>
         </Main>
       </div>

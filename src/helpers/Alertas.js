@@ -37,5 +37,26 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
     });
 };
 
+export const showCloseSesion = (message, icon,secondMessage, secondIcon, onDelete ,onClose) => {
+    Swal.fire({
+        title: message,
+        icon: icon,
+        showCancelButton: true,
+        confirmButtonColor: '#7e3af2',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '¡Sí, cerrar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            onDelete();
+            Swal.fire(
+                '',
+                secondMessage,
+                secondIcon,
+            )
+            onClose();
+        }
+    });
+}
+
 
 

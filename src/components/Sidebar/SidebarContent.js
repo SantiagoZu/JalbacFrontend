@@ -1,9 +1,7 @@
 import React from 'react'
-import routes from '../../routes/sidebar'
 import { NavLink, Route } from 'react-router-dom'
 import * as Icons from '../../icons'
-import SidebarSubmenu from './SidebarSubmenu'
-import { Button } from '@windmill/react-ui'
+import { usePermisos } from '../../services/hooks/UsePermisos'
 
 function Icon({ icon, ...props }) {
   const Icon = Icons[icon]
@@ -11,31 +9,108 @@ function Icon({ icon, ...props }) {
 }
 
 function SidebarContent() {
+
+  const { permisos } = usePermisos();
+  const newPermisos = [];
+
+  permisos.forEach(item =>{
+    if (item.nombrePermiso === "Dashboard") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "HomeIcon",
+        url: "/app/dashboard",
+      });
+    }
+    if (item.nombrePermiso === "Backup") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "MoonIcon",
+        url: "/app/backup",
+      });
+    }
+    if (item.nombrePermiso === "Roles") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "BellIcon",
+        url: "/app/roles",
+      });
+    }
+    if (item.nombrePermiso === "Usuarios") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "PeopleIcon",
+        url: "/app/usuarios",
+      });
+    }
+    if (item.nombrePermiso === "Empleados") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "SunIcon",
+        url: "/app/empleados",
+      });
+    }
+    if (item.nombrePermiso === "Clientes") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "TablesIcon",
+        url: "/app/clientes",
+      });
+    }
+    if (item.nombrePermiso === "Pedidos") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "MoneyIcon",
+        url: "/app/pedidos",
+      });
+    }
+    if (item.nombrePermiso === "Historial pedidos") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "SearchIcon",
+        url: "/app/historial",
+      });
+    }
+    if (item.nombrePermiso === "Devoluciones") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "TrashIcon",
+        url: "/app/devoluciones",
+      });
+    }
+  });
+
   return (
     <div className="py-4 text-gray-500 dark:text-gray-400">
       <a className="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
         JalbacSoft
       </a>
       <ul className="mt-6">
-        {routes.map((route) =>
-          route.routes ? (
-            <SidebarSubmenu route={route} key={route.name} />
-          ) : (
-            <li className="relative px-6 py-3" key={route.name}>
+        {newPermisos.map((permiso) =>
+          (
+            <li className="relative px-6 py-3" key={permiso.idPermiso}>
               <NavLink
-                exact
-                to={route.path}
+                to={permiso.url}
                 className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                 activeClassName="text-gray-800 dark:text-gray-100"
               >
-                <Route path={route.path} exact={route.exact}>
+                <Route path={permiso.url}>
                   <span
                     className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                    aria-hidden="true"
-                  ></span>
+                    aria-hidden="true">
+                  </span>
                 </Route>
-                <Icon className="w-5 h-5" aria-hidden="true" icon={route.icon} />
-                <span className="ml-4">{route.name}</span>
+                <Icon className="w-5 h-5" aria-hidden="true" icon={permiso.icono} />
+                <span className="ml-4">{permiso.nombre}</span>
+
               </NavLink>
             </li>
           )
