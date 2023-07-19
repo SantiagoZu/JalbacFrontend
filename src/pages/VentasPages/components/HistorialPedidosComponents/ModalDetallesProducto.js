@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import { useHisEstadoDetallePedido } from '../../../../services/hooks/useHisEstadoDetallePedido';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import responseDetalles from '../../../../utils/demo/dataHistorialEstadoProducto'
 
@@ -22,7 +22,7 @@ export const ModalDetallesProducto = ({ isOpen, isClose }) => {
     const responseDetallesProductos = responseDetalles.concat([])
     const [pageTable3, setPageTable3] = useState(1)
     const [dataTable3, setDataTable3] = useState([])
-
+    const {hisEstadoDetallePedido} = useHisEstadoDetallePedido()
     useEffect(() => {
         setDataTable3(responseDetallesProductos.slice((pageTable3 - 1) * resultsPerPage, pageTable3 * resultsPerPage))
     }, [pageTable3])
@@ -44,46 +44,47 @@ export const ModalDetallesProducto = ({ isOpen, isClose }) => {
                                     <TableCell>Tamaño piedra</TableCell>
                                     <TableCell>Material</TableCell>
                                     <TableCell>Detalle</TableCell>
+                                    <TableCell>Cantidad</TableCell>
                                     <TableCell>Estado</TableCell>
                                     <TableCell>Empleado encargado</TableCell>
                                     <TableCell>Motivo devolucion</TableCell>
                                 </tr>
                             </TableHeader>
                             <TableBody className="w-12">
-                                {dataTable3.map((producto, i) => (
+                                {hisEstadoDetallePedido.map((detallePedido, i) => (
                                     <TableRow key={i}>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.ID}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idHisEstadoDetallePedido}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.nombre}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.nombreAnillido}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tipo}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.tipo}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.peso}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.peso}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tamanoAnillo}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.tamanoAnillo}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.tamanoPiedra}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.tamanoPiedra}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.material}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.material}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.detalle}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.detalle}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.estado}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEstadoNavigation.nombre}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.empleadoAsignado}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.idEmpleado}</p>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{producto.motivoDevolucion}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedidoNavigation.motivoDevolucion}</p>
                                         </TableCell>
 
 

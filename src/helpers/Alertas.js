@@ -22,22 +22,6 @@ export const showAlertIncorrect = (message, icon) => {
 }
 
 export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
-    return new Promise((resolve) => {
-        Swal.fire({
-            title: message,
-            icon: icon,
-            showCancelButton: true,
-            confirmButtonColor: '#7e3af2',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '¡Sí, eliminar!'
-        }).then((result) => {
-            resolve(result);
-            
-        });
-    });
-};
-
-export const showCloseSesion = (message, icon,secondMessage, secondIcon, onDelete ,onClose) => {
     Swal.fire({
         title: message,
         icon: icon,
@@ -57,6 +41,7 @@ export const showCloseSesion = (message, icon,secondMessage, secondIcon, onDelet
         }
     });
 }
+
 
 
 

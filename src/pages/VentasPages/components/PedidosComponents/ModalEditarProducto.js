@@ -1,145 +1,261 @@
 import React, { useState, useEffect } from 'react'
-
+import { ModalCrearProducto } from './ModalCrearProducto';
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { Input2 } from '../../../../components/Input';
 import Swal from 'sweetalert2'
+import {
+    Table,
+    TableHeader,
+    TableCell,
+    TableBody,
+    TableRow,
+    TableFooter,
+    TableContainer,
+    Badge,
+    Avatar,
+    Pagination,
+} from '@windmill/react-ui'
+import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
 
-import { expresiones } from '../../../../helpers/validacionesRegex';
-import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-
-export const ModalEditarProducto = ({ isOpen, isClose }) => {
-
-    const [nombre, cambiarNombre] = useState({ campo: '', valido: null });
-    const [peso, cambiarPeso] = useState({ campo: '', valido: null });
-    const [tamanoAnillo, cambiarTamanoAnillo] = useState({ campo: '', valido: null });
-    const [tamanoPiedra, cambiarTamanoPiedra] = useState({ campo: '', valido: null });
-    const [detalle, cambiarDetalle] = useState({ campo: '', valido: null });
-    const [motivoDevolucion, cambiarMotivoDevolucion] = useState({ campo: '', valido: true, desactivado: true });
-
-    const validacionFormularioEditarProducto = (e) => {
-        e.preventDefault();
-        if (nombre.valido && peso.valido && tamanoAnillo.valido && tamanoPiedra.valido && detalle.valido && motivoDevolucion.valido === 'true') {
+import { expresionesProducto } from '../../../../helpers/validacionesRegex';
+import { showAlertCorrect, showAlertEstadoDevuelto, showAlertIncorrect } from '../../../../helpers/Alertas';
+import response from '../../../../utils/demo/dataProductos'
+import { Formik } from 'formik';
+import { CustomInput } from '../../../../components/CustomInput';
+import { SpanError } from '../../../../components/styles/styles';
+import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
+import { usePedidos } from '../../../../services/hooks/usePedidos'
+import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
+import { useEmpleados } from '../../../../services/hooks/useEmpleados'
+import { useEstados } from '../../../../services/hooks/useEstados'
+const responseProducto = response.concat([])
 
 
-            cambiarFormularioValidoEditarProducto(true);
-            cambiarNombre({ campo: '', valido: null });
-            cambiarPeso({ campo: '', valido: null });
-            cambiarTamanoAnillo({ campo: '', valido: null });
-            cambiarTamanoPiedra({ campo: '', valido: null });
-            cambiarDetalle({ campo: '', valido: null });
-            cambiarMotivoDevolucion({ campo: '', valido: true });
+export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
 
-
-
-            alertEditadoCorrecto("Producto editado");
-
-        } else {
-            cambiarFormularioValidoEditarProducto(false);
-            alertEditadoIncorrecto();
-        }
+    console.log(object)
+    const { updateDetallePedidos } = useDetallePedidos();
+    const updateValues = {
+        idDetallePedido : parseInt(object.idDetallePedido) || '',
+        idPedido : parseInt(object.idPedido) || '',
+        nombreAnillo : object.nombreAnillido || '',
+        tipo: object.tipo || '',
+        peso: object.peso || '',
+        tamanoAnillo: object.tamanoAnillo || '',
+        tamanoPiedra: object.tamanoPiedra || '',
+        material: object.material || '',
+        detalle: object.detalle || '',
+        detalle: object.cantidad || '',
+        idEmpleado: object.idEmpleado || '',
+        idEstado: object.idEstado || '',
+        motivoDevolucion: object.motivoDevolucion || '',
+    };
+    const {empleados} = useEmpleados()
+    const empleadosDropdown = [
+        {value : '', label : 'Elija el empleado'}
+    ]
+    for (const id in empleados) {   
+        const empleado = {
+            value : parseInt(empleados[id].idEmpleado),
+            label : empleados[id].nombre
+        }    
+        empleadosDropdown.push(empleado)
     }
-
+    const tiposDropDown = [
+        { value: '', label: 'Seleccione un tipo de anillo' },
+        { value: '3D',label: '3D' },
+        { value: 'A mano', label: 'A mano' },
+        { value: 'Vaceado', label: 'Vaceado' },
+    ];
+    const materialDropDown = [
+        { value: '', label: 'Seleccione un material' },
+        { value: 'oroRosado',label: 'Oro rosado' },
+        { value: 'oro', label: 'Oro' },
+        { value: 'plata', label: 'Plata' },
+    ];
+    const {estados} = useEstados()
+    const estadosDropdown = [
+        {value : '', label : 'Elija el estado'}
+    ]
+    for (const id in estados) {   
+        const estado = {
+            value : parseInt(estados[id].idEstado),
+            label : estados[id].nombre
+        }    
+        estadosDropdown.push(estado)
+    }
+    function alertaEstadoProducto() {
+        showAlertEstadoDevuelto('¿Estás seguro que deseas devolver este producto?', 'warning', 'Producto devuelto correctamente', 'success')
+    }
+    let updateDetallePedido = []
     return (
         <>
-            <form action='' onSubmit={validacionFormularioEditarProducto}>
-                <Modal isOpen={isModalOpenEditarProducto} onClose={closeModalEditarProducto}>
-                    <ModalHeader className='mb-3'>Editar producto</ModalHeader>
-                    <ModalBody>
-                        <Label className="mt-4">
-                            <span>Nombre</span>
-                            <Input2 placeholder={"ingrese un nombre"} className="mt-1" estado={nombre} type={"text"} cambiarEstado={cambiarNombre} expresionRegular={expresionesProducto.nombre} mensajeError={"El nombre no puede tener caracteres especiales"} />
-                        </Label>
-                        <Label className="mt-4">
-                            <span>Tipo</span>
-                            <Select className="mt-1">
-                                <option>3D</option>
-                                <option>A mano</option>
-                                <option>Vaceado</option>
-                            </Select>
-                        </Label>
-                        <Label className="mt-4">
-                            <span>Peso</span>
-                            <Input2 placeholder={"ingrese un peso en gramos"} className="mt-1" estado={peso} type={"number"} cambiarEstado={cambiarPeso} expresionRegular={expresionesProducto.peso} mensajeError={"No puede ingresar letras"} />
-                        </Label>
-                        <Label className="mt-4">
-                            <span>Tamaño anillo</span>
-                            <Input2 placeholder={"ingrese un numero"} className="mt-1" estado={tamanoAnillo} type={"number"} cambiarEstado={cambiarTamanoAnillo} expresionRegular={expresionesProducto.tamanoAnillo} mensajeError={"La medida no puede tener letras"} />
-                        </Label>
-                        <Label className="mt-4">
-                            <span>Tamaño piedra</span>
-                            <Input2 placeholder={"ingrese un numero en mm"} className="mt-1" estado={tamanoPiedra} type={"number"} cambiarEstado={cambiarTamanoPiedra} expresionRegular={expresionesProducto.tamanoPiedra} mensajeError={"el numero no puede tener letras"} />
-                        </Label>
-                        <Label className="mt-4">
-                            <span>Material</span>
-                            <Select className="mt-1">
-                                <option>Oro</option>
-                                <option>Oro rosado</option>
-                                <option>Plata</option>
+             <Formik
+                initialValues={updateValues}
+                validate={(values) => validateInputsEditarProducto(values)}
+                onSubmit={(values, { resetForm }) => {
+                   
+                    const updatedValues = {
+                        ...values,                        
+                    };
+                    updateDetallePedido.push(updatedValues)
+                    updateDetallePedidos(parseInt(object.idDetallePedido), updatedValues).then(response => {
+                        resetForm();
+                        showAlertCorrect('Producto editado correctamente', 'success', isClose)
+                        console.log(response);
+                    }).catch(response => {
+                        showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
+                        console.log(response);
+                    })
+                    console.log(updatedValues)
+                }}
+            >
+            {({ errors, handleSubmit, touched }) => (
 
-                            </Select>
-                        </Label>
-                        <Label className="mt-4">
-                            <span>Detalles</span>
-                            <Input2 placeholder={"ingrese detalles"} className="mt-1" estado={detalle} type={"text"} cambiarEstado={cambiarDetalle} expresionRegular={expresionesProducto.detalle} mensajeError={"el texto no puede  contener mas de 100 caracteres"} />
-                        </Label>
-                        <Label className="mt-4">
-                            <span>Asignar empleado</span>
-                            <Select>
-                                <option>Josue</option>
-                                <option>Barreto</option>
-                                <option>Portela</option>
-                            </Select>
-                        </Label>
-                        <Label className="mt-4">
-                            <span >Estado</span>
-                            <Select className="mt-1" onChange={(dato) => {
-                                if (dato.target.value == "Devuelto") {
-                                    alertDevuelto("producto", "editarProducto")
+                <form  onSubmit={handleSubmit}>
+                    <Modal isOpen={isOpen} onClose={isClose}>
+                        <ModalHeader className='mb-3'>Editar producto</ModalHeader>
+                        <ModalBody>
+                            <div className='flex gap-5'>
+                                <div className='flex-auto'>
+                                    <Label className="mt-4">
+                                    <span>Nombre</span>               
+                                    <CustomInput
+                                        type="text"
+                                        id="nombreAnillido"
+                                        name="nombreAnillido"
+                                        placeholder="nombre ejemplo"
+                                    />
+                                    {touched.nombreAnillido && errors.nombreAnillido && <SpanError>{errors.nombreAnillido}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-4">
+                                        <span>Tipo</span>
+                                        <CustomInput
+                                            type="select"
+                                            id="tipo"
+                                            name="tipo"
+                                            options={tiposDropDown}
+                                        />
+                                    </Label>
+                                    <Label className="mt-4">
+                                        <span>peso</span>                 
+                                        <CustomInput
+                                            type="text"
+                                            id="peso"
+                                            name="peso"
+                                            placeholder="12gr"
+                                        />
+                                        {touched.peso && errors.peso && <SpanError>{errors.peso}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-4">
+                                        <span>Tamaño anillo</span>                           
+                                        <CustomInput
+                                            type="text"
+                                            id="tamanoAnillo"
+                                            name="tamanoAnillo"
+                                            placeholder="12 1/2"
+                                        />
+                                        {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-4">
+                                        <span>Tamaño piedra</span>                     
+                                        <CustomInput
+                                            type="text"
+                                            id="tamanoPiedra"
+                                            name="tamanoPiedra"
+                                            placeholder="12 1/2"
+                                        />
+                                        {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-5">
+                                        <span>Material</span>
+                                        <CustomInput
+                                            type="select"
+                                            id="material"
+                                            name="material"
+                                            options={materialDropDown}
+                                        />
+                                    </Label>
+                                </div>
+                                <div className='flex-auto'>
+                                   
+                                    <Label className="mt-5">
+                                        <span>Detalle</span>        
+                                        <CustomInput
+                                            type="text"
+                                            id="detalle"
+                                            name="detalle"
+                                            placeholder="12 1/2"
+                                        />
+                                        {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-5">
+                                        <span>Cantidad</span>        
+                                        <CustomInput
+                                            type="text"
+                                            id="cantidad"
+                                            name="cantidad"
+                                            placeholder="2"
+                                        />
+                                        {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
+                                    </Label>
+                                    <Label className="mt-5">
+                                        <span>Asignar empleado</span>
+                                        <CustomInput 
+                                        type="select"
+                                        id="idEmpleado"
+                                        name="idEmpleado"
+                                        options={empleadosDropdown}
+                                        />
+                                    </Label>
+                                    <Label className="mt-5">
+                                        <span >Estado</span>
+                                        <CustomInput 
+                                        type="select"
+                                        id="idEstado"
+                                        name="idEstado"
+                                        options={estadosDropdown}
+                                        />
+                                    </Label>
+                                    <Label  className="mt-5">
+                                        <span>Motivo devolucion</span>                       
+                                        <CustomInput
+                                            type="text"
+                                            id="motivoDevolucion"
+                                            name="motivoDevolucion"
+                                            placeholder="12 1/2"
+                                        />
+                                        {touched.motivoDevolucion && errors.motivoDevolucion && <SpanError>{errors.motivoDevolucion}</SpanError>}
+                                    </Label>
+                                </div>
+                            </div>
+                            
+                            
 
-                                }
-                                else {
-                                    cambiarMotivoDevolucion({ campo: '', valido: "true", desactivado: true });
-                                }
-                            }}>
-                                <option>En produccion</option>
-                                <option >Devuelto</option>
-                                <option>Entregado</option>
-                            </Select>
-                        </Label>
-                        <label className="block text-sm text-gray-700 dark:text-gray-400" >
-                            <span>Motivo devolucion</span>
-                            <Input2 placeholder={"ingrese motivo"} className="mt-1" estado={motivoDevolucion} type={"text"} cambiarEstado={cambiarMotivoDevolucion} expresionRegular={expresionesProducto.motivoDevolucion} mensajeError={"el texto no puede  contener mas de 100 caracteres"} desactivado={motivoDevolucion.desactivado} />
-                        </label>
+                        </ModalBody>
 
+                        <ModalFooter>
+                            <div className="hidden sm:block">
+                                <Button layout="outline" onClick={isClose}>
+                                    Cancelar
+                                </Button>
+                            </div>
+                            <div className="hidden sm:block">
+                                <Button onClick={handleSubmit}>Editar producto</Button>
+                            </div>
 
-                    </ModalBody>
+                            <div className="block w-full sm:hidden">
+                                <Button block size="large" layout="outline" onClick={isClose}>
+                                    Cancel
+                                </Button>
+                            </div>
 
-                    <ModalFooter>
-                        <div className="hidden sm:block">
-                            <Button layout="outline" onClick={closeModalEditarProducto}>
-                                Cancelar
-                            </Button>
-                        </div>
-                        <div className="hidden sm:block">
-                            <Button onClick={validacionFormularioEditarProducto}>Editar producto</Button>
-                        </div>
-
-                        <div className="block w-full sm:hidden">
-                            <Button block size="large" layout="outline" onClick={closeModalEditarProducto}>
-                                Cancel
-                            </Button>
-                        </div>
-                        <div className="block w-full sm:hidden">
-                            <Button block size="large">
-                                Accept
-                            </Button>
-                        </div>
-
-
-                    </ModalFooter>
-                </Modal>
-            </form>
+                        </ModalFooter>
+                    </Modal>
+                </form>
+            )}
+            </Formik>
         </>
     );
 }

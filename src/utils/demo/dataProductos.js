@@ -26,18 +26,3 @@ export default [
     motivoDevolucion: 'no se ha devuelto',
 }
 ]
-/*
-              <TableCell>ID</TableCell>
-              <TableCell>Nombre anillo</TableCell>
-              <TableCell>Tipo</TableCell>
-              <TableCell>Pesogr</TableCell>
-              <TableCell>Tamaño anillo</TableCell>
-              <TableCell>Tamaño piedra</TableCell>
-              <TableCell>Material</TableCell>
-              <TableCell>Modelo</TableCell>
-              <TableCell>Detalle</TableCell>
-           
-              <TableCell>Informacion adicional
-              </TableCell>
-
-*/
