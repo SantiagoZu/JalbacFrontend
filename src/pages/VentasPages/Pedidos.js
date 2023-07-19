@@ -23,6 +23,7 @@ import {  showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../h
 import {ModalCrearPedido} from './components/PedidosComponents/ModalCrearPedido';
 import {ModalDetallePedido} from './components/PedidosComponents/ModalDetallePedido';
 import {ModalEditarPedido} from './components/PedidosComponents/ModalEditarPedido';
+import { returnDate } from '../../helpers/parseDate'
 const responsePedido = response.concat([])
 
 
@@ -107,6 +108,7 @@ function Pedidos() {
       }
     });
   }
+  
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -153,13 +155,13 @@ function Pedidos() {
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedido}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.fechaPedido}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idClienteNavigation.nombre}</p>
                 </TableCell>           
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.fechaEntrega}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaEntrega)}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>

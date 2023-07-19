@@ -59,12 +59,12 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido, updateTable }) =
                     updateDetallePedido.push(updatedValues)
                     postDetallePedidos(updateDetallePedido).then(response => {
                         getDetallePedidos();
-                        updateTable(updatedValues)
+                        updateTable(response.data.resultado[0])
                         resetForm();
-                        console.log(response)
+                        console.log(response.data.resultado[0])
                         showAlertCorrect('Producto creado correctamente', 'success', isClose)
                      
-                        console.log(updatedValues)
+                      
                     }).catch(error => {
                         showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
                         console.log(error);

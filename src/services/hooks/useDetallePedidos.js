@@ -16,7 +16,7 @@ export const useDetallePedidos = () => {
     }
 
     const postDetallePedidos = async(obj) =>{
-        await instance.post("/", obj).then((response) => {           
+        return await instance.post("/", obj).then((response) => {           
             return response
         })
  
@@ -35,6 +35,7 @@ export const useDetallePedidos = () => {
         getDetallePedidos,
         postDetallePedidos,
         updateDetallePedidos,
-        deleteDetallePedidos
+        deleteDetallePedidos,
+        setDetallePedidos
     }
 }

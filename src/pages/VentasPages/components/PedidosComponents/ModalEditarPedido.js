@@ -37,115 +37,126 @@ const responseProducto = response.concat([])
 export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
     const [dataTable, setDataTable] = useState([])
 
-    
+
 
     const [pageTable, setPageTable] = useState(1)
     const resultsPerPage = 10
 
     const totalResults = response.length
-      useEffect(() => {
+    useEffect(() => {
         setDataTable(responseProducto.slice((pageTable - 1) * resultsPerPage, pageTable * resultsPerPage))
-      }, [pageTable])
+    }, [pageTable])
 
-      function onPageChangeTable(p) {
+    function onPageChangeTable(p) {
         setPageTable(p)
-      }
-    
+    }
+
     const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
     const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
 
     function openModalCrearProducto() {
-      setModalIsOpenCrearProducto(true);
-    }
-  
-    function closeModalCrearProducto(){
-      setModalIsOpenCrearProducto(false);
+        setModalIsOpenCrearProducto(true);
     }
 
-    
+    function closeModalCrearProducto() {
+        setModalIsOpenCrearProducto(false);
+    }
+
+
     function openModalEditarProducto(obj) {
         setModalIsOpenEditarProducto(true);
         setData(obj)
-      }
-    
-      function closeModalEditarProducto(){
+    }
+
+    function closeModalEditarProducto() {
         setModalIsOpenEditarProducto(false);
-      }
-    
-      function showEliminarDetallePedido(idDetallePedido) {
+    }
+
+    function showEliminarDetallePedido(idDetallePedido) {
         showAlertDeleted(
-          '¿Estás seguro que deseas eliminar este producto?',
-          'warning',
-          'Eliminado correctamente',
-          'success'
+            '¿Estás seguro que deseas eliminar este producto?',
+            'warning',
+            'Eliminado correctamente',
+            'success'
         ).then((result) => {
-          if (result.isConfirmed) {
-            deleteDetallePedidos(idDetallePedido)
-              .then(response => {
-                showAlertCorrect('Producto eliminado correctamente.', 'success');
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1000);
-              })
-              .catch(response => {
-                showAlertIncorrect('Error al eliminar el producto.', 'error');
-                console.log(response)
-              });
-          }
+            if (result.isConfirmed) {
+                deleteDetallePedidos(idDetallePedido)
+                    .then(response => {
+                        showAlertCorrect('Producto eliminado correctamente.', 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    })
+                    .catch(response => {
+                        showAlertIncorrect('Error al eliminar el producto.', 'error');
+                        console.log(response)
+                    });
+            }
         });
     }
-    
-      function setData(obj) {
+
+    function setData(obj) {
         setDataDetallePedidos(obj);
-      }
+    }
     console.log(object)
     const [dataDetallePedido, setDataDetallePedidos] = useState([])
-    const {detallePedidos, deleteDetallePedidos} = useDetallePedidos()
+    const { detallePedidos, deleteDetallePedidos, setDetallePedidos } = useDetallePedidos()
+    
     const { updatePedidos } = usePedidos();
     const updateValues = {
-        idPedido : object.idPedido || '',
-        idCliente : object.idClienteNavigation.idCliente || '',
-        idEstado : object.idEstadoNavigation.idEstado || '',
-        fechaPedido : object.fechaPedido || '',
-        fechaEntrega : object.fechaEntrega || ''
+        idPedido: object.idPedido || '',
+        idCliente: object.idClienteNavigation.idCliente || '',
+        idEstado: object.idEstadoNavigation.idEstado || '',
+        fechaPedido: object.fechaPedido || '',
+        fechaEntrega: object.fechaEntrega || ''
 
     };
-    const {clientes} = useClientes()
+    const { clientes } = useClientes()
     const clientesDropdown = [
-        {value : '', label : 'Elija el cliente'}
+        { value: '', label: 'Elija el cliente' }
     ]
-    for (const id in clientes) {   
+    for (const id in clientes) {
         const cliente = {
-            value : parseInt(clientes[id].idCliente),
-            label : clientes[id].nombre
-        }    
+            value: parseInt(clientes[id].idCliente),
+            label: clientes[id].nombre
+        }
         clientesDropdown.push(cliente)
     }
-    const {estados} = useEstados()
+    const { estados } = useEstados()
     const estadosDropdown = [
-        {value : '', label : 'Elija el estado'}
+        { value: '', label: 'Elija el estado' }
     ]
-    for (const id in estados) {   
+    for (const id in estados) {
         const estado = {
-            value : parseInt(estados[id].idEstado),
-            label : estados[id].nombre
-        }    
+            value: parseInt(estados[id].idEstado),
+            label: estados[id].nombre
+        }
         estadosDropdown.push(estado)
     }
-        
+    
+   
+ 
+    function getProduct(product) {
+        setDetallePedidos([
+            ...detallePedidos,
+            product
+        ]
+        )
+    }
+   
     return (
         <>
             <Formik
                 initialValues={updateValues}
                 validate={(values) => validateInputs(values)}
                 onSubmit={(values, { resetForm }) => {
-                   
+
                     const updatedValues = {
-                        ...values,                        
+                        ...values,
                     };
                     console.log(updatedValues);
                     updatePedidos(object.idPedido, updatedValues).then(response => {
-                        
+
                         resetForm();
                         showAlertCorrect('Pedido editado correctamente', 'success', isClose)
                         console.log(response);
@@ -157,11 +168,11 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
             >
                 {({ errors, handleSubmit, touched }) => (
 
-                    <form  onSubmit={ handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
                             <ModalHeader className='mb-3'>Editar pedido</ModalHeader>
                             <ModalBody>
-                                <Label className="mt-4">                                
+                                <Label className="mt-4">
                                     <CustomInput
                                         type="select"
                                         id="idCliente"
@@ -169,23 +180,23 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                         placeholder="Cliente ejemplo"
                                         options={clientesDropdown}
                                     />
-                                    
+
                                 </Label>
 
                                 <Label className="mt-4">
                                     <span>Fecha Entrega</span>
-                              
+
                                     <CustomInput
                                         type="date"
                                         id="fechaEntrega"
                                         name="fechaEntrega"
                                         placeholder=""
-                                        
+
                                     />
                                     {touched.fechaEntrega && errors.fechaEntrega && <SpanError>{errors.fechaEntrega}</SpanError>}
 
 
-                                </Label>                               
+                                </Label>
                                 <Label className="mt-4">
                                     <span>Estado</span>
                                     <CustomInput
@@ -195,7 +206,7 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                         placeholder="Estados ejemplo"
                                         options={estadosDropdown}
                                     />
-                                    
+
                                 </Label>
 
                                 <Button className="mb-4 mt-4" onClick={openModalCrearProducto}>
@@ -204,7 +215,7 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                         +
                                     </span>
                                 </Button>
-                                
+
 
                                 <div >
                                     <TableContainer >
@@ -226,60 +237,61 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                                                 </tr>
                                             </TableHeader>
                                             <TableBody className="w-12">
-                                                {detallePedidos.map((detallePedido, i) => object.idPedido == detallePedido.idPedido ?(
-                                                    <TableRow key={i}>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoAnillo}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoPiedra}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.material}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleadoNavigation.nombre}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.motivoDevolucion}</p>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <div className="flex items-center space-x-4">
-                                                                <Button layout="link" size="icon" aria-label="Edit" >
-                                                                    <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)}/>
-                                                                </Button>
-                                                                
-                                                                <Button layout="link" size="icon" aria-label="Delete" onClick={() => showEliminarDetallePedido(detallePedido.id)}>
-                                                                    <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                                                                </Button>
-                                                            </div>
-                                                        </TableCell>
+                                                {
+                                                    detallePedidos.map((detallePedido, i) => object.idPedido == detallePedido.idPedido ? (
+                                                        <TableRow key={i}>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoAnillo}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoPiedra}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.material}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleado}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.motivoDevolucion}</p>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <div className="flex items-center space-x-4">
+                                                                    <Button layout="link" size="icon" aria-label="Edit" >
+                                                                        <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
+                                                                    </Button>
+
+                                                                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => showEliminarDetallePedido(detallePedido.idDetallePedido)}>
+                                                                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                                                                    </Button>
+                                                                </div>
+                                                            </TableCell>
 
 
-                                                    </TableRow>
-                                                ) : null
-                                                )}
+                                                        </TableRow>
+                                                    ) : null
+                                                    )}
                                             </TableBody>
                                         </Table>
-                                    
+
 
                                     </TableContainer>
 
@@ -313,10 +325,10 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                 )}
             </Formik>
             {modalIsOpenEditarProducto && (
-                <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} object={dataDetallePedido}  />
+                <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} object={dataDetallePedido} />
             )}
-            {modalIsOpenCrearProducto &&(
-                <ModalCrearProducto  isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={object.idPedido}/>
+            {modalIsOpenCrearProducto && (
+                <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={object.idPedido} updateTable={product => getProduct(product)} />
             )}
         </>
     );

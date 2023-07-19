@@ -38,7 +38,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
     const { updateDetallePedidos } = useDetallePedidos();
     const updateValues = {
         idDetallePedido : parseInt(object.idDetallePedido) || '',
-        idPedido : parseInt(object.idPedidoNavigation.idPedido) || '',
+        idPedido : parseInt(object.idPedido) || '',
         nombreAnillo : object.nombreAnillido || '',
         tipo: object.tipo || '',
         peso: object.peso || '',
@@ -47,8 +47,8 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
         material: object.material || '',
         detalle: object.detalle || '',
         detalle: object.cantidad || '',
-        idEmpleado: object.idEmpleadoNavigation.idEmpleado || '',
-        idEstado: object.idEstadoNavigation.idEstado || '',
+        idEmpleado: object.idEmpleado || '',
+        idEstado: object.idEstado || '',
         motivoDevolucion: object.motivoDevolucion || '',
     };
     const {empleados} = useEmpleados()

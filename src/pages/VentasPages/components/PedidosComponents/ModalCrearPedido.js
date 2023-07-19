@@ -121,14 +121,14 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
     useEffect(() => {
         setCreatePedidoOnce(true)
     }, [])   
-    function getDataFromChild(product) {              
+    function getProduct(product) {              
         setTableProducts([
             ...tableProducts,
             product
             ]
         )
     }
-    
+    console.log(tableProducts)
     return (
         <>
             <Formik
@@ -326,7 +326,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
                 )}
             </Formik>
             {modalIsOpenCrearProducto && (
-                <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedidoActual} updateTable={(product) => getDataFromChild(product)} />
+                <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedidoActual} updateTable={(product) => getProduct(product)} />
             )}
             {modalIsOpenEditarProducto && (
                 <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} object={dataDetallePedido} />
