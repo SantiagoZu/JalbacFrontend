@@ -4,7 +4,7 @@ export const initialValues = {
     nombre: '',
     apellido: '',
     documento: '',
-    correo: ''
+    correo: '',
 };
 
 export const validationScheme = {
