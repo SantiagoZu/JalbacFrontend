@@ -9,7 +9,7 @@ import { Formik } from 'formik';
 import { CustomInput } from '../../components/CustomInput';
 import { SpanError } from '../../components/styles/styles';
 import { initialValues, validateInputs } from './Components/LoginFormValidations/LoginFormik';
-import { useLogin } from '../../services/hooks/UseLogin'
+import { useLogin } from '../../services/hooks/useLogin'
 
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -94,15 +94,6 @@ function Login() {
                 
 
                   <hr className="my-8" />
-
-                  <Button block layout="outline">
-                    <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                    Github
-                  </Button>
-                  <Button className="mt-4" block layout="outline">
-                    <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                    Twitter
-                  </Button>
 
                   <p className="mt-4">
                     <Link

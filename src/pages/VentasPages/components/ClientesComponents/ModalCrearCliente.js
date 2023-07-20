@@ -6,7 +6,7 @@ import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputs } from './ClientesFormValidations/ClientesFormik';
-import { useClientes } from '../../../../services/hooks/UseClientes';
+import { useClientes } from '../../../../services/hooks/useClientes';
 
 export const ModalCrearCliente = ({ isOpen, isClose }) => {
 

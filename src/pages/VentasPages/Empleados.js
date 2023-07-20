@@ -21,7 +21,7 @@ import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataEmpleados';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
-import { useEmpleados } from '../../services/hooks/UseEmpleados';
+import { useEmpleados } from '../../services/hooks/useEmpleados';
 
 const response2 = response.concat([])
 

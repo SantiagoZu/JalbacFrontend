@@ -1,25 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { ModalCrearProducto } from './ModalCrearProducto';
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { Input2 } from '../../../../components/Input';
-import Swal from 'sweetalert2'
-import {
-    Table,
-    TableHeader,
-    TableCell,
-    TableBody,
-    TableRow,
-    TableFooter,
-    TableContainer,
-    Badge,
-    Avatar,
-    Pagination,
-} from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
-
-import { expresionesProducto } from '../../../../helpers/validacionesRegex';
-import { showAlertCorrect,  showAlertIncorrect } from '../../../../helpers/Alertas';
+import { showAlertCorrect,  showAlertIncorrect, showAlertEstadoDevuelto } from '../../../../helpers/Alertas';
 import response from '../../../../utils/demo/dataProductos'
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
@@ -27,7 +9,7 @@ import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
-import { useEmpleados } from '../../../../services/hooks/UseEmpleados'
+import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { useEstados } from '../../../../services/hooks/useEstados'
 const responseProducto = response.concat([])
 

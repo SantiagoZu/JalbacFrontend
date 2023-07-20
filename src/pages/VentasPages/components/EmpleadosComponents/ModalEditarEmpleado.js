@@ -6,7 +6,7 @@ import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { validateInputs } from './EmpleadosFormValidations/EmpleadosFormik';
-import { useEmpleados } from '../../../../services/hooks/UseEmpleados';
+import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 
 export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
 
