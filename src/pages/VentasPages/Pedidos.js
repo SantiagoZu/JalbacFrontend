@@ -24,8 +24,9 @@ import {ModalCrearPedido} from './components/PedidosComponents/ModalCrearPedido'
 import {ModalDetallePedido} from './components/PedidosComponents/ModalDetallePedido';
 import {ModalEditarPedido} from './components/PedidosComponents/ModalEditarPedido';
 import { returnDate } from '../../helpers/parseDate'
-const responsePedido = response.concat([])
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
+const responsePedido = response.concat([])
 
 function Pedidos() {
 
@@ -40,7 +41,8 @@ function Pedidos() {
 
   const resultsPerPage = 10
   const totalResults = pedidos.length
- 
+
+  const history = useHistory();
 
   function onPageChangeTable2(p) {
     setPageTable(p)
@@ -85,7 +87,9 @@ function Pedidos() {
     setDataPedidos(obj);
   }
 
-  
+  function redirectCrearPedido(){
+     history.push('/app/crearPedido')
+  }  
  
   
   return (
@@ -94,7 +98,7 @@ function Pedidos() {
       
 
       <div className="flex ml-auto mb-6">
-        <Button onClick={openModalCrearPedido}>
+        <Button onClick={redirectCrearPedido}>
           Crear pedido
           <span className="ml-1" aria-hidden="true">+</span>
         </Button>
