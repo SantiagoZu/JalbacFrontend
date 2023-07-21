@@ -102,7 +102,7 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
     const { postPedidos, getPedidos } = usePedidos();
     const { clientes } = useClientes()
     const clientesDropdown = [
-        { value: '', label: 'Elija el cliente' }
+        { value: null, label: 'Elija el cliente' }
     ]
     for (const id in clientes) {
         const cliente = {

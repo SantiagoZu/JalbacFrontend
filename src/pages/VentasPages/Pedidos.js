@@ -86,33 +86,12 @@ function Pedidos() {
   }
 
   
-  function eliminarPedido(idPedido) {
-    showAlertDeleted(
-      '¿Estás seguro que deseas eliminar el pedido?',
-      'warning',
-      'Eliminado correctamente',
-      'success'
-    ).then((result) => {
-      if (result.isConfirmed) {
-        deletePedidos(idPedido)
-          .then(response => {
-            showAlertCorrect('Pedido eliminado correctamente.', 'success');
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
-          })
-          .catch(response => {
-            showAlertIncorrect('Error al eliminar el pedido.', 'error');
-            console.log(response)
-          });
-      }
-    });
-  }
+ 
   
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
-      <SectionTitle>Tabla pedidos</SectionTitle>
+      
 
       <div className="flex ml-auto mb-6">
         <Button onClick={openModalCrearPedido}>
@@ -178,7 +157,7 @@ function Pedidos() {
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                     
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarPedido(parseInt(pedido.idPedido))}>
+                    <Button layout="link" size="icon" aria-label="Delete" >
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>
