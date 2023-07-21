@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import { useClientes } from '../../services/hooks/UseClientes'
 
+import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
-import { Input2 } from '../../components/Input';
-import {ModalCrearCliente} from './components/ClientesComponents/ModalCrearCliente';
-import {showAlertDeleted, showAlertIncorrect, showAlertCorrect} from '../../helpers/Alertas';
+
+import { ModalEditarCliente } from './components/ClientesComponents/ModalEditarCliente'
+import { ModalCrearCliente } from './components/ClientesComponents/ModalCrearCliente'
+
 import {
   Table,
   TableHeader,
@@ -13,66 +16,106 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
   Button,
   Pagination,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Label,
-  Select
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import Swal from 'sweetalert2'
-
-import response from '../../utils/demo/dataClientes'
+import { EditIcon, TrashIcon } from '../../icons';
+import { SearchIcon } from '../../icons';
+import response from '../../utils/demo/dataClientes';
+import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
 
 const response2 = response.concat([])
 
 function Clientes() {
 
+  const { clientes, deleteClientes } = useClientes();
+  const clientes2 = clientes.concat([])
+  const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
+  const [dataCliente, setDataCliente] = useState([]);
   const [pageTable2, setPageTable2] = useState(1)
-
   const [dataTable2, setDataTable2] = useState([])
+  const [search, setSearch] = useState("")
 
-  const resultsPerPage = 10
-  const totalResults = response.length
+
+  const resultsPerPage = 5
+  const totalResults = clientes2.length
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
 
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+
+    return data.filter((cliente) => (
+      cliente.nombre.toLowerCase().includes(searchTerm) ||
+      cliente.apellido.toLowerCase().includes(searchTerm) ||
+      cliente.documento.toLowerCase().includes(searchTerm) ||
+      cliente.telefono.toLowerCase().includes(searchTerm)
+    ));
+  };
+
   useEffect(() => {
-    setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
+    const filteredData = searchFilter(clientes2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
+  }, [clientes, pageTable2, search])
 
+  useEffect(() => {
+    setData();
+  }, []);
 
-  const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
+  const searcher = (e) => {
+    setSearch(e.target.value)
+  }
 
   function openModalCreate() {
     setModalIsOpenCreate(true);
   }
 
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-
-  function openModalEdit() {
-    setModalIsOpenCreate(true);
-  }
-
   function closeModal() {
-    setModalIsOpenEdit(false);
     setModalIsOpenCreate(false);
   }
 
-  function alertaEliminado() {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el empleado?', 'warning', 'Eliminado correctamente', 'success')
+  function openModalEdit(obj) {
+    setModalIsOpenEdit(true);
+    setData(obj);
+  }
+
+  function closeModalEdit() {
+    setModalIsOpenEdit(false);
   }
 
 
-  // EDITAR
+  function setData(obj) {
+    setDataCliente(obj);
+  }
 
+  function eliminarCliente(idCliente) {
+    showAlertDeleted(
+      '¿Estás seguro que deseas eliminar el cliente?',
+      'warning',
+      'Eliminado correctamente',
+      'success'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        deleteClientes(idCliente)
+          .then(response => {
+            showAlertCorrect('Cliente eliminado correctamente.', 'success');
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          })
+          .catch(response => {
+            showAlertIncorrect('Error al eliminar el cliente.', 'error');
+          });
+      }
+    });
+  }
 
   return (
 
@@ -83,7 +126,7 @@ function Clientes() {
       <div className="flex ml-auto mb-6">
         <ModalCrearCliente isOpen={modalIsOpenCreate} isClose={closeModal} />
         <Button onClick={openModalCreate}>
-          Crear Cliente
+          Registrar Cliente
           <span className="ml-2" aria-hidden="true">
             +
           </span>
@@ -96,6 +139,8 @@ function Clientes() {
             <Input
               className="pl-8 text-gray-700"
               placeholder="Buscar cliente"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>
@@ -106,7 +151,6 @@ function Clientes() {
             <tr >
               <TableCell>ID</TableCell>
               <TableCell>Documento</TableCell>
-              <TableCell>Correo</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Apellidos</TableCell>
               <TableCell>Teléfono</TableCell>
@@ -115,53 +159,59 @@ function Clientes() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((cliente, i) => (
-              <TableRow key={i}>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.ID}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Documento}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Correo}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Nombre}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Apellidos}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Telefono}</p>
-                </TableCell>
+            {dataTable2.map((cliente, i) => {
 
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.Estado}</p>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEdit}>
-                      <EditIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
-                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+              return (
+                <TableRow key={i}>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.idCliente}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.documento}</p>
+                  </TableCell>
+
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.nombre}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.apellido}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.telefono}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.estado ? 'Activo' : 'Inactivo'}</p>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-4">
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEdit(cliente)}>
+                        <EditIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarCliente(cliente.idCliente)}>
+                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>);
+            }
+            )
+            }
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
+      {modalIsOpenEdit && (
+        <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} object={dataCliente} />
+      )}
     </>
   )
 }

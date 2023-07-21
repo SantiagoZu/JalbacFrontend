@@ -1,5 +1,4 @@
 import Swal from 'sweetalert2';
-
 export const showAlertCorrect = (message, icon, closeModal) => {
     return Swal.fire({
         title: message,
@@ -11,7 +10,6 @@ export const showAlertCorrect = (message, icon, closeModal) => {
             closeModal();
         })
 }
-
 export const showAlertIncorrect = (message, icon) => {
     return Swal.fire({
         title: message,
@@ -20,7 +18,6 @@ export const showAlertIncorrect = (message, icon) => {
         showConfirmButton: false
     });
 }
-
 export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
     return new Promise((resolve) => {
         Swal.fire({
@@ -36,25 +33,25 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
         });
     });
 };
-export const showAlertEstadoDevuelto = (message, icon, secondMessage, secondIcon) => {
+
+export const showCloseSesion = (message, icon,secondMessage, secondIcon, onDelete ,onClose) => {
     Swal.fire({
         title: message,
         icon: icon,
         showCancelButton: true,
         confirmButtonColor: '#7e3af2',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Devolver'
+        confirmButtonText: '¡Sí, cerrar!'
     }).then((result) => {
         if (result.isConfirmed) {
+            onDelete();
             Swal.fire(
-                'Devuelto',
+                '',
                 secondMessage,
                 secondIcon,
             )
+            onClose();
         }
     });
 }
-
-
-
 

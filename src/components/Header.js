@@ -1,7 +1,5 @@
 import React, { useContext, useState } from 'react'
 import { SidebarContext } from '../context/SidebarContext'
-import { NavLink, Route } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import {
   SearchIcon,
   MoonIcon,
@@ -12,7 +10,12 @@ import {
   OutlineCogIcon,
   OutlineLogoutIcon,
 } from '../icons'
-import { Avatar, Badge, Input, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui'
+import { Avatar, Badge, Input, Dropdown, DropdownItem, WindmillContext, Button } from '@windmill/react-ui'
+
+import { useLogin } from '../services/hooks/UseLogin'
+import { showCloseSesion } from '../helpers/Alertas'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import Cookies from "js-cookie";
 
 function Header() {
   const { mode, toggleMode } = useContext(WindmillContext)
@@ -20,6 +23,7 @@ function Header() {
 
   const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const history = useHistory();
 
   function handleNotificationsClick() {
     setIsNotificationsMenuOpen(!isNotificationsMenuOpen)
@@ -27,6 +31,14 @@ function Header() {
 
   function handleProfileClick() {
     setIsProfileMenuOpen(!isProfileMenuOpen)
+  }
+
+  function deleteCookie(){
+    Cookies.remove('CookieJalbac')
+  }
+
+  const closeSesion = () =>{
+    showCloseSesion('¿Estás seguro que desea cerrar sesión?', 'warning', 'Vuelva pronto', 'success', ()=> deleteCookie(), () => history.push('/login'))
   }
 
   return (
@@ -122,19 +134,19 @@ function Header() {
               isOpen={isProfileMenuOpen}
               onClose={() => setIsProfileMenuOpen(false)}
             >
-                <DropdownItem tag="a" href="/app/perfil" >
-                  <OutlinePersonIcon className="w-4 h-4 mr-3" aria-hidden="true" />
-                  <span>Perfil</span>
-                </DropdownItem>
+              <DropdownItem tag="a" href="/app/perfil" >
+                <OutlinePersonIcon className="w-4 h-4 mr-3" aria-hidden="true" />
+                <span>Perfil</span>
+              </DropdownItem>
               <DropdownItem tag="a" href="#">
                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Configuración</span>
               </DropdownItem>
               <DropdownItem href="">
                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />
-                <Link to="/login">
+                <Button onClick={() => closeSesion()}>
                 <span>Cerrar sesión</span>
-                </Link>
+                </Button>
               </DropdownItem>   
             </Dropdown>
           </li>
