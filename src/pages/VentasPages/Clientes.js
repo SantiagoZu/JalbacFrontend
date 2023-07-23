@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useClientes } from '../../services/hooks/UseClientes'
+import { useClientes } from '../../services/hooks/useClientes'
 
 import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'

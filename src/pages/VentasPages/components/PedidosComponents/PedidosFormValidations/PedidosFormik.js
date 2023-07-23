@@ -1,15 +1,12 @@
+
 import { expresionesCrearPedido as regex } from '../../../../../helpers/validacionesRegex';
 
-export const initialValues = {
-    
+export const initialValues = {    
+    idCliente : null,
     fechaEntrega: '',
-    idEstado: 1
+    detallesPedido : []
 };
 
-export const validationScheme = {
-    fechaEntrega: regex.fechaEntrega,
-    estado: regex.estado,
-}
 
 export const validateInputs = (values) => {
 
@@ -20,17 +17,24 @@ export const validateInputs = (values) => {
     let diaHoy =  fechaHoy.getDate() //obtengo el dia desde el sistema
     let mesHoy =  fechaHoy.getMonth() //obtengo el mes desde el sistema
     let yearHoy = fechaHoy.getFullYear()  //obtengo el año desde el sistema
-    console.log(` ${diaForm} ${mesForm} ${yearForm} ${diaHoy} ${mesHoy} ${yearHoy}`)
+    
     let fechaComparar = new Date(yearForm, mesForm, diaForm) //creo el objeto fecha del form
     let fechaCompararHoy = new Date(yearHoy, mesHoy, diaHoy) //creo la fecha de hoy desde sistema
-    console.log(fechaComparar > fechaCompararHoy)
+    
     let errores = {};    
     if (!values.fechaEntrega) {
         errores.fechaEntrega = 'El campo Fecha entrega es oblígatorio'
     } else if (!(fechaComparar > fechaCompararHoy)) {
         errores.fechaEntrega = 'La Fecha de entrega no puede ser hoy ni ninguna fecha pasada  '        
     }
-
+    if (!values.cliente) {
+        errores.cliente = 'Tienes que seleccionar un cliente'
+    } else if (!(values.cliente == null)) {
+        errores.cliente = 'Tienes que seleccionar un cliente'        
+    }
+    if (!values.detallesPedido) {
+        errores.detallesPedido = 'Tienes que agregar almenos un producto'
+    }
     return errores;
 
 };

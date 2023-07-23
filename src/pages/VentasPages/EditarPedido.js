@@ -35,7 +35,7 @@ import { initialValues, validateInputs } from './components/PedidosComponents/Pe
 import { useEmpleados } from '../../services/hooks/useEmpleados'
 
 
-function CrearPedido() {
+function EditarPedido() {
 
   const [dataPedido, setDataPedidos] = useState([]);
   const { pedidos, deletePedidos } = usePedidos();
@@ -61,7 +61,7 @@ function CrearPedido() {
 
 
 
-  const history = useHistory()
+  
   const [detallePedidoAEditar, setdetallePedidoAEditar] = useState();
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
@@ -319,4 +319,4 @@ function CrearPedido() {
   )
 }
 
-export default CrearPedido
+export default EditarPedido

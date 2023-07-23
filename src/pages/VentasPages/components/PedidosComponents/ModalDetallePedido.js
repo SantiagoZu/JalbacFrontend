@@ -20,6 +20,7 @@ import { expresiones } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import response from '../../../../utils/demo/dataProductos'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
+
 const responseDetallePedido = response.concat([])
 export const ModalDetallePedido = ({ isOpen, isClose, idPedido }) => {
     const [dataTable, setDataTable] = useState([])
@@ -53,6 +54,7 @@ export const ModalDetallePedido = ({ isOpen, isClose, idPedido }) => {
     
     return (
         <>
+       
             <Modal isOpen={isOpen} onClose={isClose}  >
                 <ModalHeader className='mb-8'> Detalles producto</ModalHeader>
                 <ModalBody>

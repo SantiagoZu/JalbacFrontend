@@ -48,18 +48,20 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido, updateTable }) =
            
                     const updatedValues = {
                         ...values,
-                        idEstado : 1,
-                        idPedido : idPedido,
-                        motivoDevolucion: "ninguno",
+                        idEmpleado : values.idEmpleado,
+                        idEstado : 1,                       
+                        motivoDevolucion: '',
                     
                     };
                    
                     updatedValues.idEmpleado = parseInt(updatedValues.idEmpleado)
                     updatedValues.cantidad = parseInt(updatedValues.cantidad)
-                    updateDetallePedido.push(updatedValues)
+                    updateTable(updatedValues)
+                    console.log(updatedValues)
+                    showAlertCorrect('Producto creado correctamente', 'success', isClose)
+                    /*updateDetallePedido.push(updatedValues)
                     postDetallePedidos(updateDetallePedido).then(response => {
                         getDetallePedidos();
-                        updateTable(response.data.resultado[0])
                         resetForm();
                         console.log(response.data.resultado[0])
                         showAlertCorrect('Producto creado correctamente', 'success', isClose)
@@ -69,7 +71,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido, updateTable }) =
                         showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
                         console.log(error);
                         console.log(updatedValues)
-                    });
+                    });*/
                     resetForm();
                     
                 }}
