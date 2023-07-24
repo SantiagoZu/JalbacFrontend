@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, Route } from 'react-router-dom'
 import * as Icons from '../../icons'
-import { usePermisos } from '../../services/hooks/UsePermisos'
+import { usePermisos } from '../../services/hooks/usePermisos'
 
 function Icon({ icon, ...props }) {
   const Icon = Icons[icon]
@@ -36,14 +36,6 @@ function SidebarContent() {
         nombre: item.nombrePermiso,
         icono: "BellIcon",
         url: "/app/roles",
-      });
-    }
-    if (item.nombrePermiso === "Usuarios") {
-      newPermisos.push({
-        idPermiso: item.idPermiso,
-        nombre: item.nombrePermiso,
-        icono: "PeopleIcon",
-        url: "/app/usuarios",
       });
     }
     if (item.nombrePermiso === "Empleados") {

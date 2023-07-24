@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { validateInputs } from './ClientesFormValidations/ClientesFormik';
-import { useClientes } from '../../../../services/hooks/UseClientes';
+import { useClientes } from '../../../../services/hooks/useClientes';
 
 export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
 

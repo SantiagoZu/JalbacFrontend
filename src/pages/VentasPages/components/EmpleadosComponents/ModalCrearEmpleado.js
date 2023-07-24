@@ -5,47 +5,55 @@ import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alerta
 import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { initialValues, validateInputs } from './ClientesFormValidations/ClientesFormik';
-import { useClientes } from '../../../../services/hooks/useClientes';
+import { validateInputs, initialValues } from './EmpleadosFormValidations/EmpleadosFormik';
+import { useEmpleados } from '../../../../services/hooks/useEmpleados';
+import { useRoles } from '../../../../services/hooks/useRoles';
 
-export const ModalCrearCliente = ({ isOpen, isClose }) => {
+export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
 
-    const { postClientes, getClientes } = useClientes();
-    const estados = [
-        { value: '', label: 'Seleccione un estado' },
-        { value: true, label: 'Activo' },
-        { value: false, label: 'Inactivo' }
+    const { crearEmpleado } = useEmpleados();
+    const { roles } = useRoles();
+    const rolesDropdown = [
+        { value: '', label: 'Elija el rol' },
+        ...roles.map((rol) => ({ value: rol.idRol, label: rol.nombre })),
     ];
-
-
     return (
         <Formik
             initialValues={initialValues}
             validate={(values) => validateInputs(values)}
-            onSubmit={(values, { resetForm }) => {
-                const convertedValue = values.estado === 'true'; // Cambiar a booleano
-
-                const updatedValues = {
-                    ...values,
-                    estado: convertedValue,
-                };
-
-                console.log(updatedValues);
-                postClientes(updatedValues).then(response => {
-                    resetForm();
-                    showAlertCorrect('Empleado creado correctamente', 'success', isClose)
-                    window.location.reload();
-                }).catch(response => {
-                    showAlertIncorrect('No se pudo crear el empleado', 'error', isClose);
-                });
-                resetForm();
-                getClientes();
-            }}>
+            onSubmit={(valores, { resetForm }) => {
+                const empleado = {
+                    estado: true,
+                    documento: valores.documento.toString(),
+                    nombre: valores.nombre,
+                    apellido: valores.apellido,
+                    cargo: valores.cargo,
+                    idRol: valores.idRol,
+                    correo: valores.correo,
+                    contrasena: valores.contrasena,
+                }
+                crearEmpleado(empleado)
+                console.log(valores)
+            }}
+        >
             {({ errors, handleSubmit, touched }) => (
                 <form onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
-                        <ModalHeader className='mb-3'>Registar cliente</ModalHeader>
+                        <ModalHeader className='mb-3'>Crear empleado</ModalHeader>
                         <ModalBody>
+                            <Label className="mt-4">
+                                <span>Documento</span>
+                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                                    <CustomInput
+                                        type="number"
+                                        id="documento"
+                                        name="documento"
+                                        placeholder="1234567"
+                                    />
+                                    {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
+                                </div>
+                            </Label>
+
                             <Label className="mt-4">
                                 <span>Nombre</span>
                                 <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
@@ -56,9 +64,9 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                                         placeholder="Santiago"
                                     />
                                     {touched.nombre && errors.nombre && <SpanError>{errors.nombre}</SpanError>}
+
                                 </div>
                             </Label>
-
                             <Label className="mt-4">
                                 <span>Apellidos</span>
                                 <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
@@ -67,43 +75,59 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                                         id="apellido"
                                         name="apellido"
                                         placeholder="Zuluaga Muñoz"
-
                                     />
                                     {touched.apellido && errors.apellido && <SpanError>{errors.apellido}</SpanError>}
                                 </div>
                             </Label>
+
                             <Label className="mt-4">
-                                <span>Documento</span>
+                                <span>Correo</span>
                                 <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
                                     <CustomInput
-                                        type="text"
-                                        id="documento"
-                                        name="documento"
-                                        placeholder="1234567"
+                                        type="email"
+                                        id="correo"
+                                        name="correo"
+                                        placeholder="email@email.com"
                                     />
-                                    {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
+                                    {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
                                 </div>
                             </Label>
+
                             <Label className="mt-4">
-                                <span>Teléfono</span>
+                                <span>Contraseña</span>
                                 <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
                                     <CustomInput
-                                        type="text"
-                                        id="telefono"
-                                        name="telefono"
-                                        placeholder="3004838916"
+                                        type="password"
+                                        id="contrasena"
+                                        name="contrasena"
+                                        placeholder="Contraseña"
                                     />
-                                    {touched.telefono && errors.telefono && <SpanError>{errors.telefono}</SpanError>}
+                                    {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
                                 </div>
                             </Label>
+
                             <Label className="mt-4">
-                                <span>Estado</span>
+                                <span>Rol</span>
                                 <CustomInput
                                     type="select"
-                                    id="estado"
-                                    name="estado"
-                                    options={estados}
+                                    id="idRol"
+                                    name="idRol"
+                                    options={rolesDropdown}
                                 />
+                            </Label>
+
+                            <Label className="mt-4">
+                                <span>Cargo</span>
+                                <Field name="cargo" id="cargo">
+                                    {({ field }) => (
+                                        <Select {...field} className="mt-1">
+                                            <option hidden>Seleccionar...</option>
+                                            <option value="Vaceador">Vaceador</option>
+                                            <option value="Diseñador 3D">Diseñador 3D</option>
+                                            <option value="A mano">A mano</option>
+                                        </Select>
+                                    )}
+                                </Field>
                             </Label>
                         </ModalBody>
                         <ModalFooter>
@@ -119,6 +143,6 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                     </Modal>
                 </form>
             )}
-        </Formik>
+        </Formik >
     )
-};
+}

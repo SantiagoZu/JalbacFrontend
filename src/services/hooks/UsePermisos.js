@@ -2,18 +2,26 @@ import { useEffect, useState } from "react";
 import { FetchData } from "../GenericAxios";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
-import { useLogin } from "./UseLogin";
+import { useLogin } from "./useLogin";
 
 export const usePermisos = () => {
-    const {idUser}  = useLogin();
+    const { idUser } = useLogin();
     const [permisos, setPermisos] = useState([]);
     const instance = FetchData('Permiso')
+    let cookie = null
+
 
     useEffect(() => {
-        const cookie = Cookies.get('CookieJalbac');
-        const unencryptToken = jwtDecode(cookie);
-        const idUsuario = unencryptToken.unique_name;
-        getPermisos(idUsuario);       
+        if (Cookies.get('CookieJalbac') !== '') {
+            cookie = Cookies.get('CookieJalbac')
+            const unencryptToken = jwtDecode(cookie);
+            const idUsuario = unencryptToken.unique_name;
+            getPermisos(idUsuario);
+        }
+        else {
+            console.log('no logueado')
+        }
+
     }, []);
 
     const getPermisos = async (id) => {
@@ -23,7 +31,6 @@ export const usePermisos = () => {
         return permisos;
     }
 
-    console.log(permisos)
 
     return {
         permisos,

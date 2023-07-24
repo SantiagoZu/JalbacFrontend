@@ -36,6 +36,11 @@ export const useEmpleados = () => {
         setEmpleado(empleados);
     }
 
+    const crearEmpleado = async(obj) => {
+        const response = await instance.post("/", obj);
+        const data = response.data.resultado;
+    }
+
     return {
         empleados,
         empleado,
@@ -43,5 +48,6 @@ export const useEmpleados = () => {
         editarEmpleado,
         cargarEmpleados,
         eliminarEmpleado,
+        crearEmpleado
     }
 }

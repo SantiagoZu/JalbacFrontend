@@ -14,12 +14,17 @@ const Page404 = lazy(() => import('../pages/404'))
 function Layout() {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
   let location = useLocation()
-  const cookie = Cookies.get('CookieJalbac')
-
+  let cookie = null
   useEffect(() => {
     closeSidebar()
   }, [location])
 
+  if (Cookies.get('CookieJalbac') !== '' ) {
+    cookie = Cookies.get('CookieJalbac')
+  }
+  else{
+    console.log('no logueado')
+  }
   return (
     <div
       className={`flex h-screen bg-gray-50 dark:bg-gray-900 ${isSidebarOpen && 'overflow-hidden'}`}
@@ -31,7 +36,7 @@ function Layout() {
         <Main>
           <Suspense fallback={<ThemedSuspense />}>
             {
-              cookie !== '' ? 
+              cookie !== undefined ? 
                 <Switch>
                   {routes.map((route, i) => {
                     return route.component ? (
@@ -48,16 +53,6 @@ function Layout() {
                 </Switch> 
               : 
                 <Switch>
-                  {routes.map((route, i) => {
-                    return route.component ? (
-                      <Route
-                        key={i}
-                        exact={true}
-                        path={`/app${route.path}`}
-                        render={(props) => <route.component {...props} />}
-                      />
-                    ) : null
-                  })}
                   <Redirect exact from="/app" to="/app/404" />
                   <Route component={Page404} />
                 </Switch>

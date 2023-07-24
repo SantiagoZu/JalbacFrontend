@@ -9,11 +9,7 @@ import {
     TableCell,
     TableBody,
     TableRow,
-    TableFooter,
     TableContainer,
-    Badge,
-    Avatar,
-    Pagination,
 } from '@windmill/react-ui'
 
 

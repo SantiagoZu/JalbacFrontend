@@ -5,8 +5,9 @@ import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alerta
 import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { validateInputs } from './EmpleadosFormValidations/EmpleadosFormik';
-import { useEmpleados } from '../../../../services/hooks/UseEmpleados';
+import { validateEditInputs } from './EmpleadosFormValidations/EmpleadosFormik';
+import { useEmpleados } from '../../../../services/hooks/useEmpleados';
+import { useRoles } from '../../../../services/hooks/useRoles';
 
 export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
 
@@ -16,23 +17,30 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
         documento: empleado.documento || '',
         correo: empleado.idUsuarioNavigation?.correo || '',
         cargo: empleado.cargo || '',
+        rol: empleado.idUsuarioNavigation?.idRolNavigation?.nombre || '',
         estado: empleado.estado ? 'true' : 'false',
     };
 
     const { editarEmpleado } = useEmpleados();
+    const { roles } = useRoles();
+    const rolesDropdown = [
+        { value: '', label: initialValues.rol },
+        ...roles.map((rol) => ({ value: rol.idRol, label: rol.nombre })),
+    ];
 
     return (
         <Formik
             initialValues={initialValues}
-            validate={(values) => validateInputs(values)}
+            validate={(values) => validateEditInputs(values)}
             onSubmit={(valores, { resetForm }) => {
                 const empleadoEditado = {
                     idEmpleado: empleado.idEmpleado,
                     idUsuario: empleado.idUsuario,
+                    idRol: empleado.idUsuarioNavigation.idRol,
                     estado: JSON.parse(valores.estado),
                     documento: valores.documento.toString(),
                     nombre: valores.nombre,
-                    correo: valores.correo,
+                    correo: valores.correo, 
                     apellido: valores.apellido,
                     cargo: valores.cargo
                 };
@@ -105,6 +113,17 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                                     {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
                                 </div>
                             </Label>
+
+                            <Label className="mt-4">
+                                <span>Rol</span>
+                                <CustomInput
+                                    type="select"
+                                    id="idRol"
+                                    name="idRol"
+                                    options={rolesDropdown}
+                                />
+                            </Label>
+                            
                             <Label className="mt-4">
                                 <span>Cargo</span>
                                 <Field name="cargo" id="cargo">
