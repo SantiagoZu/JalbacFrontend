@@ -3,7 +3,6 @@ import { useClientes } from '../../services/hooks/useClientes'
 
 import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
 
 import { ModalEditarCliente } from './components/ClientesComponents/ModalEditarCliente'
 import { ModalCrearCliente } from './components/ClientesComponents/ModalCrearCliente'
@@ -17,6 +16,7 @@ import {
   TableFooter,
   TableContainer,
   Button,
+  Badge,
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
@@ -122,7 +122,6 @@ function Clientes() {
     <>
       <PageTitle>Clientes</PageTitle>
 
-      <SectionTitle>Tabla clientes</SectionTitle>
       <div className="flex ml-auto mb-6">
         <ModalCrearCliente isOpen={modalIsOpenCreate} isClose={closeModal} />
         <Button onClick={openModalCreate}>
@@ -149,7 +148,6 @@ function Clientes() {
         <Table>
           <TableHeader>
             <tr >
-              <TableCell>ID</TableCell>
               <TableCell>Documento</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Apellidos</TableCell>
@@ -163,9 +161,7 @@ function Clientes() {
 
               return (
                 <TableRow key={i}>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.idCliente}</p>
-                  </TableCell>
+                  
                   <TableCell>
                     <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.documento}</p>
                   </TableCell>
@@ -180,7 +176,7 @@ function Clientes() {
                     <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.telefono}</p>
                   </TableCell>
                   <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.estado ? 'Activo' : 'Inactivo'}</p>
+                    <Badge className="text-xs text-gray-600 dark:text-gray-400" type={cliente.estado ? "success" : "danger"}>{cliente.estado ? 'Activo' : 'Inactivo'}</Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-4">

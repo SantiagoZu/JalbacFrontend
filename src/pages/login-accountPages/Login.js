@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import ImageJalbac from '../../assets/img/JalbacLogin.jpg'
-import { GithubIcon, TwitterIcon } from '../../icons'
 import { Label,  Button } from '@windmill/react-ui'
 import {  showAlertIncorrect } from '../../helpers/Alertas';
 import { Formik } from 'formik';

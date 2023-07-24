@@ -11,7 +11,6 @@ const Tables = lazy(() => import('../pages/Tables'))
 const Page404 = lazy(() => import('../pages/404'))
 const Blank = lazy(() => import('../pages/Blank'))
 const Roles = lazy(() => import('../pages/ConfiguracionPages/Roles'))
-const Usuarios = lazy(() => import('../pages/UsuarioPages/Usuarios'))
 const Empleados = lazy(() => import('../pages/VentasPages/Empleados'))
 const Clientes = lazy(() => import('../pages/VentasPages/Clientes'))
 const Pedidos = lazy(() => import('../pages/VentasPages/Pedidos'))
@@ -70,10 +69,6 @@ const routes = [
   {
     path: '/roles',
     component: Roles,
-  },
-  {
-    path: '/usuarios',
-    component: Usuarios,
   },
   {
     path: '/empleados',

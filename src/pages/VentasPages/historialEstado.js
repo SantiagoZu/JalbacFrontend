@@ -10,13 +10,11 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
-  Avatar,
   Button,
   Pagination,
   Input
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
+import {  SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataPedidos'
 import responseDetalles from '../../utils/demo/dataHistorialEstadoPedido'
 import {ModalDetallesProducto} from './components/HistorialPedidosComponents/ModalDetallesProducto';

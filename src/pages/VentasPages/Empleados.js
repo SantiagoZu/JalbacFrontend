@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
-
 import { Input } from '@windmill/react-ui'
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
-
 import { ModalEditarEmpleado } from './components/EmpleadosComponents/ModalEditarEmpleado'
-
+import { ModalCrearEmpleado } from './components/EmpleadosComponents/ModalCrearEmpleado';
 import {
   Table,
   TableHeader,
@@ -16,6 +13,7 @@ import {
   TableContainer,
   Button,
   Pagination,
+  Badge,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
@@ -69,22 +67,29 @@ function Empleados() {
 
   /* Despliegue modal editar */
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  /* Despliegue modal editar */
+  const [modalIsOpenCrear, setModalIsOpenCrear] = useState(false);
 
   //funcion para buscar
   const searcher = (e) => {
     setSearch(e.target.value)
   }
 
-
-
-
   function openModal(empleado) {
     setEmpleadoSeleccionado(empleado);
     setModalIsOpen(true);
   }
 
+  function openModalCrear() {
+    setModalIsOpenCrear(true);
+  }
+
   function closeModal() {
     setModalIsOpen(false);
+  }
+
+  function closeModalCrear() {
+    setModalIsOpenCrear(false);
   }
 
   function eliminarEmpleados(idEmpleado) {
@@ -100,7 +105,7 @@ function Empleados() {
             showAlertCorrect('Empleado eliminado correctamente.', 'success');
             setTimeout(() => {
               window.location.reload();
-          }, 1000);
+            }, 1000);
           })
           .catch(response => {
             if (response.response.data.errorMessages[0] !== null) {
@@ -119,11 +124,8 @@ function Empleados() {
     <>
       <PageTitle>Empleados</PageTitle>
 
-
-
-      <SectionTitle>Tabla empleados</SectionTitle>
-
       <div className="flex ml-auto mb-6">
+        <Button onClick={openModalCrear}>Crear empleado +</Button>
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
@@ -143,8 +145,8 @@ function Empleados() {
           <TableHeader>
             <tr >
               <TableCell>Cargo</TableCell>
+              <TableCell>Rol</TableCell>
               <TableCell>Nombre</TableCell>
-              <TableCell>Apellidos</TableCell>
               <TableCell>Documento</TableCell>
               <TableCell>Correo</TableCell>
               <TableCell>Estado</TableCell>
@@ -158,10 +160,10 @@ function Empleados() {
                   <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.cargo}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400" id="nombre" name="nombre">{empleado.nombre}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.idRolNavigation.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.apellido}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400" id="nombre" name="nombre">{empleado.nombre} {empleado.apellido}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.documento}</p>
@@ -171,7 +173,7 @@ function Empleados() {
                 </TableCell>
 
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400" type={empleado.status}>{empleado.estado ? 'Activo' : 'Inactivo'}</p>
+                  <Badge className="text-xs text-gray-600 dark:text-gray-400" type={empleado.estado ? "success" : "danger"}>{empleado.estado ? 'Activo' : 'Inactivo'}</Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
@@ -203,6 +205,10 @@ function Empleados() {
       </TableContainer>
       {modalIsOpen && (
         <ModalEditarEmpleado isOpen={modalIsOpen} isClose={closeModal} empleado={empleadoSeleccionado} />
+      )}
+
+      {modalIsOpenCrear && (
+        <ModalCrearEmpleado isOpen={modalIsOpenCrear} isClose={closeModalCrear} />
       )}
     </>
   )

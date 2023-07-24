@@ -38,14 +38,6 @@ function SidebarContent() {
         url: "/app/roles",
       });
     }
-    if (item.nombrePermiso === "Usuarios") {
-      newPermisos.push({
-        idPermiso: item.idPermiso,
-        nombre: item.nombrePermiso,
-        icono: "PeopleIcon",
-        url: "/app/usuarios",
-      });
-    }
     if (item.nombrePermiso === "Empleados") {
       newPermisos.push({
         idPermiso: item.idPermiso,

@@ -18,7 +18,6 @@ import {
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, MailIcon, OutlinePersonIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataBackup'
 import Swal from 'sweetalert2'
@@ -93,7 +92,6 @@ function Usuario() {
         <Table>
           <TableHeader>
             <tr >
-              <TableCell>Id</TableCell>
               <TableCell>Usuario</TableCell>
               <TableCell>Fecha BackUp</TableCell>
             </tr>
@@ -101,9 +99,7 @@ function Usuario() {
           <TableBody>
             {dataTable2.map((NoConfioEnNingunaEsNormalQueTodasFallen, i) => (
               <TableRow key={i}>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{NoConfioEnNingunaEsNormalQueTodasFallen.ID}</p>
-                </TableCell>
+                
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{NoConfioEnNingunaEsNormalQueTodasFallen.Usuario}</p>
                 </TableCell>

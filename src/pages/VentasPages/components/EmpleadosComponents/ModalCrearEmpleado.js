@@ -5,63 +5,54 @@ import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alerta
 import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { validateEditInputs } from './EmpleadosFormValidations/EmpleadosFormik';
+import { validateInputs, initialValues } from './EmpleadosFormValidations/EmpleadosFormik';
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import { useRoles } from '../../../../services/hooks/useRoles';
 
-export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
+export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
 
-    const initialValues = {
-        nombre: empleado.nombre || '',
-        apellido: empleado.apellido || '',
-        documento: empleado.documento || '',
-        correo: empleado.idUsuarioNavigation?.correo || '',
-        cargo: empleado.cargo || '',
-        rol: empleado.idUsuarioNavigation?.idRolNavigation?.nombre || '',
-        estado: empleado.estado ? 'true' : 'false',
-    };
-
-    const { editarEmpleado } = useEmpleados();
+    const { crearEmpleado } = useEmpleados();
     const { roles } = useRoles();
     const rolesDropdown = [
-        { value: '', label: initialValues.rol },
+        { value: '', label: 'Elija el rol' },
         ...roles.map((rol) => ({ value: rol.idRol, label: rol.nombre })),
     ];
-
     return (
         <Formik
             initialValues={initialValues}
-            validate={(values) => validateEditInputs(values)}
+            validate={(values) => validateInputs(values)}
             onSubmit={(valores, { resetForm }) => {
-                const empleadoEditado = {
-                    idEmpleado: empleado.idEmpleado,
-                    idUsuario: empleado.idUsuario,
-                    idRol: empleado.idUsuarioNavigation.idRol,
-                    estado: JSON.parse(valores.estado),
+                const empleado = {
+                    estado: true,
                     documento: valores.documento.toString(),
                     nombre: valores.nombre,
-                    correo: valores.correo, 
                     apellido: valores.apellido,
-                    cargo: valores.cargo
-                };
-                editarEmpleado(empleado.idEmpleado, empleadoEditado)
-                    .then(response => {
-                        showAlertCorrect('Empleado editado correctamente', 'success', isClose);
-                        resetForm();
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    })
-                    .catch(response => {
-                        showAlertIncorrect('Hubo un error en la edición del empleado', 'error');
-                    });
+                    cargo: valores.cargo,
+                    idRol: valores.idRol,
+                    correo: valores.correo,
+                    contrasena: valores.contrasena,
+                }
+                crearEmpleado(empleado)
+                console.log(valores)
             }}
         >
             {({ errors, handleSubmit, touched }) => (
                 <form onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
-                        <ModalHeader className='mb-3'>Editar empleado</ModalHeader>
+                        <ModalHeader className='mb-3'>Crear empleado</ModalHeader>
                         <ModalBody>
+                            <Label className="mt-4">
+                                <span>Documento</span>
+                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                                    <CustomInput
+                                        type="number"
+                                        id="documento"
+                                        name="documento"
+                                        placeholder="1234567"
+                                    />
+                                    {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
+                                </div>
+                            </Label>
 
                             <Label className="mt-4">
                                 <span>Nombre</span>
@@ -70,10 +61,9 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                                         type="text"
                                         id="nombre"
                                         name="nombre"
-                                        placeholder="Santiago Zuluaga"
+                                        placeholder="Santiago"
                                     />
                                     {touched.nombre && errors.nombre && <SpanError>{errors.nombre}</SpanError>}
-                                    {/* {console.log('nombre:', updateValues.nombre)} */}
 
                                 </div>
                             </Label>
@@ -89,18 +79,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                                     {touched.apellido && errors.apellido && <SpanError>{errors.apellido}</SpanError>}
                                 </div>
                             </Label>
-                            <Label className="mt-4">
-                                <span>Documento</span>
-                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                                    <CustomInput
-                                        type="number"
-                                        id="documento"
-                                        name="documento"
-                                        placeholder="1234567"
-                                    />
-                                    {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
-                                </div>
-                            </Label>
+
                             <Label className="mt-4">
                                 <span>Correo</span>
                                 <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
@@ -115,6 +94,19 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                             </Label>
 
                             <Label className="mt-4">
+                                <span>Contraseña</span>
+                                <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                                    <CustomInput
+                                        type="password"
+                                        id="contrasena"
+                                        name="contrasena"
+                                        placeholder="Contraseña"
+                                    />
+                                    {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
+                                </div>
+                            </Label>
+
+                            <Label className="mt-4">
                                 <span>Rol</span>
                                 <CustomInput
                                     type="select"
@@ -123,7 +115,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                                     options={rolesDropdown}
                                 />
                             </Label>
-                            
+
                             <Label className="mt-4">
                                 <span>Cargo</span>
                                 <Field name="cargo" id="cargo">
@@ -133,17 +125,6 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                                             <option value="Vaceador">Vaceador</option>
                                             <option value="Diseñador 3D">Diseñador 3D</option>
                                             <option value="A mano">A mano</option>
-                                        </Select>
-                                    )}
-                                </Field>
-                            </Label>
-                            <Label className="mt-4">
-                                <span>Estado</span>
-                                <Field name="estado" id="estado">
-                                    {({ field }) => (
-                                        <Select {...field} className="mt-1">
-                                            <option value="true">Activo</option>
-                                            <option value="false">Inactivo</option>
                                         </Select>
                                     )}
                                 </Field>

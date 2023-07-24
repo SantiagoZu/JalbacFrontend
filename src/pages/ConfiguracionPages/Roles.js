@@ -70,7 +70,6 @@ function Roles() {
     <>
       <PageTitle>Roles</PageTitle>
 
-      <SectionTitle>Tabla Roles</SectionTitle>
       <div className="flex ml-auto mb-6">
       <ModalCrearRol isOpen={modalIsOpenCreate} isClose={closeModal} />
         <Button onClick={openModalCreate}>
@@ -95,7 +94,6 @@ function Roles() {
         <Table>
           <TableHeader>
             <tr >
-              <TableCell>ID</TableCell>
               <TableCell>Rol</TableCell>
               <TableCell>Permisos</TableCell>
               <TableCell>Estado</TableCell>
@@ -105,9 +103,7 @@ function Roles() {
           <TableBody>
             {dataTable2.map((rol, i) => (
               <TableRow key={i}>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.ID}</p>
-                </TableCell>
+                
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{rol.Rol}</p>
                 </TableCell>

@@ -11,11 +11,7 @@ import {
     TableCell,
     TableBody,
     TableRow,
-    TableFooter,
     TableContainer,
-    Badge,
-    Avatar,
-    Pagination,
 } from '@windmill/react-ui'
 import {EditIcon} from '../../../../icons';
 
@@ -40,7 +36,7 @@ export const ModalDetalleProducto = ({ isOpen, isClose }) => {
     const [formularioValidoProducto, cambiarFormularioValidoProducto] = useState(null);
     const [formularioValidoEditarProducto, cambiarFormularioValidoEditarProducto] = useState(null);
     const [formularioValido, cambiarFormularioValido] = useState(null);
-
+    
     const comparaFechas = (fecha1) => {
         if (new Date(fecha1).toLocaleDateString() >= new Date().toLocaleDateString("es-CO")) {
 
