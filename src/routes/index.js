@@ -15,7 +15,8 @@ const Usuarios = lazy(() => import('../pages/UsuarioPages/Usuarios'))
 const Empleados = lazy(() => import('../pages/VentasPages/Empleados'))
 const Clientes = lazy(() => import('../pages/VentasPages/Clientes'))
 const Pedidos = lazy(() => import('../pages/VentasPages/Pedidos'))
-const CrearPedido = lazy(() => import('../pages/VentasPages/CrearPedido'))
+const CrearPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/CrearPedido'))
+const EditarPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/EditarPedido'))
 const Devoluciones = lazy(() => import('../pages/VentasPages/Devoluciones'))
 const Perfil = lazy(() => import('../pages/Perfil'))
 const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
@@ -91,6 +92,10 @@ const routes = [
   {
     path: '/crearPedido',
     component: CrearPedido,
+  },
+  {
+    path: '/editarPedido',
+    component: EditarPedido,
   },
   {
     path: '/devoluciones',

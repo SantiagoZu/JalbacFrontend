@@ -13,8 +13,8 @@ import { SpanError } from '../../../../components/styles/styles';
 import { initialValuesAgregarProducto,  validateInputsAgregarProducto } from './PedidosFormValidations/ProductosFormik';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
-export const ModalCrearProducto = ({ isOpen, isClose, idPedido, updateTable }) => {
-    const { postDetallePedidos, getDetallePedidos, detallePedidos } = useDetallePedidos();
+export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , updateTable = undefined}) => {
+    const { postDetallePedidos} = useDetallePedidos();
     const tiposDropDown = [
         { value: '', label: 'Seleccione un tipo de anillo' },
         { value: '3D',label: '3D' },
@@ -36,42 +36,39 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido, updateTable }) =
         }    
         empleadosDropdown.push(empleado)
     }
-    const updateDetallePedido = []
-   
+    
+   let postDetallePedidoArray = []
     return (
         <>
          <Formik
                 initialValues={initialValuesAgregarProducto}
                 validate={(values) => validateInputsAgregarProducto(values)}
                 onSubmit={(values, { resetForm }) => {
-                    console.log(values)
-           
+                    console.log(values)                    
                     const updatedValues = {
                         ...values,
                         idEmpleado : values.idEmpleado,
                         idEstado : 1,                       
                         motivoDevolucion: '',
                     
-                    };
-                   
-                    updatedValues.idEmpleado = parseInt(updatedValues.idEmpleado)
-                    updatedValues.cantidad = parseInt(updatedValues.cantidad)
-                    updateTable(updatedValues)
-                    console.log(updatedValues)
-                    showAlertCorrect('Producto creado correctamente', 'success', isClose)
-                    /*updateDetallePedido.push(updatedValues)
-                    postDetallePedidos(updateDetallePedido).then(response => {
-                        getDetallePedidos();
-                        resetForm();
-                        console.log(response.data.resultado[0])
+                    };                   
+                    if(idPedido === undefined) {                        
+                        updateTable(updatedValues)
                         showAlertCorrect('Producto creado correctamente', 'success', isClose)
-                     
-                      
-                    }).catch(error => {
-                        showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
-                        console.log(error);
-                        console.log(updatedValues)
-                    });*/
+                    } else {
+                        postDetallePedidoArray.push(updatedValues)
+                        postDetallePedidos(postDetallePedidoArray).then(response => {                            
+                            resetForm();
+                            console.log(response)
+                            showAlertCorrect('Producto creado correctamente', 'success', isClose)                                                   
+                        }).catch(error => {
+                            showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
+                            console.log(error);
+                            console.log(updatedValues)
+                        });
+                    }
+                    console.log(updatedValues)
+                   
                     resetForm();
                     
                 }}

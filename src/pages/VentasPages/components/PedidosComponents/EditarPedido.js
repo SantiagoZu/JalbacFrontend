@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
-import { usePedidos } from '../../services/hooks/usePedidos'
+import PageTitle from '../../../../components/Typography/PageTitle'
+import SectionTitle from '../../../../components/Typography/SectionTitle'
+import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
-import { SpanError } from '../../components/styles/styles'
+import { SpanError } from '../../../../components/styles/styles'
 import {
   Table,
   TableHeader,
@@ -17,61 +17,36 @@ import {
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataPedidos'
-import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
-import { ModalCrearPedido } from './components/PedidosComponents/ModalCrearPedido';
-import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
-import { ModalEditarPedido } from './components/PedidosComponents/ModalEditarPedido';
-import { returnDate, today } from '../../helpers/parseDate'
+import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
+import response from '../../../../utils/demo/dataPedidos'
+import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
+import { ModalCrearPedido } from './ModalCrearPedido';
+import { ModalDetallePedido } from './ModalDetallePedido';
+import { ModalEditarPedido } from './ModalEditarPedido';
+import { returnDate, today } from '../../../../helpers/parseDate'
 import { Field, Formik } from 'formik'
-import { CustomInput } from '../../components/CustomInput'
-import { useClientes } from '../../services/hooks/useClientes'
-import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
+import { CustomInput } from '../../../../components/CustomInput'
+import { useClientes } from '../../../../services/hooks/useClientes'
+import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
-import { ModalCrearProducto } from './components/PedidosComponents/ModalCrearProducto'
-import { ModalEditarProducto } from './components/PedidosComponents/ModalEditarProducto'
-import { initialValues, validateInputs } from './components/PedidosComponents/PedidosFormValidations/PedidosFormik'
-import { useEmpleados } from '../../services/hooks/useEmpleados'
+import { ModalCrearProducto } from './ModalCrearProducto'
+import { ModalEditarProducto } from './ModalEditarProducto'
+import { initialValues, validateInputs } from './PedidosFormValidations/PedidosFormik'
+import { useEmpleados } from '../../../../services/hooks/useEmpleados'
+import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 
-
-function CrearPedido() {
-
-  const [dataPedido, setDataPedidos] = useState([]);
-  const { pedidos, deletePedidos } = usePedidos();
-
-
-  const [PageTable, setPageTable] = useState(1)
-  const [dataTable, setDataTable] = useState([])
-
-
-
-  const resultsPerPage = 10
-  const totalResults = pedidos.length
-
-
-  function onPageChangeTable2(p) {
-    setPageTable(p)
-  }
-
-  useEffect(() => {
-    setDataTable(pedidos.slice((PageTable - 1) * resultsPerPage, PageTable * resultsPerPage))
-  }, [PageTable])
-
-
-
-
-  const history = useHistory()
+function EditarPedido() {
+  const location = useLocation()
+  const idPedido = location.state.idPedido
+  const pedido = location.state.pedido
+  console.log(pedido)
+ 
   const [detallePedidoAEditar, setdetallePedidoAEditar] = useState();
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
   const [idProducto, setIdProducto] = useState()
   const [isClose, setIsClose] = useState(false)
 
-
-  function closeModalIncorrect() {
-    setIsClose(true)
-  }
   function openModalCrearProducto() {
     setModalIsOpenCrearProducto(true);
   }
@@ -79,7 +54,7 @@ function CrearPedido() {
   function closeModalCrearProducto() {
     setModalIsOpenCrearProducto(false);
   }
-  function openModalEditarProducto(obj , id) {
+  function openModalEditarProducto(obj, id) {
     setModalIsOpenEditarProducto(true);
     setData(obj)
     setIdProducto(id)
@@ -97,9 +72,23 @@ function CrearPedido() {
     setdetallePedidoAEditar(obj);
   }
   const { detallePedidos } = useDetallePedidos()
-  const { postPedidos } = usePedidos()
+  const detallesPedido2 = detallePedidos.concat([])
+  const [pageTable2, setPageTable2] = useState(1)  
+  const [dataTable2, setDataTable2] = useState([])
+
+  const resultsPerPage = 5
+  const totalResults = detallesPedido2.length
+
+  function onPageChangeTable2(p) {
+    setPageTable2(p)
+  }
+  useEffect(() => {    
+    setDataTable2(detallesPedido2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  }, [detallePedidos, pageTable2]);
+
+  const { updatePedidos } = usePedidos()
   const { clientes } = useClientes()
-  const {empleados} = useEmpleados();
+  const { empleados } = useEmpleados();
   const clientesDropdown = [
     { value: null, label: 'Elija el cliente' }
   ]
@@ -110,6 +99,13 @@ function CrearPedido() {
     }
     clientesDropdown.push(cliente)
   }
+  const updateValues = {
+    idPedido : idPedido || '',
+    idCliente : pedido.idCliente || '',
+    idEstado : pedido.idEstado || '',
+    fechaPedido : pedido.fechaPedido || '',
+    fechaEntrega : pedido.fechaEntrega || '' 
+  }
   const [productos, setProductos] = useState([]);
   function getProduct(product) {
     setProductos([
@@ -119,7 +115,7 @@ function CrearPedido() {
   }
   function updateTable(product) {
     let updatedProducts = productos.map((detallePedido, index) => {
-      if(product.id == index) {
+      if (product.id == index) {
         return product
       }
       else {
@@ -127,11 +123,11 @@ function CrearPedido() {
       }
     })
     setProductos(updatedProducts)
-   
+
   }
-  async function deleteProduct(id)  {
-    await showAlertDeleted('Estas seguro que deseas eliminar este producto?' , 'warning').then(response => {
-      if(response.isConfirmed) {
+  async function deleteProduct(id) {
+    await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
+      if (response.isConfirmed) {
         setProductos(
           productos.filter((detallePedido, index) => {
             return index !== id
@@ -142,29 +138,28 @@ function CrearPedido() {
   }
   return (
     <>
-      <PageTitle>Crear pedido</PageTitle>
+      <PageTitle>Editar pedido</PageTitle>
 
       <Formik
-        initialValues={initialValues}
+        initialValues={updateValues}
         validate={() => ({})}
         onSubmit={(values, { resetForm }) => {
 
           const updatedValues = {
             ...values,
-            idEstado: 1,
-            detallesPedido: productos
+            
           };
 
           console.log(updatedValues);
-          let responseCrearPedido = postPedidos(updatedValues).then((response) => {
+          let responseCrearPedido = updatePedidos(updatedValues).then((response) => {
             resetForm();
-            changeIdPedidoActual(response.data.resultado.idPedido)
-            console.log('creacion de pedido')
+            
+            console.log('update de pedido')
             showAlertCorrect('Producto creado correctamente', 'success', isClose)
             setTimeout(() => {
               window.location.reload();
             }, 2600);
-           
+
             return response
 
           }).catch(response => {
@@ -243,8 +238,8 @@ function CrearPedido() {
                   </tr>
                 </TableHeader>
                 <TableBody className="w-12">
-                  {productos.length > 0 ?
-                    productos.map((detallePedido, i) => (
+                  {
+                    dataTable2.map((detallePedido, i) => idPedido == detallePedido.idPedido ? (
                       <TableRow key={i}>
                         <TableCell>
                           <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
@@ -270,16 +265,16 @@ function CrearPedido() {
                         <TableCell>
                           <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
                         </TableCell>
-                        <TableCell> 
+                        <TableCell>
                           {empleados.map((empleado) => {
-                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}</p> : null  
+                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}</p> : null
                           })}
                         </TableCell>
 
                         <TableCell>
                           <div className="flex items-center space-x-4">
                             <Button layout="link" size="icon" aria-label="Edit" >
-                              <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido , i)} />
+                              <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido, i)} />
                             </Button>
 
                             <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(i)} >
@@ -290,11 +285,20 @@ function CrearPedido() {
 
 
                       </TableRow>
-                    )
-                    ) : null}
+                    ) : null
+                    )}
                 </TableBody>
               </Table>
-
+              <TableFooter>
+                {totalResults > 0 && (
+                  <Pagination
+                    totalResults={totalResults}
+                    resultsPerPage={resultsPerPage}
+                    onChange={onPageChangeTable2}
+                    label="Table navigation"
+                  />
+                )}
+              </TableFooter>
 
             </TableContainer>
             <div className="flex ml-auto mt-5 mb-6">
@@ -309,14 +313,14 @@ function CrearPedido() {
 
       </Formik>
       {modalIsOpenCrearProducto && (
-        <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedidoActual} updateTable={(product) => getProduct(product)} />
+        <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedido} updateTable={(product) => getProduct(product)} />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} updateTable={product => updateTable(product)} idProducto={idProducto}/>
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} updateTable={product => updateTable(product)} idProducto={idProducto} />
       )}
 
     </>
   )
 }
 
-export default CrearPedido
+export default EditarPedido

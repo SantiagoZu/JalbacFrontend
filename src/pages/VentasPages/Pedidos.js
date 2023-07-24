@@ -26,71 +26,61 @@ import {ModalEditarPedido} from './components/PedidosComponents/ModalEditarPedid
 import { returnDate } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
-const responsePedido = response.concat([])
+
 
 function Pedidos() {
 
-  const [dataPedido, setDataPedidos] = useState([]);
   const {pedidos, deletePedidos } = usePedidos();
- 
-
-  const [PageTable, setPageTable] = useState(1)
-  const [dataTable, setDataTable] = useState([])
- 
- 
-
-  const resultsPerPage = 10
-  const totalResults = pedidos.length
-
-  const history = useHistory();
-
-  function onPageChangeTable2(p) {
-    setPageTable(p)
-  }
-  
-  useEffect(() => {
-    setDataTable(pedidos.slice((PageTable - 1) * resultsPerPage, PageTable * resultsPerPage))
-  }, [PageTable])
- 
-  
-  const [modalIsOpenAgregarPedido, setModalIsOpenAgregarPedido] = useState(false)
+  const history = useHistory();  
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
-  const [modalIsOpenEditarPedido, setModalIsOpenEditarPedido] = useState(false)
-
   const [idPedidoForDetalle, setIdPedidoForDetalle] = useState()
-  function openModalCrearPedido() {
-    setModalIsOpenAgregarPedido(true);
-  }
+  
 
-  function closeModalAgregarPedido(){
-    setModalIsOpenAgregarPedido(false);
-  }
   function openModalDetallePedido(idPedido) {
     setModalIsOpenDetallePedido(true);
-    setIdPedido(idPedido)
-  }
-  function setIdPedido(idPedido) {
     setIdPedidoForDetalle(idPedido)
   }
+  
   function closeModalDetallePedido(){
     setModalIsOpenDetallePedido(false);
-  }
-  function openModalEditarPedido(obj) {
-    setModalIsOpenEditarPedido(true);
-    setData(obj)
-  }
-  function closeModalEditarPedido(){
-    setModalIsOpenEditarPedido(false);
-  }
+  } 
+  const pedidos2 = pedidos.concat([])
+  const [pageTable2, setPageTable2] = useState(1)
+  const [search, setSearch] = useState("")
+  const [dataTable2, setDataTable2] = useState([])
+  // pagination setup
+  const resultsPerPage = 5
+  const totalResults = pedidos2.length
+
   
-  function setData(obj) {
-    setDataPedidos(obj);
+  function onPageChangeTable2(p) {
+    setPageTable2(p)
   }
 
-  function redirectCrearPedido(){
-     history.push('/app/crearPedido')
-  }  
- 
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+
+    return data.filter((pedido) => (
+      pedido.fechaRecibido.toLowerCase().includes(searchTerm) ||
+      pedido.cliente.toLowerCase().includes(searchTerm) ||
+      pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||
+      pedido.estado.toLowerCase().includes(searchTerm) 
+    ));
+  };
+
+  
+  useEffect(() => {
+    const filteredData = searchFilter(pedidos2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  }, [pedidos, pageTable2, search]);
+
+  const searcher = (e) => {
+    setSearch(e.target.value)
+  }
   
   return (
     <>
@@ -98,13 +88,11 @@ function Pedidos() {
       
 
       <div className="flex ml-auto mb-6">
-        <Button onClick={redirectCrearPedido}>
+        <Button onClick={() => history.push('/app/crearPedido') }>
           Crear pedido
           <span className="ml-1" aria-hidden="true">+</span>
         </Button>
-        {modalIsOpenAgregarPedido && 
-          (<ModalCrearPedido isOpen={modalIsOpenAgregarPedido} isClose={closeModalAgregarPedido}/>)
-        }
+       
 
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
@@ -114,6 +102,8 @@ function Pedidos() {
             <Input
               className="pl-8 text-gray-700"
               placeholder="Buscar usuario"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>
@@ -122,7 +112,7 @@ function Pedidos() {
         <Table>
           <TableHeader>
             <tr >
-              <TableCell>ID</TableCell>
+              
               <TableCell>Fecha Recibido</TableCell>
               <TableCell>Cliente</TableCell>          
               <TableCell>Fecha Entrega</TableCell>
@@ -132,11 +122,8 @@ function Pedidos() {
             </tr>
           </TableHeader>
           <TableBody>
-            {pedidos.map((pedido) => (
-              <TableRow key={pedido.id}>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedido}</p>
-                </TableCell>
+            {dataTable2.map((pedido) => (
+              <TableRow key={pedido.idPedido}>               
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
                 </TableCell>
@@ -157,7 +144,7 @@ function Pedidos() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEditarPedido(pedido)}>
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', {idPedido: pedido.idPedido, pedido : pedido})} >
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                     
@@ -171,20 +158,20 @@ function Pedidos() {
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
       {modalIsOpenDetallePedido && (
         <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedidoForDetalle}/>
       )}
-      {modalIsOpenEditarPedido && (
-        <ModalEditarPedido isOpen={modalIsOpenEditarPedido} isClose={closeModalEditarPedido} object={dataPedido}/>
-      )}
+     
       
     </>
   )
