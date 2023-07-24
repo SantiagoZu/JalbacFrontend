@@ -60,6 +60,11 @@ const routes = [
         name: 'Pedidos',
       },
       {
+        
+        path: '/app/crearPedido',
+        name: 'Crear pedido',
+      },
+      {
         path: '/app/historial',
         name: 'Historial pedidos',
       },

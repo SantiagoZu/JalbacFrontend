@@ -325,7 +325,7 @@ export const ModalEditarPedido = ({ isOpen, isClose, object }) => {
                 )}
             </Formik>
             {modalIsOpenEditarProducto && (
-                <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} object={dataDetallePedido} />
+                <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={dataDetallePedido} />
             )}
             {modalIsOpenCrearProducto && (
                 <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={object.idPedido} updateTable={product => getProduct(product)} />
