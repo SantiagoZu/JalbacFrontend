@@ -9,7 +9,7 @@ export const initialValuesAgregarProducto = {
     detalle: '',
     cantidad: 0,  
     idEstado : 1,
-   
+    idPedido : 1,
     idEmpleado : 0,
     material : '',
     motivoDevolucion : '',

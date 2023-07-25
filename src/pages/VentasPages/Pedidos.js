@@ -15,11 +15,8 @@ import {
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataPedidos'
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
-import { ModalCrearPedido } from './components/PedidosComponents/ModalCrearPedido';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
-import { ModalEditarPedido } from './components/PedidosComponents/ModalEditarPedido';
 import { returnDate } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -41,24 +38,36 @@ function Pedidos() {
   function closeModalDetallePedido(){
     setModalIsOpenDetallePedido(false);
   }
-  function openModalEditarPedido(obj) {
-    setModalIsOpenEditarPedido(true);
-    setData(obj)
-  }
-  function closeModalEditarPedido(){
-    setModalIsOpenEditarPedido(false);
-  }
-  
-  function setData(obj) {
-    setDataPedidos(obj);
-  }
+  const pedidos2 = pedidos.concat([])
+  const [pageTable2, setPageTable2] = useState(1)
+  const [search, setSearch] = useState("")
+  const [dataTable2, setDataTable2] = useState([])
+  // pagination setup
+  const resultsPerPage = 5
+  const totalResults = pedidos2.length
 
-  
+  function onPageChangeTable2(p) {
+    setPageTable2(p)
+  }
   useEffect(() => {
     const filteredData = searchFilter(pedidos2, search);
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
   }, [pedidos, pageTable2, search]);
 
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+
+    return data.filter((pedido) => (
+      pedido.fechaRecibido.toLowerCase().includes(searchTerm) ||
+      pedido.cliente.toLowerCase().includes(searchTerm) ||
+      pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||
+      pedido.estado.toLowerCase().includes(searchTerm) 
+    ));
+  };
   const searcher = (e) => {
     setSearch(e.target.value)
   }
@@ -105,7 +114,7 @@ function Pedidos() {
           <TableBody>
             {dataTable2.map((pedido) => (
               <TableRow key={pedido.idPedido}>               
-                <TableCell>
+                <TableCell> {console.log(pedido)}
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>
