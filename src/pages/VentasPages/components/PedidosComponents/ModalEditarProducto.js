@@ -20,12 +20,12 @@ import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
 
 import { expresionesProducto } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
+import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import response from '../../../../utils/demo/dataProductos'
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
-import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import { useEstados } from '../../../../services/hooks/useEstados'
@@ -71,9 +71,14 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
     const { empleados } = useEmpleados()
     const empleadosDropdown = [
         { value: '', label: 'Elija el empleado' }
+        { value: '', label: 'Elija el empleado' }
     ]
     for (const id in empleados) {
+    for (const id in empleados) {
         const empleado = {
+            value: parseInt(empleados[id].idEmpleado),
+            label: empleados[id].nombre
+        }
             value: parseInt(empleados[id].idEmpleado),
             label: empleados[id].nombre
         }
@@ -82,21 +87,29 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
     const tiposDropDown = [
         { value: '', label: 'Seleccione un tipo de anillo' },
         { value: '3D', label: '3D' },
+        { value: '3D', label: '3D' },
         { value: 'A mano', label: 'A mano' },
         { value: 'Vaceado', label: 'Vaceado' },
     ];
     const materialDropDown = [
         { value: '', label: 'Seleccione un material' },
         { value: 'oroRosado', label: 'Oro rosado' },
+        { value: 'oroRosado', label: 'Oro rosado' },
         { value: 'oro', label: 'Oro' },
         { value: 'plata', label: 'Plata' },
     ];
     const { estados } = useEstados()
+    const { estados } = useEstados()
     const estadosDropdown = [
+        { value: '', label: 'Elija el estado' }
         { value: '', label: 'Elija el estado' }
     ]
     for (const id in estados) {
+    for (const id in estados) {
         const estado = {
+            value: parseInt(estados[id].idEstado),
+            label: estados[id].nombre
+        }
             value: parseInt(estados[id].idEstado),
             label: estados[id].nombre
         }
@@ -107,9 +120,11 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
     return (
         <>
             <Formik
+            <Formik
                 initialValues={updateValues}
                 validate={() => ({})}
                 onSubmit={(values, { resetForm }) => {
+
 
                     const updatedValues = {
                         ...values,
@@ -150,6 +165,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                     console.log(updatedValues)
                 }}
             >
+                {({ errors, handleSubmit, touched }) => (
                 {({ errors, handleSubmit, touched }) => (
 
                     <form onSubmit={handleSubmit}>
@@ -256,7 +272,17 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
 
 
                             </ModalBody>
+                            </ModalBody>
 
+                            <ModalFooter>
+                                <div className="hidden sm:block">
+                                    <Button layout="outline" onClick={isClose}>
+                                        Cancelar
+                                    </Button>
+                                </div>
+                                <div className="hidden sm:block">
+                                    <Button onClick={handleSubmit}>Editar producto</Button>
+                                </div>
                             <ModalFooter>
                                 <div className="hidden sm:block">
                                     <Button layout="outline" onClick={isClose}>
@@ -272,7 +298,16 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                                         Cancel
                                     </Button>
                                 </div>
+                                <div className="block w-full sm:hidden">
+                                    <Button block size="large" layout="outline" onClick={isClose}>
+                                        Cancel
+                                    </Button>
+                                </div>
 
+                            </ModalFooter>
+                        </Modal>
+                    </form>
+                )}
                             </ModalFooter>
                         </Modal>
                     </form>

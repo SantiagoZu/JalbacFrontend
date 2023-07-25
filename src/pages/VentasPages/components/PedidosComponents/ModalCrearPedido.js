@@ -1,35 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import { ModalCrearProducto } from './ModalCrearProducto';
-import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import {  Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import Swal from 'sweetalert2'
 import {
     Table,
     TableHeader,
     TableCell,
     TableBody,
     TableRow,
-    TableFooter,
     TableContainer,
-    Badge,
-    Avatar,
-    Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
-
+import { EditIcon, TrashIcon } from '../../../../icons';
 import { ModalEditarProducto } from './ModalEditarProducto';
-import { expresiones } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect, showAlertDeleted } from '../../../../helpers/Alertas';
 import response from '../../../../utils/demo/dataProductos'
 import { Field, Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputs } from './PedidosFormValidations/PedidosFormik';
-
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useClientes } from '../../../../services/hooks/useClientes'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
-import id from 'faker/lib/locales/id_ID';
 
 const responseProducto = response.concat([])
 
@@ -120,12 +111,12 @@ export const ModalCrearPedido = ({ isOpen, isClose }) => {
     const [createPedidoOnce, setCreatePedidoOnce] = useState(null)
     useEffect(() => {
         setCreatePedidoOnce(true)
-    }, [])   
-    function getProduct(product) {              
+    }, [])
+    function getProduct(product) {
         setTableProducts([
             ...tableProducts,
             product
-            ]
+        ]
         )
     }
     console.log(tableProducts)

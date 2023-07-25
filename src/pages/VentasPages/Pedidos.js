@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
-import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import { Input } from '@windmill/react-ui'
 
 import {
   Table,
@@ -12,17 +11,15 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
-  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataPedidos'
-import {  showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
-import {ModalCrearPedido} from './components/PedidosComponents/ModalCrearPedido';
-import {ModalDetallePedido} from './components/PedidosComponents/ModalDetallePedido';
-import {ModalEditarPedido} from './components/PedidosComponents/ModalEditarPedido';
+import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
+import { ModalCrearPedido } from './components/PedidosComponents/ModalCrearPedido';
+import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
+import { ModalEditarPedido } from './components/PedidosComponents/ModalEditarPedido';
 import { returnDate } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -43,34 +40,18 @@ function Pedidos() {
   
   function closeModalDetallePedido(){
     setModalIsOpenDetallePedido(false);
-  } 
-  const pedidos2 = pedidos.concat([])
-  const [pageTable2, setPageTable2] = useState(1)
-  const [search, setSearch] = useState("")
-  const [dataTable2, setDataTable2] = useState([])
-  // pagination setup
-  const resultsPerPage = 5
-  const totalResults = pedidos2.length
-
-  
-  function onPageChangeTable2(p) {
-    setPageTable2(p)
   }
-
-  const searchFilter = (data, searchValue) => {
-    if (!searchValue) {
-      return data;
-    }
-
-    const searchTerm = searchValue.toLowerCase();
-
-    return data.filter((pedido) => (
-      pedido.fechaRecibido.toLowerCase().includes(searchTerm) ||
-      pedido.cliente.toLowerCase().includes(searchTerm) ||
-      pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||
-      pedido.estado.toLowerCase().includes(searchTerm) 
-    ));
-  };
+  function openModalEditarPedido(obj) {
+    setModalIsOpenEditarPedido(true);
+    setData(obj)
+  }
+  function closeModalEditarPedido(){
+    setModalIsOpenEditarPedido(false);
+  }
+  
+  function setData(obj) {
+    setDataPedidos(obj);
+  }
 
   
   useEffect(() => {
@@ -81,7 +62,7 @@ function Pedidos() {
   const searcher = (e) => {
     setSearch(e.target.value)
   }
-  
+
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -114,7 +95,7 @@ function Pedidos() {
             <tr >
               
               <TableCell>Fecha Recibido</TableCell>
-              <TableCell>Cliente</TableCell>          
+              <TableCell>Cliente</TableCell>
               <TableCell>Fecha Entrega</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Detalles Producto</TableCell>
@@ -129,7 +110,7 @@ function Pedidos() {
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idClienteNavigation.nombre}</p>
-                </TableCell>           
+                </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaEntrega)}</p>
                 </TableCell>
@@ -140,7 +121,7 @@ function Pedidos() {
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido.idPedido)}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
-                  
+
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
@@ -169,7 +150,7 @@ function Pedidos() {
         </TableFooter>
       </TableContainer>
       {modalIsOpenDetallePedido && (
-        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedidoForDetalle}/>
+        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedidoForDetalle} />
       )}
      
       
