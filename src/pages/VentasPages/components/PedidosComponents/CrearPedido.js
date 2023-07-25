@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
-import { usePedidos } from '../../../../services/hooks/usePedidos'
 import {Label } from '@windmill/react-ui'
 import { SpanError } from '../../../../components/styles/styles'
 import {
@@ -25,6 +24,7 @@ import { ModalCrearProducto } from './ModalCrearProducto'
 import { ModalEditarProducto } from './ModalEditarProducto'
 import { initialValues, validateInputs } from './PedidosFormValidations/PedidosFormik'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
+import { usePedidos } from '../../../../services/hooks/usePedidos'
 
 function CrearPedido() {  
   const [productoAEditar, setProductoAEditar] = useState();

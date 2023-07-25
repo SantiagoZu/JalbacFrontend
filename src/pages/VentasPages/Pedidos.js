@@ -18,11 +18,8 @@ import {
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataPedidos'
-import {  showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
-import {ModalCrearPedido} from './components/PedidosComponents/ModalCrearPedido';
-import {ModalDetallePedido} from './components/PedidosComponents/ModalDetallePedido';
-import {ModalEditarPedido} from './components/PedidosComponents/ModalEditarPedido';
+import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
+import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
 import { returnDate } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -43,7 +40,7 @@ function Pedidos() {
   
   function closeModalDetallePedido(){
     setModalIsOpenDetallePedido(false);
-  } 
+  }
   const pedidos2 = pedidos.concat([])
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
@@ -52,10 +49,13 @@ function Pedidos() {
   const resultsPerPage = 5
   const totalResults = pedidos2.length
 
-  
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
+  useEffect(() => {
+    const filteredData = searchFilter(pedidos2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  }, [pedidos, pageTable2, search]);
 
   const searchFilter = (data, searchValue) => {
     if (!searchValue) {
@@ -71,13 +71,6 @@ function Pedidos() {
       pedido.estado.toLowerCase().includes(searchTerm) 
     ));
   };
-
-  
-  useEffect(() => {
-    const filteredData = searchFilter(pedidos2, search);
-    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
-  }, [pedidos, pageTable2, search]);
-
   const searcher = (e) => {
     setSearch(e.target.value)
   }
@@ -124,7 +117,7 @@ function Pedidos() {
           <TableBody>
             {dataTable2.map((pedido) => (
               <TableRow key={pedido.idPedido}>               
-                <TableCell>
+                <TableCell> {console.log(pedido)}
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>

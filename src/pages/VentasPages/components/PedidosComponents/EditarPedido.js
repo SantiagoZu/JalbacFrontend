@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
-import SectionTitle from '../../../../components/Typography/SectionTitle'
-import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { SpanError } from '../../../../components/styles/styles'
 import {
@@ -13,25 +11,22 @@ import {
   TableFooter,
   TableContainer,
   Badge,
-  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
-import response from '../../../../utils/demo/dataPedidos'
+
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import { ModalCrearPedido } from './ModalCrearPedido';
-import { ModalDetallePedido } from './ModalDetallePedido';
-import { ModalEditarPedido } from './ModalEditarPedido';
+import moment from 'moment'
+
 import { returnDate, today } from '../../../../helpers/parseDate'
 import { Field, Formik } from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
 import { useClientes } from '../../../../services/hooks/useClientes'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { ModalCrearProducto } from './ModalCrearProducto'
 import { ModalEditarProducto } from './ModalEditarProducto'
-import { initialValues, validateInputs } from './PedidosFormValidations/PedidosFormik'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -39,13 +34,11 @@ function EditarPedido() {
   const location = useLocation()
   const idPedido = location.state.idPedido
   const pedido = location.state.pedido
-  console.log(pedido)
  
   const [detallePedidoAEditar, setdetallePedidoAEditar] = useState();
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
-  const [idProducto, setIdProducto] = useState()
-  const [isClose, setIsClose] = useState(false)
+  const [isClose] = useState(false)
 
   function openModalCrearProducto() {
     setModalIsOpenCrearProducto(true);
@@ -54,24 +47,16 @@ function EditarPedido() {
   function closeModalCrearProducto() {
     setModalIsOpenCrearProducto(false);
   }
-  function openModalEditarProducto(obj, id) {
+  function openModalEditarProducto(obj, id = null ) {
     setModalIsOpenEditarProducto(true);
-    setData(obj)
-    setIdProducto(id)
+    setdetallePedidoAEditar(obj)    
   }
 
   function closeModalEditarProducto() {
     setModalIsOpenEditarProducto(false);
   }
-  const [idPedidoActual, setIdPedidoActual] = useState('')
-  function changeIdPedidoActual(id) {
-    setIdPedidoActual(id)
-  }
 
-  function setData(obj) {
-    setdetallePedidoAEditar(obj);
-  }
-  const { detallePedidos } = useDetallePedidos()
+  const { detallePedidos ,setDetallePedidos ,postDetallePedidos, deleteDetallePedidos } = useDetallePedidos()
   const detallesPedido2 = detallePedidos.concat([])
   const [pageTable2, setPageTable2] = useState(1)  
   const [dataTable2, setDataTable2] = useState([])
@@ -99,37 +84,34 @@ function EditarPedido() {
     }
     clientesDropdown.push(cliente)
   }
-  const updateValues = {
-    idPedido : idPedido || '',
-    idCliente : pedido.idCliente || '',
-    idEstado : pedido.idEstado || '',
-    fechaPedido : pedido.fechaPedido || '',
-    fechaEntrega : pedido.fechaEntrega || '' 
+  const initialValuesPedido = {
+    idCliente : pedido.idCliente || '',        
+    fechaEntrega :  moment(pedido.fechaEntrega).format('YYYY-MM-DD') || ''
   }
-  const [productos, setProductos] = useState([]);
+  
   function getProduct(product) {
-    setProductos([
-      ...productos,
+    setDetallePedidos([
+      ...detallePedidos,
       product
     ])
   }
   function updateTable(product) {
-    let updatedProducts = productos.map((detallePedido, index) => {
-      if (product.id == index) {
+    let updatedProducts = detallePedidos.map((detallePedido, index) => {
+      if (product.idDetallePedido == index) {
         return product
       }
       else {
         return detallePedido
       }
     })
-    setProductos(updatedProducts)
+    setDetallePedidos(updatedProducts)
 
   }
   async function deleteProduct(id) {
     await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
       if (response.isConfirmed) {
-        setProductos(
-          productos.filter((detallePedido, index) => {
+        setDetallePedidos(
+          detallePedidos.filter((detallePedido, index) => {
             return index !== id
           })
         )
@@ -141,13 +123,12 @@ function EditarPedido() {
       <PageTitle>Editar pedido</PageTitle>
 
       <Formik
-        initialValues={updateValues}
+        initialValues={initialValuesPedido}
         validate={() => ({})}
         onSubmit={(values, { resetForm }) => {
 
           const updatedValues = {
-            ...values,
-            
+            ...values,            
           };
 
           console.log(updatedValues);
@@ -182,7 +163,7 @@ function EditarPedido() {
                   placeholder="Cliente ejemplo"
                   options={clientesDropdown}
                 />
-
+               {touched.idCliente && errors.idCliente && <SpanError>{errors.idCliente}</SpanError>} 
               </Label>
               <Label className=" m-5 flex-none ">
                 <span>Fecha Entrega</span>
@@ -193,9 +174,8 @@ function EditarPedido() {
                   placeholder=""
 
                 />
-                {touched.fechaEntrega && errors.fechaEntrega && <SpanError>{errors.fechaEntrega}</SpanError>}
-              </Label>
-              <Field type='text' as='input' className='hidden' name='detallesPedido' id="detallesPedido" value={productos} />
+               
+              </Label>              
             </div>
 
             <div className="flex ml-auto mb-6 justify-end">
@@ -274,7 +254,7 @@ function EditarPedido() {
                         <TableCell>
                           <div className="flex items-center space-x-4">
                             <Button layout="link" size="icon" aria-label="Edit" >
-                              <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido, i)} />
+                              <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
                             </Button>
 
                             <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(i)} >
@@ -316,7 +296,7 @@ function EditarPedido() {
         <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedido} updateTable={(product) => getProduct(product)} />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} updateTable={product => updateTable(product)} idProducto={idProducto} />
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} updateTable={product => updateTable(product)}  />
       )}
 
     </>

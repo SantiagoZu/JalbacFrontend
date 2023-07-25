@@ -9,7 +9,7 @@ import { initialValuesAgregarProducto, validateInputsAgregarProducto } from './P
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , updateTable = undefined}) => {
-    const { postDetallePedidos} = useDetallePedidos();
+    const {postDetallePedidos} = useDetallePedidos();
     const tiposDropDown = [
         { value: '', label: 'Seleccione un tipo de anillo' },
         { value: '3D', label: '3D' },
@@ -42,6 +42,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                     console.log(values)                    
                     const updatedValues = {
                         ...values,
+                        idPedido : idPedido,
                         idEmpleado : values.idEmpleado,
                         idEstado : 1,                       
                         motivoDevolucion: '',
@@ -54,6 +55,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                         postDetallePedidoArray.push(updatedValues)
                         postDetallePedidos(postDetallePedidoArray).then(response => {                            
                             resetForm();
+                            updateTable(updatedValues)
                             console.log(response)
                             showAlertCorrect('Producto creado correctamente', 'success', isClose)                                                   
                         }).catch(error => {

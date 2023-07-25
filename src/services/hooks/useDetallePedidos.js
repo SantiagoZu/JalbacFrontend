@@ -32,6 +32,7 @@ export const useDetallePedidos = () => {
 
     return {
         detallePedidos,
+        setDetallePedidos,
         getDetallePedidos,
         postDetallePedidos,
         updateDetallePedidos,

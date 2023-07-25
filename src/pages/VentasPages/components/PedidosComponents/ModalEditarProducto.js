@@ -1,26 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { ModalCrearProducto } from './ModalCrearProducto';
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { Input2 } from '../../../../components/Input';
-import Swal from 'sweetalert2'
-import {
-    Table,
-    TableHeader,
-    TableCell,
-    TableBody,
-    TableRow,
-    TableFooter,
-    TableContainer,
-    Badge,
-    Avatar,
-    Pagination,
-} from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
-
-import { expresionesProducto } from '../../../../helpers/validacionesRegex';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import response from '../../../../utils/demo/dataProductos'
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
@@ -28,8 +9,6 @@ import { initialValues, validateInputsEditarProducto } from './PedidosFormValida
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import { useEstados } from '../../../../services/hooks/useEstados'
-const responseProducto = response.concat([])
-
 
 export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = undefined, idProducto = undefined }) => {
     let updateValues
@@ -69,52 +48,58 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
 
     const { empleados } = useEmpleados()
     const empleadosDropdown = [
-        { value: '', label: 'Elija el empleado' }
+        { value: null, label: 'Elija el empleado' }
+        
     ]
+   
     for (const id in empleados) {
         const empleado = {
             value: parseInt(empleados[id].idEmpleado),
             label: empleados[id].nombre
         }
+           
         empleadosDropdown.push(empleado)
     }
     const tiposDropDown = [
-        { value: '', label: 'Seleccione un tipo de anillo' },
+        { value: null, label: 'Seleccione un tipo de anillo' },
+        { value: '3D', label: '3D' },
         { value: '3D', label: '3D' },
         { value: 'A mano', label: 'A mano' },
         { value: 'Vaceado', label: 'Vaceado' },
     ];
     const materialDropDown = [
-        { value: '', label: 'Seleccione un material' },
+        { value: null, label: 'Seleccione un material' },
+        { value: 'oroRosado', label: 'Oro rosado' },
         { value: 'oroRosado', label: 'Oro rosado' },
         { value: 'oro', label: 'Oro' },
         { value: 'plata', label: 'Plata' },
     ];
     const { estados } = useEstados()
+    
     const estadosDropdown = [
         { value: '', label: 'Elija el estado' }
+        
     ]
     for (const id in estados) {
         const estado = {
             value: parseInt(estados[id].idEstado),
             label: estados[id].nombre
-        }
+        }      
         estadosDropdown.push(estado)
     }
-
-
     return (
         <>
             <Formik
                 initialValues={updateValues}
                 validate={() => ({})}
                 onSubmit={(values, { resetForm }) => {
-
                     const updatedValues = {
                         ...values,
-                       
+                        idDetallePedido : product.idDetallePedido,
+                        idPedido : product.idPedido,
+                        idEstado : product.idEstado,
+                        motivoDevolucion : null
                     };
-
                     if (product.idDetallePedido === undefined) {
                         const updatedValuesTable = {
                             id : idProducto,
@@ -127,17 +112,19 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                             detalle: values.detalle || '',
                             cantidad: values.cantidad || '',
                             idEmpleado: values.idEmpleado || '',
-                            idEmpleado : values.idEmpleado,
+                            idEmpleado : values.idEmpleado || '',
                             idEstado : 1,                       
                             motivoDevolucion: '',
                     
                         }
+                        showAlertCorrect('El producto ha sido editado' , 'success', isClose)
                         updateTable(updatedValuesTable)
                         console.log(updatedValuesTable)
                     }
                     else {
                         updateDetallePedidos(product.idDetallePedido, updatedValues).then(response => {
                             resetForm();
+                            updateTable(updatedValues)
                             showAlertCorrect('Producto editado correctamente', 'success', isClose)
                             console.log(response);
                         }).catch(response => {
@@ -149,8 +136,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                     console.log(updatedValues)
                 }}
             >
-                {({ errors, handleSubmit, touched }) => (
-
+                {({ errors, handleSubmit, touched }) => (               
                     <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
                             <ModalHeader className='mb-3'>Editar producto</ModalHeader>
@@ -246,16 +232,10 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                                                 name="idEmpleado"
                                                 options={empleadosDropdown}
                                             />
-                                        </Label>
-                                       
-                                        
+                                        </Label>                                                                            
                                     </div>
                                 </div>
-
-
-
-                            </ModalBody>
-
+                            </ModalBody>                            
                             <ModalFooter>
                                 <div className="hidden sm:block">
                                     <Button layout="outline" onClick={isClose}>
@@ -271,11 +251,17 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                                         Cancel
                                     </Button>
                                 </div>
+                                <div className="block w-full sm:hidden">
+                                    <Button block size="large" layout="outline" onClick={isClose}>
+                                        Cancel
+                                    </Button>
+                                </div>
 
                             </ModalFooter>
                         </Modal>
                     </form>
                 )}
+                 
             </Formik>
         </>
     );
