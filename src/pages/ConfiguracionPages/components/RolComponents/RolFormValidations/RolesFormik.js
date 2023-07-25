@@ -19,9 +19,9 @@ export const validateInputs = (values) => {
         errores.rol = 'El campo rol no debe tener números ni caracteres especiales.'
     }
 
-    if (values.checked.length < 1){
-        errores.checked = 'Ceda al rol por lo menos un permiso.'
-    }
+    // if (values.checked.length < 1){
+    //     errores.checked = 'Ceda al rol por lo menos un permiso.'
+    // }
     
     return errores;
 

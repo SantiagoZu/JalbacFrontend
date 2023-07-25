@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, Route } from 'react-router-dom'
 import * as Icons from '../../icons'
-import { usePermisos } from '../../services/hooks/usePermisos'
+import { usePermisos } from '../../services/hooks/UsePermisos'
 
 function Icon({ icon, ...props }) {
   const Icon = Icons[icon]

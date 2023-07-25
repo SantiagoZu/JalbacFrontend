@@ -17,12 +17,13 @@ import {
   TableContainer,
   Button,
   Pagination,
+  Badge
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataRoles';
 import { showAlertDeleted } from '../../helpers/Alertas';
-
+import { useRoles } from '../../services/hooks/useRoles'
 
 const response2 = response.concat([])
 
@@ -33,6 +34,8 @@ function Roles() {
 
   const resultsPerPage = 10
   const totalResults = response.length
+
+  const {roles} = useRoles();
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
@@ -95,23 +98,22 @@ function Roles() {
           <TableHeader>
             <tr >
               <TableCell>Rol</TableCell>
-              <TableCell>Permisos</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Permisos</TableCell>
               <TableCell>Acciones</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((rol, i) => (
-              <TableRow key={i}>
-                
+            {roles.map((rol) => (
+              <TableRow key={rol.idRol}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.Rol}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.Permisos}</p>
+                  <Badge className="text-xs text-gray-600 dark:text-gray-400" type={rol.estado ? "success" : "danger"}>{rol.estado ? 'Activo' : 'Inactivo'}</Badge>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.Estado}</p>
+
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
