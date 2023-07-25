@@ -16,6 +16,9 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
   const {postRoles} = useRoles();
   const {allPermisos} = usePermisos();
   const [select, setSelect] = useState([]);
+  const [formValues, setFormValues] = useState({
+    checked: {}
+  });
 
   const handleChange = (event) => {
     const { value, checked } = event.target;
@@ -24,6 +27,14 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
     } else {
       setSelect(select.filter((obj) => obj.idPermiso !== value));
     }
+
+    setFormValues((prevFormValues) => ({
+      ...prevFormValues,
+      checked: {
+        ...prevFormValues.checked,
+        [value]: checked 
+      }
+    }));
   };
   console.log(select)
 
@@ -67,10 +78,9 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
 
               <Label className="mt-4">
                 <span>Permisos</span> <br />
-                
                   {allPermisos.map((permiso)=>(
-                    <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                      <Input type="checkbox" id="rol" name="checked" className="mr-1" value={permiso.idPermiso} onChange={handleChange}/>
+                    <div key={permiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                      <Input type="checkbox" id={`checked_${permiso.idPermiso}`} name="checked" className="mr-1" value={permiso.idPermiso} checked={formValues.checked[permiso.idPermiso] || false} onChange={handleChange}/>
                       {permiso.nombrePermiso}
                       <br/>
                     </div>
