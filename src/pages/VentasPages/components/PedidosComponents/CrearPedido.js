@@ -129,7 +129,7 @@ function CrearPedido() {
             let responseCrearPedido = postPedidos(updatedValues).then((response) => {
               resetForm();
               console.log('creacion de pedido')
-              showAlertCorrect('Producto creado correctamente', 'success', isClose)
+              showAlertCorrect('Producto creado correctamente', 'success', () => null)
               setTimeout(() => {
                 window.location.reload();
               }, 2600);
@@ -143,7 +143,7 @@ function CrearPedido() {
           
         }}
       >
-        {({ errors, handleSubmit, touched, handleChange }) => (
+        {({ errors, handleSubmit, touched}) => (
           <form onSubmit={handleSubmit}>
             <div className='flex flex-row'>
               <Label className="m-5 flex-none  ">
@@ -172,7 +172,7 @@ function CrearPedido() {
                 openModalCrearProducto()
               }}>
                 Agregar producto
-                <span className="mb-1" aria-hidden="true">+</span>
+                <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
             </div>            
             <TableContainer >
@@ -221,7 +221,7 @@ function CrearPedido() {
                         </TableCell>
                         <TableCell>
                           {empleados.map((empleado) => {
-                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}</p> : null
+                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {' '} {empleado.nombre}</p> : null
                           })}
                         </TableCell>
                         <TableCell>
@@ -258,7 +258,7 @@ function CrearPedido() {
               
               <Button onClick={handleSubmit}>
                 Crear pedido
-                <span className="mb-1" aria-hidden="true">+</span>
+                <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
             </div>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
-import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import { Label } from '@windmill/react-ui'
 import { SpanError } from '../../../../components/styles/styles'
 import {
   Table,
@@ -10,16 +10,12 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
-
+import { EditIcon, TrashIcon} from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import moment from 'moment'
-
-import { returnDate, today } from '../../../../helpers/parseDate'
 import { Field, Formik } from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
 import { useClientes } from '../../../../services/hooks/useClientes'
@@ -29,16 +25,16 @@ import { ModalCrearProducto } from './ModalCrearProducto'
 import { ModalEditarProducto } from './ModalEditarProducto'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
-
+import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+import { validateInputs } from './PedidosFormValidations/PedidosFormik'
 function EditarPedido() {
+  const history = useHistory()
   const location = useLocation()
   const idPedido = location.state.idPedido
   const pedido = location.state.pedido
- 
   const [detallePedidoAEditar, setdetallePedidoAEditar] = useState();
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
-  const [isClose] = useState(false)
 
   function openModalCrearProducto() {
     setModalIsOpenCrearProducto(true);
@@ -47,35 +43,36 @@ function EditarPedido() {
   function closeModalCrearProducto() {
     setModalIsOpenCrearProducto(false);
   }
-  function openModalEditarProducto(obj, id = null ) {
+  function openModalEditarProducto(obj, id = null) {
     setModalIsOpenEditarProducto(true);
-    setdetallePedidoAEditar(obj)    
+    setdetallePedidoAEditar(obj)
   }
 
   function closeModalEditarProducto() {
     setModalIsOpenEditarProducto(false);
   }
-
-  const { detallePedidos ,setDetallePedidos ,postDetallePedidos, deleteDetallePedidos } = useDetallePedidos()
-  const detallesPedido2 = detallePedidos.concat([])
-  const [pageTable2, setPageTable2] = useState(1)  
+  const { detallePedidos, setDetallePedidos, deleteDetallePedidos } = useDetallePedidos()
+  const detallePedidosFiltered = detallePedidos.filter(detallePedido => idPedido == detallePedido.idPedido)
+  const detallePedidos2 = detallePedidosFiltered.concat([])
+  
+  const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
 
   const resultsPerPage = 5
-  const totalResults = detallesPedido2.length
-
+  const totalResults = detallePedidos2.length
+  
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
-  useEffect(() => {    
-    setDataTable2(detallesPedido2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  useEffect(() => {
+    setDataTable2(detallePedidos2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
   }, [detallePedidos, pageTable2]);
 
   const { updatePedidos } = usePedidos()
   const { clientes } = useClientes()
   const { empleados } = useEmpleados();
   const clientesDropdown = [
-    { value: null, label: 'Elija el cliente' }
+   
   ]
   for (const id in clientes) {
     const cliente = {
@@ -85,10 +82,10 @@ function EditarPedido() {
     clientesDropdown.push(cliente)
   }
   const initialValuesPedido = {
-    idCliente : pedido.idCliente || '',        
-    fechaEntrega :  moment(pedido.fechaEntrega).format('YYYY-MM-DD') || ''
+    idCliente: pedido.idCliente || clientes[0].idCliente,
+    fechaEntrega: moment(pedido.fechaEntrega).format('YYYY-MM-DD') || ''
   }
-  
+
   function getProduct(product) {
     setDetallePedidos([
       ...detallePedidos,
@@ -96,8 +93,8 @@ function EditarPedido() {
     ])
   }
   function updateTable(product) {
-    let updatedProducts = detallePedidos.map((detallePedido, index) => {
-      if (product.idDetallePedido == index) {
+    let updatedProducts = detallePedidos.map(detallePedido => {
+      if (product.idDetallePedido == detallePedido.idDetallePedido) {
         return product
       }
       else {
@@ -105,14 +102,13 @@ function EditarPedido() {
       }
     })
     setDetallePedidos(updatedProducts)
-
   }
   async function deleteProduct(id) {
     await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
       if (response.isConfirmed) {
         setDetallePedidos(
-          detallePedidos.filter((detallePedido, index) => {
-            return index !== id
+          detallePedidos.filter((detallePedido) => {
+            return detallePedido.idDetallePedido !== id
           })
         )
       }
@@ -121,30 +117,26 @@ function EditarPedido() {
   return (
     <>
       <PageTitle>Editar pedido</PageTitle>
-
       <Formik
         initialValues={initialValuesPedido}
-        validate={() => ({})}
+        validate={values => validateInputs(values)}
         onSubmit={(values, { resetForm }) => {
-
           const updatedValues = {
-            ...values,            
+            ...values,
+            idPedido: idPedido,
+            idEstado: pedido.idEstado,
+            fechaPedido: pedido.fechaPedido
           };
-
           console.log(updatedValues);
-          let responseCrearPedido = updatePedidos(updatedValues).then((response) => {
-            resetForm();
-            
-            console.log('update de pedido')
-            showAlertCorrect('Producto creado correctamente', 'success', isClose)
+          let responseEditarPedido = updatePedidos(idPedido, updatedValues).then((response) => {
+            resetForm();    
+            showAlertCorrect('pedido editado correctamente', 'success', () => null)
             setTimeout(() => {
-              window.location.reload();
+              history.push('/app/pedidos')
             }, 2600);
-
             return response
-
           }).catch(response => {
-            showAlertIncorrect('No se pudo crear el pedido', 'error', isClose);
+            showAlertIncorrect('No se pudo editar el pedido', 'error');
             console.log(updatedValues)
             console.log(response);
           });
@@ -163,7 +155,7 @@ function EditarPedido() {
                   placeholder="Cliente ejemplo"
                   options={clientesDropdown}
                 />
-               {touched.idCliente && errors.idCliente && <SpanError>{errors.idCliente}</SpanError>} 
+                
               </Label>
               <Label className=" m-5 flex-none ">
                 <span>Fecha Entrega</span>
@@ -172,39 +164,19 @@ function EditarPedido() {
                   id="fechaEntrega"
                   name="fechaEntrega"
                   placeholder=""
-
                 />
-               
-              </Label>              
-            </div>
-
-            <div className="flex ml-auto mb-6 justify-end">
-
-              <Button className='flex-3' onClick={() => {
+              </Label>
+              <Button className='flex-none  mt-5 mb-6 self-end  ' onClick={() => {
                 openModalCrearProducto()
               }}>
                 Agregar producto
-                <span className="mb-1" aria-hidden="true">+</span>
+                <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
-
-
-              <div className="flex justify-center flex-none ml-5">
-                <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
-                  <div className="absolute inset-y-0 flex items-center pl-2">
-                    <SearchIcon className="w-4 h-4" aria-hidden="true" />
-                  </div>
-                  <Input
-                    className="pl-8 text-gray-700"
-                    placeholder="Buscar usuario"
-                  />
-                </div>
-              </div>
-            </div>
+            </div>            
             <TableContainer >
               <Table >
                 <TableHeader>
                   <tr >
-
                     <TableCell>Nombre anillo</TableCell>
                     <TableCell>Tipo</TableCell>
                     <TableCell>Peso</TableCell>
@@ -217,13 +189,12 @@ function EditarPedido() {
                     <TableCell>Acciones</TableCell>
                   </tr>
                 </TableHeader>
-                <TableBody className="w-12">
-                  {
-                    dataTable2.map((detallePedido, i) => idPedido == detallePedido.idPedido ? (
-                      <TableRow key={i}>
-                        <TableCell>
+                <TableBody className="w-12">                  
+                    {dataTable2.map(detallePedido =>  (
+                      <TableRow key={detallePedido.idDetallePedido}>
+                        <TableCell> 
                           <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
-                        </TableCell>
+                        </TableCell> 
                         <TableCell>
                           <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
                         </TableCell>
@@ -247,7 +218,7 @@ function EditarPedido() {
                         </TableCell>
                         <TableCell>
                           {empleados.map((empleado) => {
-                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}</p> : null
+                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}{' '}{empleado.apellido}</p> : null
                           })}
                         </TableCell>
 
@@ -257,15 +228,13 @@ function EditarPedido() {
                               <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
                             </Button>
 
-                            <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(i)} >
+                            <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(detallePedido.idDetallePedido)} >
                               <TrashIcon className="w-5 h-5" aria-hidden="true" />
                             </Button>
                           </div>
                         </TableCell>
-
-
                       </TableRow>
-                    ) : null
+                      )  
                     )}
                 </TableBody>
               </Table>
@@ -279,24 +248,21 @@ function EditarPedido() {
                   />
                 )}
               </TableFooter>
-
             </TableContainer>
             <div className="flex ml-auto mt-5 mb-6">
               <Button onClick={handleSubmit}>
-                Crear pedido
-                <span className="mb-1" aria-hidden="true">+</span>
+                Editar pedido
+                <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
             </div>
-
           </form>
         )}
-
       </Formik>
       {modalIsOpenCrearProducto && (
         <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedido} updateTable={(product) => getProduct(product)} />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} updateTable={product => updateTable(product)}  />
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} updateTable={product => updateTable(product)} />
       )}
 
     </>

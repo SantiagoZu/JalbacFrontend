@@ -91,7 +91,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
         <>
             <Formik
                 initialValues={updateValues}
-                validate={() => ({})}
+                validate={values => validateInputsEditarProducto(values)}
                 onSubmit={(values, { resetForm }) => {
                     const updatedValues = {
                         ...values,
@@ -100,7 +100,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                         idEstado : product.idEstado,
                         motivoDevolucion : null
                     };
-                    if (product.idDetallePedido === undefined) {
+                    if (product.idDetallePedido === undefined) { // uso este modal desde la vista Crear pedido
                         const updatedValuesTable = {
                             id : idProducto,
                             nombreAnillido: values.nombreAnillido || '',
@@ -114,14 +114,13 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                             idEmpleado: values.idEmpleado || '',
                             idEmpleado : values.idEmpleado || '',
                             idEstado : 1,                       
-                            motivoDevolucion: '',
-                    
+                            motivoDevolucion: '',                    
                         }
                         showAlertCorrect('El producto ha sido editado' , 'success', isClose)
                         updateTable(updatedValuesTable)
                         console.log(updatedValuesTable)
                     }
-                    else {
+                    else { //uso la vista desde Editar pedido
                         updateDetallePedidos(product.idDetallePedido, updatedValues).then(response => {
                             resetForm();
                             updateTable(updatedValues)

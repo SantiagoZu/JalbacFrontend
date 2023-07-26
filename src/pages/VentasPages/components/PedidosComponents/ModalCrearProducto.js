@@ -11,13 +11,13 @@ import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , updateTable = undefined}) => {
     const {postDetallePedidos} = useDetallePedidos();
     const tiposDropDown = [
-        { value: '', label: 'Seleccione un tipo de anillo' },
+        { value: null, label: 'Seleccione un tipo de anillo' },
         { value: '3D', label: '3D' },
         { value: 'A mano', label: 'A mano' },
         { value: 'Vaceado', label: 'Vaceado' },
     ];
     const materialDropDown = [
-        { value: '', label: 'Seleccione un material' },
+        { value: null, label: 'Seleccione un material' },
         { value: 'oroRosado', label: 'Oro rosado' },
         { value: 'oro', label: 'Oro' },
         { value: 'plata', label: 'Plata' },

@@ -114,7 +114,7 @@ function Pedidos() {
           <TableBody>
             {dataTable2.map((pedido) => (
               <TableRow key={pedido.idPedido}>               
-                <TableCell> {console.log(pedido)}
+                <TableCell> 
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>

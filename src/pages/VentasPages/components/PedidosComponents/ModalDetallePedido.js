@@ -78,7 +78,7 @@ export const ModalDetallePedido = ({ isOpen, isClose, idPedido }) => {
                             </TableHeader>
                             <TableBody className="w-12">
                                 {detallePedidos.map((detallePedido, i) => idPedido == detallePedido.idPedido ? (
-                                    <TableRow key={i}>
+                                    <TableRow key={i}> {console.log(idPedido , detallePedido.idPedido)}
                                         <TableCell>
                                             <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idDetallePedido}</p>
                                         </TableCell>
