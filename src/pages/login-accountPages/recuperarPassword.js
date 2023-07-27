@@ -31,11 +31,11 @@ function RecuperarPassword () {
               window.location.reload();
             }, 1000);
         }).catch(response =>{
-          if (response.response.data.errorMessages[0] !== null) {
-            showAlertIncorrect(response.response.data.errorMessages[0], 'error');
-          }else{  
-            showAlertIncorrect('Error al enviar el correo', 'error');
-          }
+          // if (response.response.data.errorMessages[0] !== null) {
+          //   showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+          // }else{  
+          //   showAlertIncorrect('Error al enviar el correo', 'error');
+          // }
         })
       }}
     >
