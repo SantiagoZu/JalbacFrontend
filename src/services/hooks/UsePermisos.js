@@ -40,10 +40,15 @@ export const usePermisos = () => {
         setAllPermisos(data)
     }
 
+    const getPermisosRol = async (idRol) =>{
+        return await instance.get(`/PorRol/${idRol}`)
+    }
+
 
     return {
         permisos,
         allPermisos,
-        getPermisos
+        getPermisos,
+        getPermisosRol
     }
 }

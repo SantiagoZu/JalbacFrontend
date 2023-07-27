@@ -26,3 +26,21 @@ export const validateInputs = (values) => {
     return errores;
 
 };
+
+export const validateEditInputs = (values) =>{
+
+    let errores = {};
+
+    if (!values.rol) {
+        errores.rol = 'El campo rol es oblígatorio.'
+    } else if (!validationScheme.rol.test(values.rol)) {
+        errores.rol = 'El campo rol no debe tener números ni caracteres especiales.'
+    }
+
+    // if (values.checked.length < 1){
+    //     errores.checked = 'Ceda al rol por lo menos un permiso.'
+    // }
+    
+    return errores;
+
+};

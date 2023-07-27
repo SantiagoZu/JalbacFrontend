@@ -21,8 +21,18 @@ export const useRoles = () => {
         return await instance.post("/",obj)
     }
 
+    const editarRol = async (id, obj) => {
+        return await instance.put(`/${id}`, obj);
+    }
+
+    const eliminarRol = async (idRol) => {
+        return await instance.delete(`/${idRol}`);
+    }
+
     return {
         roles,
-        postRoles
+        postRoles,
+        editarRol,
+        eliminarRol
     }
 }

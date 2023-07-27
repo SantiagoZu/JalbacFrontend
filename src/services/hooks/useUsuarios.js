@@ -7,7 +7,17 @@ export const useUsuarios = () => {
         return await instance.post("/", obj)
     }
 
+    const enviarCorreo = async(obj) =>{
+        return await instance.post("/EnviarCorreo", obj)
+    }
+
+    const resetPassword = async(obj) =>{
+        return await instance.post("/ResetContraseña", obj)
+    }
+
     return {
-        crearCuenta
+        crearCuenta,
+        enviarCorreo,
+        resetPassword
     }
 }

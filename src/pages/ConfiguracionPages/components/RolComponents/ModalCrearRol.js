@@ -25,7 +25,6 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
       setSelect(select.filter((obj) => obj.idPermiso !== value));
     }
   };
-  console.log(select)
 
 
   return (
@@ -67,7 +66,6 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
 
               <Label className="mt-4">
                 <span>Permisos</span> <br />
-                
                   {allPermisos.map((permiso)=>(
                     <div className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
                       <Input type="checkbox" id="rol" name="checked" className="mr-1" value={permiso.idPermiso} onChange={handleChange}/>
@@ -75,8 +73,8 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
                       <br/>
                     </div>
                 ))}    
-                {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
               </Label>
+              {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
               
             </ModalBody>
             <ModalFooter>
@@ -95,5 +93,7 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
         </form>
       )}
     </Formik>
+
+    
   )
 }
