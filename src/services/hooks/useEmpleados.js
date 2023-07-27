@@ -48,6 +48,6 @@ export const useEmpleados = () => {
         editarEmpleado,
         cargarEmpleados,
         eliminarEmpleado,
-        crearEmpleado
+        crearEmpleado,
     }
 }
