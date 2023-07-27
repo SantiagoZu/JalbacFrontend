@@ -88,18 +88,14 @@ if (!values.tamanoPiedra) {
 if (!values.detalle) {
   errores.detalle = 'El campo Detalle es oblígatorio'
 } else if (!validationScheme.detalle.test(values.detalle)) {
-  errores.detalle = 'El texto no puede ser contener mas de 100 caractere'
+  errores.detalle = 'El texto no puede ser contener mas de 100 caracteres'
 }
 if (!values.cantidad) {
   errores.cantidad = 'El campo Cantidad  es obligatorio'
 } else if (!validationScheme.cantidad.test(values.cantidad)) {
   errores.cantidad = 'La cantidad minima de productos es 1'
 }
-  if (!values.motivoDevolucion) {
-    errores.motivoDevolucion = 'El campo Fecha entrega es oblígatorio'
-  } else if (!validationScheme.motivoDevolucion.test(values.motivoDevolucion)) {
-    errores.motivoDevolucion = 'El texto no puede  contener mas de 100 caracteres'
-  }
+  
   return errores;
 };
 

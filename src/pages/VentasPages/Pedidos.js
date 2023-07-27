@@ -17,7 +17,7 @@ import {
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
+import { EditIcon, TrashIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto } from '../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
 import { returnDate } from '../../helpers/parseDate'
@@ -94,7 +94,7 @@ function Pedidos() {
             </div>
             <Input
               className="pl-8 text-gray-700"
-              placeholder="Buscar usuario"
+              placeholder="Buscar pedido"
               value={search}
               onChange={searcher}
             />
@@ -111,13 +111,14 @@ function Pedidos() {
               <TableCell>Fecha Entrega</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Detalles Producto</TableCell>
+              <TableCell>Cambiar estado</TableCell>
               <TableCell>Acciones</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
             {dataTable2.map((pedido) => (
               <TableRow key={pedido.idPedido}>               
-                <TableCell> {console.log(pedido)}
+                <TableCell> 
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>
@@ -133,7 +134,7 @@ function Pedidos() {
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido.idPedido)}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
-                  
+
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
@@ -143,6 +144,11 @@ function Pedidos() {
                     
                     <Button layout="link" size="icon" aria-label="Delete" >
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                    <Button layout="link" size="icon" aria-label="Delete" >
+                      {pedido.idEstadoNavigation.nombre == 'Devuelto' ?  (
+                        <AdvertenciaPedidoDevuelto className='text-red-500 w-5 h-5' aria-hidden="true" />
+                      ) : null}  
                     </Button>
                   </div>
                 </TableCell>

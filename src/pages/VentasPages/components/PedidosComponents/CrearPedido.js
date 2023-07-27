@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
-import {Label } from '@windmill/react-ui'
 import { SpanError } from '../../../../components/styles/styles'
 import {
+  Label,
   Table,
   TableHeader,
   TableCell,
@@ -13,11 +13,9 @@ import {
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
+import { EditIcon, TrashIcon} from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-
-import { returnDate, today } from '../../../../helpers/parseDate'
-import { Field, Formik } from 'formik'
+import { Formik } from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
 import { useClientes } from '../../../../services/hooks/useClientes'
 import { ModalCrearProducto } from './ModalCrearProducto'
@@ -25,14 +23,14 @@ import { ModalEditarProducto } from './ModalEditarProducto'
 import { initialValues, validateInputs } from './PedidosFormValidations/PedidosFormik'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
-
+import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 function CrearPedido() {  
+  const history = useHistory()
   const [productoAEditar, setProductoAEditar] = useState();
+  const [idProducto, setIdProducto] = useState()
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
-  const [idProducto, setIdProducto] = useState()
-  const [isClose] = useState(false)
-
+  
   function openModalCrearProducto() {
     setModalIsOpenCrearProducto(true);
   }
@@ -79,11 +77,7 @@ function CrearPedido() {
   }, [productos, pageTable2]);
  
   function getProduct(product) {
-    setProductos([
-      ...productos,
-      product
-    ])
-   
+    setProductos([...productos, product])   
   }
   function updateTable(product) {
     let updatedProducts = productos.map((detallePedido, index) => {
@@ -95,7 +89,6 @@ function CrearPedido() {
       }
     })
     setProductos(updatedProducts)
-    
   }
  
   async function deleteProduct(id) {
@@ -106,8 +99,9 @@ function CrearPedido() {
             return index !== id
           })
         )
+        
       }
-    })
+    }).then(result => showAlertCorrect('Producto eliminado correctamente', 'success', () => null))
   }
 
   return (
@@ -123,19 +117,19 @@ function CrearPedido() {
             detallesPedido: productos
           };
           if(productos.length <= 0) {
-            showAlertIncorrect('Tienes que agregar almenos un producto', 'error', isClose);
+            showAlertIncorrect('Tienes que agregar almenos un producto', 'error', () => null);
           }
           else {
             let responseCrearPedido = postPedidos(updatedValues).then((response) => {
               resetForm();
               console.log('creacion de pedido')
-              showAlertCorrect('Pedido creado correctamente', 'success', isClose)
+              showAlertCorrect('Producto creado correctamente', 'success', () => null)
               setTimeout(() => {
                 window.location.reload();
               }, 2600);
               return response
             }).catch(response => {
-              showAlertIncorrect('No se pudo crear el pedido', 'error', isClose);
+              showAlertIncorrect('No se pudo crear el pedido', 'error', () => null);
               console.log(updatedValues)
               console.log(response);
             });
@@ -143,7 +137,7 @@ function CrearPedido() {
           
         }}
       >
-        {({ errors, handleSubmit, touched, handleChange }) => (
+        {({ errors, handleSubmit, touched}) => (
           <form onSubmit={handleSubmit}>
             <div className='flex flex-row'>
               <Label className="m-5 flex-none  ">
@@ -172,7 +166,7 @@ function CrearPedido() {
                 openModalCrearProducto()
               }}>
                 Agregar producto
-                <span className="mb-1" aria-hidden="true">+</span>
+                <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
             </div>            
             <TableContainer >
@@ -188,6 +182,7 @@ function CrearPedido() {
                     <TableCell>Detalle</TableCell>
                     <TableCell>Cantidad</TableCell>
                     <TableCell>Empleado encargado</TableCell>
+                 
                     <TableCell>Acciones</TableCell>
                   </tr>
                 </TableHeader>
@@ -221,9 +216,9 @@ function CrearPedido() {
                         </TableCell>
                         <TableCell>
                           {empleados.map((empleado) => {
-                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}</p> : null
+                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {' '} {empleado.nombre}</p> : null
                           })}
-                        </TableCell>
+                        </TableCell>                     
                         <TableCell>
                           <div className="flex items-center space-x-4">
                             <Button layout="link" size="icon" aria-label="Edit" >
@@ -254,14 +249,15 @@ function CrearPedido() {
               </TableFooter>
             </TableContainer>
             
-            <div className="flex ml-auto mt-5 mb-6">
-              
+            <div className="flex ml-auto mt-5 mb-6 space-x-5">              
               <Button onClick={handleSubmit}>
                 Crear pedido
-                <span className="mb-1" aria-hidden="true">+</span>
+                <span className="mb-1 ml-2" aria-hidden="true">+</span>
+              </Button>
+              <Button layout="outline"  onClick={() => history.push('/app/pedidos')}>
+                Regresar a pedidos
               </Button>
             </div>
-
           </form>
         )}
 
