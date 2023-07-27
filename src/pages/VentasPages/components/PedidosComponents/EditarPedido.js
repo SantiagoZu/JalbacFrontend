@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
-import { Label } from '@windmill/react-ui'
-import { SpanError } from '../../../../components/styles/styles'
 import {
+  Label,
   Table,
   TableHeader,
   TableCell,
@@ -16,7 +15,7 @@ import {
 import { EditIcon, TrashIcon} from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import moment from 'moment'
-import { Field, Formik } from 'formik'
+import {Formik } from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
 import { useClientes } from '../../../../services/hooks/useClientes'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
@@ -228,7 +227,7 @@ function EditarPedido() {
                               <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
                             </Button>
 
-                            <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(detallePedido.idDetallePedido)} >
+                            <Button layout="link" size="icon" aria-label="Delete"  >
                               <TrashIcon className="w-5 h-5" aria-hidden="true" />
                             </Button>
                           </div>
@@ -249,10 +248,13 @@ function EditarPedido() {
                 )}
               </TableFooter>
             </TableContainer>
-            <div className="flex ml-auto mt-5 mb-6">
+            <div className="flex ml-auto mt-5 mb-6 space-x-5">
               <Button onClick={handleSubmit}>
                 Editar pedido
                 <span className="mb-1 ml-2" aria-hidden="true">+</span>
+              </Button>
+              <Button layout="outline"  onClick={() => history.push('/app/pedidos')}>
+                Regresar a pedidos
               </Button>
             </div>
           </form>
