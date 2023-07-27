@@ -12,7 +12,7 @@ import { useLogin } from '../../services/hooks/UseLogin'
 
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
-function Login() {
+function Login () {
 
   const { postLogin } = useLogin();
   const history = useHistory();
@@ -100,14 +100,6 @@ function Login() {
                       to="/recuperar-password"
                     >
                       Recuperar contraseña
-                    </Link>
-                  </p>
-                  <p className="mt-1">
-                    <Link
-                      className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                      to="/create-account"
-                    >
-                      Crear una cuenta
                     </Link>
                   </p>
                 </div>

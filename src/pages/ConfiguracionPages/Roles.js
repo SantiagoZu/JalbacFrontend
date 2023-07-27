@@ -17,12 +17,14 @@ import {
   TableContainer,
   Button,
   Pagination,
+  Badge
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
 import response from '../../utils/demo/dataRoles';
-import { showAlertDeleted } from '../../helpers/Alertas';
-
+import { showAlertCorrect, showAlertDeleted, showAlertIncorrect } from '../../helpers/Alertas';
+import { useRoles } from '../../services/hooks/useRoles'
+import { ModalPermisos } from './components/RolComponents/ModalPermisos'
 
 const response2 = response.concat([])
 
@@ -34,6 +36,8 @@ function Roles() {
   const resultsPerPage = 10
   const totalResults = response.length
 
+  const {roles, eliminarRol} = useRoles();
+
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
@@ -43,7 +47,12 @@ function Roles() {
   }, [pageTable2])
   
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
+  const [modalIsOpenPermisos, setModalIsOpenPermisos] = useState(false)
+  const [idRolPermisos, setIdRolPermisos] = useState()
+  const [rolSeleccionado, setRolSeleccionado] = useState([]);
 
+  //Modal crear
   function openModalCreate() {
     setModalIsOpenCreate(true);
   }
@@ -52,19 +61,49 @@ function Roles() {
     setModalIsOpenCreate(false);
   }
 
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-
-  function openModalEdit() {
+  //Modal editar
+  function openModalEdit(rol) {
     setModalIsOpenEdit(true);
+    setRolSeleccionado(rol);
   }
 
   function closeModalEdit() {
     setModalIsOpenEdit(false);
   }
 
-  function alertaEliminado() {
-    showAlertDeleted('¿Estás seguro que deseas eliminar el cliente?', 'warning', 'Eliminado correctamente', 'success')
+  //Modal permisos
+  function openModalPermisos(idRol) {
+    setModalIsOpenPermisos(true);
+    setIdRol(idRol)
   }
+  function setIdRol(idRol) {
+    setIdRolPermisos(idRol)
+  }
+  function closeModalPermisos() {
+    setModalIsOpenPermisos(false);
+  }
+
+  //Eliminar
+  function eliminarRoles(idRol) {
+    showAlertDeleted(
+      '¿Estás seguro que deseas eliminar el empleado?',
+      'warning',
+      'Eliminado correctamente',
+      'success'
+    ).then(result =>{
+      if (result.isConfirmed) {
+        eliminarRol(idRol).then(response=>{
+          showAlertCorrect('Rol eliminado correctamente.', 'success');
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+        }).catch(response =>{
+          showAlertIncorrect('Error al eliminar el rol', 'error');
+        })
+      }
+    })
+  }
+
 
   return (
     <>
@@ -95,31 +134,31 @@ function Roles() {
           <TableHeader>
             <tr >
               <TableCell>Rol</TableCell>
-              <TableCell>Permisos</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Permisos</TableCell>
               <TableCell>Acciones</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((rol, i) => (
-              <TableRow key={i}>
-                
+            {roles.map((rol) => (
+              <TableRow key={rol.idRol}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.Rol}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.Permisos}</p>
+                  <Badge className="text-xs text-gray-600 dark:text-gray-400" type={rol.estado ? "success" : "danger"}>{rol.estado ? 'Activo' : 'Inactivo'}</Badge>
                 </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{rol.Estado}</p>
+                <TableCell >
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalPermisos(rol.idRol)}>
+                    <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
+                  </Button>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                  <ModalEditarRol isOpen={modalIsOpenEdit} isClose={closeModalEdit} />
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={openModalEdit}>
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEdit(rol)}>
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={alertaEliminado}>
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() =>eliminarRoles(rol.idRol)}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>
@@ -137,6 +176,13 @@ function Roles() {
           />
         </TableFooter>
       </TableContainer>
+      {modalIsOpenPermisos && (
+        <ModalPermisos isOpen={modalIsOpenPermisos} isClose={closeModalPermisos} idRol={idRolPermisos} />
+      )}
+      {modalIsOpenEdit && (
+        <ModalEditarRol isOpen={modalIsOpenEdit} isClose={closeModalEdit} rol={rolSeleccionado} />
+      )}
+
     </>
   )
 }

@@ -12,7 +12,7 @@ export const showAlertCorrect = (message, icon, closeModal) => {
 }
 export const showAlertIncorrect = (message, icon) => {
     return Swal.fire({
-        title: message,
+        text: message,
         icon: icon,
         timer: 2500,
         showConfirmButton: false
@@ -51,6 +51,25 @@ export const showCloseSesion = (message, icon,secondMessage, secondIcon, onDelet
                 secondIcon,
             )
             onClose();
+        }
+    });
+}
+
+export const showAlertEstadoDevuelto = (message, icon, secondMessage, secondIcon) => {
+    Swal.fire({
+        title: message,
+        icon: icon,
+        showCancelButton: true,
+        confirmButtonColor: '#7e3af2',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Devolver'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Devuelto',
+                secondMessage,
+                secondIcon,
+            )
         }
     });
 }
