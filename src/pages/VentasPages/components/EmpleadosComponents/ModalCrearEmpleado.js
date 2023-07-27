@@ -32,8 +32,15 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                     correo: valores.correo,
                     contrasena: valores.contrasena,
                 }
-                crearEmpleado(empleado)
-                console.log(valores)
+                crearEmpleado(empleado).then(response =>{
+                    showAlertCorrect("Empleado creado correctamente", "success", isClose)
+                    resetForm();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }).catch(response=>{
+                    showAlertIncorrect("No se pudo crear el empleado", "error", isClose)
+                })
             }}
         >
             {({ errors, handleSubmit, touched }) => (

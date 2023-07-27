@@ -129,7 +129,7 @@ function Empleados() {
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
-              <SearchIcon className="w-4 h-4 dark:bg-white" aria-hidden="true" />
+              <SearchIcon className="w-4 h-4" aria-hidden="true" />
             </div>
             <Input
               className="pl-8 text-gray-700"

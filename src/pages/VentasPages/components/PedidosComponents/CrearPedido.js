@@ -129,7 +129,7 @@ function CrearPedido() {
             let responseCrearPedido = postPedidos(updatedValues).then((response) => {
               resetForm();
               console.log('creacion de pedido')
-              showAlertCorrect('Producto creado correctamente', 'success', isClose)
+              showAlertCorrect('Pedido creado correctamente', 'success', isClose)
               setTimeout(() => {
                 window.location.reload();
               }, 2600);
