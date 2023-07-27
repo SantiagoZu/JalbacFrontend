@@ -130,12 +130,19 @@ function Pedidos() {
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
-                <TableCell >
+                
+                <TableCell>
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido.idPedido)}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
 
                 </TableCell>
+                <TableCell>
+                <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" >
+                    <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
+                  </Button>
+                </TableCell>
+
                 <TableCell>
                   <div className="flex items-center space-x-4">
                     <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', {idPedido: pedido.idPedido, pedido : pedido})} >
