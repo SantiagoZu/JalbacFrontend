@@ -20,6 +20,7 @@ import {
 import { EditIcon, TrashIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto } from '../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
+import { ModalEditarEstado } from './components/PedidosComponents/ModalEditarEstado'
 import { returnDate } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -30,16 +31,25 @@ function Pedidos() {
   const {pedidos, deletePedidos } = usePedidos();
   const history = useHistory();  
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
-  const [idPedidoForDetalle, setIdPedidoForDetalle] = useState()
+  const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
+  const [idPedido, setIdPedido] = useState()
+  const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
   
-
   function openModalDetallePedido(idPedido) {
     setModalIsOpenDetallePedido(true);
-    setIdPedidoForDetalle(idPedido)
+    setIdPedido(idPedido)
   }
   
   function closeModalDetallePedido(){
     setModalIsOpenDetallePedido(false);
+  }
+  function openModalEditarEstado(pedido) {
+    setModalIsOpenEditarEstado(true);
+    setPedidoEditarEstado(pedido)
+  }
+  
+  function closeModalEditarEstado(){
+    setModalIsOpenEditarEstado(false);
   }
   const pedidos2 = pedidos.concat([])
   const [pageTable2, setPageTable2] = useState(1)
@@ -138,7 +148,7 @@ function Pedidos() {
 
                 </TableCell>
                 <TableCell>
-                <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" >
+                <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
                     <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
                 </TableCell>
@@ -175,9 +185,11 @@ function Pedidos() {
         </TableFooter>
       </TableContainer>
       {modalIsOpenDetallePedido && (
-        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedidoForDetalle}/>
+        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedido}/>
       )}
-     
+       {modalIsOpenEditarEstado && (
+        <ModalEditarEstado isOpen={modalIsOpenEditarEstado} isClose={closeModalEditarEstado} pedido={pedidoEditarEstado}/>
+      )}
       
     </>
   )
