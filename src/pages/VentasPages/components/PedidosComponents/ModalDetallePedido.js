@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import response from '../../../../utils/demo/dataProductos'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
-import {CardDetalles} from './CardDetalles'
+import { CardDetalles } from './CardDetalles'
 
 const responseDetallePedido = response.concat([])
 export const ModalDetallePedido = ({ isOpen, isClose, idPedido }) => {
@@ -15,7 +15,7 @@ export const ModalDetallePedido = ({ isOpen, isClose, idPedido }) => {
     const [pageTable, setPageTable] = useState(1)
 
 
-   
+
     const [modalIsOpen, setModalIsOpen] = useState(false)
 
     function openModalDetalle() {
@@ -30,23 +30,15 @@ export const ModalDetallePedido = ({ isOpen, isClose, idPedido }) => {
     return (
         <>
 
-            <Modal isOpen={isOpen} onClose={isClose}  >
-                <ModalHeader className='mb-8'> Detalles producto</ModalHeader>
-                <ModalBody>
-                    {detallePedidos.map((detallePedido, i) => idPedido == detallePedido.idPedido ? (
-                        <CardDetalles detallePedido={detallePedido}/>
-                    ): null)}
-                </ModalBody>
-                    
-                <ModalFooter>
-
-                    <div className="block w-full sm:hidden">
-                        <Button block size="large" layout="outline" onClick={isClose}>
-                            Cerrar
-                        </Button>
+            <Modal isOpen={isOpen} onClose={isClose}>
+                <ModalHeader className='mb-5'>Detalles producto</ModalHeader>
+                <div className='-m-5 p-4 text-sm text-gray-700 dark:text-gray-400'>
+                    <div className='grid grid-cols-2 gap-2'>
+                        {detallePedidos.map((detallePedido, i) => idPedido == detallePedido.idPedido ? (
+                            <CardDetalles detallePedido={detallePedido} />
+                        ) : null)}
                     </div>
-
-                </ModalFooter>
+                </div>
             </Modal>
         </>
     );

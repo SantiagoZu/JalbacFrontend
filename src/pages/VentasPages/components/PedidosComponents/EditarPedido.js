@@ -26,6 +26,7 @@ import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import { validateInputs } from './PedidosFormValidations/PedidosFormik'
+
 function EditarPedido() {
   const history = useHistory()
   const location = useLocation()

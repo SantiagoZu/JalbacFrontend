@@ -36,7 +36,7 @@ function Layout() {
         <Main>
           <Suspense fallback={<ThemedSuspense />}>
             {
-              cookie !== undefined ? 
+              cookie != '' ? 
                 <Switch>
                   {routes.map((route, i) => {
                     return route.component ? (
