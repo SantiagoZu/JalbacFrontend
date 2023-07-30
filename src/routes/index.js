@@ -60,7 +60,10 @@ export const Routes = () =>{
         routes.push({
           path: '/pedidos',
           component: Pedidos
-        });
+        },{
+          path: '/crearPedido',
+          component: CrearPedido,
+        },);
       }
       if (item.nombrePermiso === "Historial pedidos") {
         routes.push({
