@@ -28,6 +28,7 @@ import { ReactComponent as OutlineCogIcon } from './outlineCog.svg'
 import { ReactComponent as OutlineLogoutIcon } from './outlineLogout.svg'
 import { ReactComponent as Arrow } from './arrow.svg'
 import { ReactComponent as AdvertenciaPedidoDevuelto } from './advertenciaPedidoDevuelto.svg'
+
 export {
   ButtonsIcon,
   CardsIcon,
@@ -58,5 +59,6 @@ export {
   OutlineCogIcon,
   OutlineLogoutIcon,
   Arrow,
-  AdvertenciaPedidoDevuelto
+  AdvertenciaPedidoDevuelto,
+
 }

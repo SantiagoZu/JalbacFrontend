@@ -10,21 +10,22 @@ import { useEstados } from '../../../../services/hooks/useEstados'
 import { usePedidos } from '../../../../services/hooks/usePedidos';
 
 export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
-    console.log(pedido)
-    const { updateDetallePedidos } = useDetallePedidos();
+    const { detallePedidos, updateDetallePedidos } = useDetallePedidos();
     const { updatePedidos } = usePedidos()
     const { estados } = useEstados()
     const estadosDropdown = [
-        { value: '', label: 'Elija el estado a cambiar' },
+        { value: null, label: 'Elija el estado a cambiar' },
         ...estados.map(estado => ({ value: estado.idEstado, label: estado.nombre })),
     ];
-    console.log(estadosDropdown)
+    let detallesAEditar = detallePedidos.filter(detallePedido => detallePedido.idPedido == pedido.idPedido)
+    console.log(detallesAEditar)
     return (
         <>
             <Formik
                 initialValues={{ estado: '' }}
                 validate={() => ({})}
                 onSubmit={(value, { resetForm }) => {
+
                     const updatedValues = {
                         idPedido: pedido.idPedido,
                         idCliente: pedido.idCliente,
@@ -33,15 +34,35 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                         fechaEntrega: pedido.fechaEntrega
                     };
                     console.log(value)
-                    updatePedidos(pedido.idPedido, updatedValues).then(response => {
+                    updatePedidos(pedido.idPedido, updatedValues).then( (response)  => {
                         resetForm();
-                        setTimeout(() => window.location.reload() , 2000)
+                        
+                        setTimeout(() => window.location.reload(), 2000)
                         showAlertCorrect('Estado editado correctamente', 'success', isClose)
                         console.log(response);
                     }).catch(response => {
                         showAlertIncorrect('No se pudo editar el estado', 'error', isClose);
                         console.log(response);
                     })
+                    for (const detallePedido of detallesAEditar) {
+                        const updateValuesDetalle = {
+                            idDetallePedido: detallePedido.idDetallePedido || '',
+                            idPedido: detallePedido.idPedido || '',
+                            idEmpleado: detallePedido.idEmpleado || '',
+                            idEstado: parseInt(value.estado) || '',
+                            nombreAnillido: detallePedido.nombreAnillido || '',
+                            tipo: detallePedido.tipo || '',
+                            peso: detallePedido.peso || '',
+                            tamanoAnillo: detallePedido.tamanoAnillo || '',
+                            tamanoPiedra: detallePedido.tamanoPiedra || '',
+                            material: detallePedido.material || '',
+                            detalle: detallePedido.detalle || '',
+                            cantidad: detallePedido.cantidad || '',
+                            motivoDevolucion: detallePedido.motivoDevolucion || ''
+                        }
+                        let responseDetalles =  updateDetallePedidos(detallePedido.idDetallePedido, updateValuesDetalle)
+                        console.log(responseDetalles)
+                    }
                     console.log(updatedValues)
                 }}
             >

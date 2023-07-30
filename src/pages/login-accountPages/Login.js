@@ -28,7 +28,7 @@ function Login () {
         postLogin(updatedValues).then(response => {
           
             history.push('/app')
-            
+            console.log(response)    
         }).catch(response => {
             showAlertIncorrect('Las credenciales para el inicio de sesión no son validas', 'error');
             console.log(response);
