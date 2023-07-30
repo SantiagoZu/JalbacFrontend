@@ -14,31 +14,48 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
   const { editarRol } = useRoles();
   const { allPermisos, getPermisosRol } = usePermisos();
   const [permisosRol, setPermisosRol] = useState([]);
-  const [permisosSeleccionados, setPermisosSeleccionados] = useState([]);
+  const [selectedPermisos, setSelectedPermisos] = useState([]);
+  // const [permisosSeleccionados, setPermisosSeleccionados] = useState([]);
 
-  useEffect(() => {
-    setPermisosSeleccionados(permisosRol.map(permiso => ({idPermiso: permiso.idPermiso})));
-  }, [permisosRol]);
+  // useEffect(() => {
+  //   setPermisosSeleccionados(permisosRol.map(permiso => ({idPermiso: permiso.idPermiso})));
+  // }, [permisosRol]);
 
-  const handleChange = (event) => {
-    const { value, checked } = event.target;
-    if (checked) {
-      setPermisosSeleccionados([...permisosSeleccionados, { idPermiso: value }]);
-    } else {
-      const permisoIndex = permisosSeleccionados.findIndex(permiso => permiso.idPermiso === value);
-      if (permisoIndex !== -1) {
-        const updatedPermisos = [...permisosSeleccionados];
-        updatedPermisos.splice(permisoIndex, 1);
-        setPermisosSeleccionados(updatedPermisos);
-      }
-    }
-    console.log(permisosSeleccionados)
-  };
+  // const handleChange = (event) => {
+  //   const { value, checked } = event.target;
+  //   if (checked) {
+  //     setPermisosSeleccionados([...permisosSeleccionados, { idPermiso: value }]);
+  //   } else {
+  //     const permisoIndex = permisosSeleccionados.findIndex(permiso => permiso.idPermiso === value);
+  //     if (permisoIndex !== -1) {
+  //       const updatedPermisos = [...permisosSeleccionados];
+  //       updatedPermisos.splice(permisoIndex, 1);
+  //       setPermisosSeleccionados(updatedPermisos);
+  //     }
+  //   }
+  //   console.log(permisosSeleccionados)
+  // };
   
-  getPermisosRol(rol.idRol).then(response =>{
-    const data = response.data.resultado;
-    setPermisosRol(data)
-  })
+  // getPermisosRol(rol.idRol).then(response =>{
+  //   const data = response.data.resultado;
+  //   setPermisosRol(data)
+  // })
+
+ 
+  useEffect(() => {
+    getPermisosRol(rol.idRol).then(response => {
+      const data = response.data.resultado;
+      setPermisosRol(data);
+  
+      // Agregar los idPermiso marcados inicialmente a la lista selectedPermisos
+      const selectedIds = data.map(permiso => permiso.idPermiso);
+      setSelectedPermisos(selectedIds);
+    });
+
+    
+  }, [rol.idRol]);
+
+  console.log(selectedPermisos)
 
   const initialValues = {
     rol: rol.nombre || '',
@@ -55,7 +72,7 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
           idRol: rol.idRol,
           nombre: valores.rol,
           estado: JSON.parse(valores.estado),
-          permisos: permisosSeleccionados
+          permisos: selectedPermisos
         }
 
         editarRol(rol.idRol, rolCompleto).then(response =>{
@@ -91,7 +108,7 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
 
               <Label className="mt-4">
               <span>Permisos</span> <br />
-                <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                {/* <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                   {allPermisos.map((mapPermiso) => (
                     <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600" key={mapPermiso.idPermiso}>
                       <div className="flex items-center pl-3">
@@ -108,10 +125,47 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
                       </div>
                     </li>
                   ))}
+                </ul> */}
+                <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                  {allPermisos.map(mapPermiso => {
+                   const isChecked =
+                   permisosRol.some(permisoRol => permisoRol.idPermiso === mapPermiso.idPermiso) ||
+                   selectedPermisos.includes(mapPermiso.idPermiso);
+
+                    const handleCheckboxChange = (event) => {
+                      const permisoId = parseInt(event.target.value);
+                      setSelectedPermisos(prevSelected => {
+                        if (prevSelected.includes(permisoId)) {
+                          return prevSelected.filter(id => id !== permisoId);
+                        } else {
+                          return [...prevSelected, permisoId];
+                        }
+                      });
+                    };
+                    
+
+                    return (
+                      <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600" key={mapPermiso.idPermiso}>
+                        <div className="flex items-center pl-3">
+                          <input
+                            id={`permiso-${mapPermiso.idPermiso}`}
+                            name={`permiso-${mapPermiso.idPermiso}`}
+                            type="checkbox"
+                            value={mapPermiso.idPermiso}
+                            className="w-4 h-4 text-blue-600  bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                            checked={isChecked}
+                            onChange={handleCheckboxChange}
+                          />
+                          <label className="w-full py-3 ml-2 text-sm font-medium text-gray-900  dark:text-gray-300">
+                            {mapPermiso.nombrePermiso}
+                          </label>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
-                
               </Label>
-              {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
+              {/* {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>} */}
 
               <Label className="mt-4">
                 <span>Estado</span>

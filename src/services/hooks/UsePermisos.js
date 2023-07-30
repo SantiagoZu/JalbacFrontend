@@ -9,22 +9,19 @@ export const usePermisos = () => {
     const [permisos, setPermisos] = useState([]);
     const [allPermisos, setAllPermisos] = useState([]);
     const instance = FetchData('Permiso')
-    let cookie = null
-
+    const cookie = Cookies.get('CookieJalbac')
 
     useEffect(() => {
         getAllPermisos();
 
-        if (Cookies.get('CookieJalbac') !== '') {
-            cookie = Cookies.get("CookieJalbac");
+        if (cookie != '') {
             const unencryptToken = jwtDecode(cookie);
             const idUsuario = unencryptToken.unique_name;
             getPermisos(idUsuario);
         }
         else {
-            console.log('no logueado')
+            console.log('No se puede brother')
         }
-
     }, []);
 
     const getPermisos = async (id) => {

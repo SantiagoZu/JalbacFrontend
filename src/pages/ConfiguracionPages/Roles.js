@@ -26,31 +26,47 @@ import { showAlertCorrect, showAlertDeleted, showAlertIncorrect } from '../../he
 import { useRoles } from '../../services/hooks/useRoles'
 import { ModalPermisos } from './components/RolComponents/ModalPermisos'
 
-const response2 = response.concat([])
-
 function Roles() {
 
+  const {roles, eliminarRol} = useRoles();
+  const roles2 = roles.concat([])
   const [pageTable2, setPageTable2] = useState(1)
+  const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
 
-  const resultsPerPage = 10
-  const totalResults = response.length
-
-  const {roles, eliminarRol} = useRoles();
+  const resultsPerPage = 5
+  const totalResults = roles2.length
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
 
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+
+    return data.filter((roles) => (
+      roles.nombre.toLowerCase().includes(searchTerm)
+    ));
+  };
+
   useEffect(() => {
-    setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
+    const filteredData = searchFilter(roles2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
+  }, [roles, pageTable2, search])
   
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   const [modalIsOpenPermisos, setModalIsOpenPermisos] = useState(false)
   const [idRolPermisos, setIdRolPermisos] = useState()
   const [rolSeleccionado, setRolSeleccionado] = useState([]);
+
+  const searcher = (e) => {
+    setSearch(e.target.value)
+  }
 
   //Modal crear
   function openModalCreate() {
@@ -125,6 +141,8 @@ function Roles() {
             <Input
               className="pl-8 text-gray-700"
               placeholder="Buscar rol"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>
@@ -140,7 +158,7 @@ function Roles() {
             </tr>
           </TableHeader>
           <TableBody>
-            {roles.map((rol) => (
+            {dataTable2.map((rol) => (
               <TableRow key={rol.idRol}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{rol.nombre}</p>
