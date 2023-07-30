@@ -20,10 +20,9 @@ const Devoluciones = lazy(() => import('../pages/VentasPages/Devoluciones'))
 const Perfil = lazy(() => import('../pages/Perfil'))
 const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
 const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
+const HistorialDetalles = lazy(() => import('../pages/VentasPages/components/HistorialPedidosComponents/HistorialDetalles'))
 
-/**
- que conste papus
- */
+
 const routes = [
   {
     path: '/dashboard', // the url
@@ -80,6 +79,10 @@ const routes = [
   {
     path: '/crearPedido',
     component: CrearPedido,
+  },
+  {
+    path: '/historialDetalles',
+    component: HistorialDetalles
   },
   {
     path: '/editarPedido',
