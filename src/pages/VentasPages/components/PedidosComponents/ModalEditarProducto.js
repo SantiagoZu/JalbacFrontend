@@ -98,7 +98,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                         idDetallePedido : product.idDetallePedido,
                         idPedido : product.idPedido,
                         idEstado : product.idEstado,
-                        motivoDevolucion : null
+                        motivoDevolucion : ''
                     };
                     if (product.idDetallePedido === undefined) { // uso este modal desde la vista Crear pedido
                         const updatedValuesTable = {

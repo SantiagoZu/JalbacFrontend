@@ -101,7 +101,7 @@ function CrearPedido() {
         )
         
       }
-    }).then(result => showAlertCorrect('Producto eliminado correctamente', 'success', () => null))
+    })
   }
 
   return (
@@ -123,7 +123,7 @@ function CrearPedido() {
             let responseCrearPedido = postPedidos(updatedValues).then((response) => {
               resetForm();
               console.log('creacion de pedido')
-              showAlertCorrect('Producto creado correctamente', 'success', () => null)
+              showAlertCorrect('Pedido creado correctamente', 'success', () => null)
               setTimeout(() => {
                 window.location.reload();
               }, 2600);

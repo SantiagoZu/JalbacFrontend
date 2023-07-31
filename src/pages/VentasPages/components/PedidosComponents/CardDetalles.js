@@ -5,7 +5,48 @@ import {
     Button
 } from '@windmill/react-ui'
 import { Devolver } from '../../../../icons'
-export const CardDetalles = ({ detallePedido }) => {
+import { showAlertCorrect, showAlertDeleted } from '../../../../helpers/Alertas'
+import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
+import { usePedidos } from '../../../../services/hooks/usePedidos'
+export const CardDetalles = ({ detallePedido, pedido }) => {
+    const { updateDetallePedidos } = useDetallePedidos()
+    const { updatePedidos } = usePedidos()
+    const updateValues = {
+        idDetallePedido: detallePedido.idDetallePedido,
+        idPedido: detallePedido.idPedido,
+        idEmpleado: detallePedido.idEmpleado ,
+        idEstado: 4 ,
+        nombreAnillido: detallePedido.nombreAnillido ,
+        tipo: detallePedido.tipo ,
+        peso: detallePedido.peso ,
+        tamanoAnillo: detallePedido.tamanoAnillo ,
+        tamanoPiedra: detallePedido.tamanoPiedra ,
+        material: detallePedido.material ,
+        detalle: detallePedido.detalle ,
+        cantidad: detallePedido.cantidad ,
+        motivoDevolucion: detallePedido.motivoDevolucion 
+    }    
+    const updateValuesPedido = {
+        idPedido: pedido.idPedido,
+        idCliente: pedido.idCliente,
+        idEstado: 4,
+        fechaPedido: pedido.fechaPedido,
+        fechaEntrega: pedido.fechaEntrega
+    }
+    console.log(updateValues)
+    function cambiarEstado() {
+        showAlertDeleted('Estas seguro que deseas devolver este producto?', 'warning').then(response => {
+            if (response.isConfirmed) {
+                
+                updateDetallePedidos(detallePedido.idDetallePedido, updateValues).then(response => {                    
+                    setTimeout(() => window.location.reload(), 2000)
+                    showAlertCorrect('Estado editado correctamente', 'success', () => null)
+                    console.log(response);
+                    updatePedidos(pedido.idPedido, updateValuesPedido).then(response => response)
+                })
+            }
+        })
+    }
     return (
         <Card key={detallePedido.idDetallePedido} className="mb-3 shadow-md w-auto">
             <CardBody className='h-full dark:bg-gray-700 bg-gray-100'>
@@ -88,7 +129,7 @@ export const CardDetalles = ({ detallePedido }) => {
                             </p>
                         </div>
                         <div className='absolute top-0 right-0'>
-                            <Button icon={Devolver}>
+                            <Button icon={Devolver} onClick={() => cambiarEstado()}>
                             </Button>
                         </div>
                     </div>

@@ -23,6 +23,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
         { value: 'plata', label: 'Plata' },
     ];
     const { empleados } = useEmpleados()
+    console.log(empleados)
     const empleadosDropdown = []
     for (const id in empleados) {
         const empleado = {
