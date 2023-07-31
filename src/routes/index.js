@@ -16,16 +16,16 @@ const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
 const HistorialDetalles = lazy(() => import('../pages/VentasPages/components/HistorialPedidosComponents/HistorialDetalles'))
 
 
-export const Routes = () =>{
+export const Routes = () => {
 
-  const {permisos} = usePermisos();
+  const { permisos } = usePermisos();
   const cookie = Cookies.get('CookieJalbac');
   const routes = [
   ]
-  
+
   if (cookie != '') {
 
-    permisos.forEach(item =>{
+    permisos.forEach(item => {
       if (item.nombrePermiso === "Dashboard") {
         routes.push({
           path: '/dashboard',
@@ -60,10 +60,13 @@ export const Routes = () =>{
         routes.push({
           path: '/pedidos',
           component: Pedidos
-        },{
+        }, {
           path: '/crearPedido',
           component: CrearPedido,
-        },);
+        }, {
+          path: '/editarPedido',
+          component: EditarPedido,
+        });
       }
       if (item.nombrePermiso === "Historial pedidos") {
         routes.push({
@@ -79,7 +82,7 @@ export const Routes = () =>{
       }
     });
   }
-  
+
   return {
     routes
   }
