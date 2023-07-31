@@ -19,34 +19,41 @@ import {
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto } from '../../icons';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
+import { ModalDetallePedidoDevuelto } from './components/PedidosComponents/ModalDetallePedidoDevuelto'
 import { ModalEditarEstado } from './components/PedidosComponents/ModalEditarEstado'
 import { returnDate } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
-import Cookies from "js-cookie";
-import jwtDecode from 'jwt-decode';
 
 
 function Pedidos() {
 
-  const { pedidos} = usePedidos();
-  const {detallePedidos} = useDetallePedidos()
-  let cookie = Cookies.get("CookieJalbac");
-  const unencryptToken = jwtDecode(cookie);
-  const idUsuario = unencryptToken.unique_name;
+  const { pedidos, pedidosEmpleado } = usePedidos();
+  const { detallePedidos } = useDetallePedidos()
+
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
-  const [idPedido, setIdPedido] = useState()
+  const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
+  
+  const [idPedido, setIdPedido] = useState({})
   const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
-  function openModalDetallePedido(idPedido) {
+  function openModalDetallePedido(pedido) {
     setModalIsOpenDetallePedido(true);
-    setIdPedido(idPedido)
+    setIdPedido(pedido)
   }
 
   function closeModalDetallePedido() {
     setModalIsOpenDetallePedido(false);
+  }
+  function openModalDetallePedidoDevuelto(pedido) {
+    setModalIsOpenDetallePedidoDevuelto(true);
+    setIdPedido(pedido)
+  }
+
+  function closeModalDetallePedidoDevuelto() {
+    setModalIsOpenDetallePedidoDevuelto(false);
   }
   function openModalEditarEstado(pedido) {
     setModalIsOpenEditarEstado(true);
@@ -56,16 +63,9 @@ function Pedidos() {
   function closeModalEditarEstado() {
     setModalIsOpenEditarEstado(false);
   }
-  let pedidosFiltered = []
-  detallePedidos.forEach(detallePedido => {    
-    pedidos.forEach(pedido => {
-      if(detallePedido.idEmpleadoNavigation.idUsuario == idUsuario && pedido.idPedido == detallePedido.idPedido) {
-        pedidosFiltered.push(pedido)   // get pedidos 
-      }
-    }) // get detalles
-  })
-  console.log(pedidosFiltered)
-  const pedidos2 = pedidosFiltered.concat([])
+
+
+  const pedidos2 = pedidos.concat([])
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
@@ -155,13 +155,16 @@ function Pedidos() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido })} >
-                      <EditIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-                    <Button layout="link"  size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido.idPedido)}>
+                    {pedido.idEstadoNavigation.idEstado == 1 ? (
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido })} >
+                        <EditIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                      ) : null 
+                    }
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido)}>
                       <SearchIcon className="w-5 h-5 " aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete" >
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModalDetallePedidoDevuelto(pedido)} >
                       {pedido.idEstadoNavigation.nombre == 'Devuelto' ? (
                         <AdvertenciaPedidoDevuelto className='text-red-500 w-5 h-5' aria-hidden="true" />
                       ) : null}
@@ -184,7 +187,10 @@ function Pedidos() {
         </TableFooter>
       </TableContainer>
       {modalIsOpenDetallePedido && (
-        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedido} />
+        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} />
+      )}
+       {modalIsOpenDetallePedidoDevuelto && (
+        <ModalDetallePedidoDevuelto isOpen={modalIsOpenDetallePedidoDevuelto} isClose={closeModalDetallePedidoDevuelto} pedido={idPedido} />
       )}
       {modalIsOpenEditarEstado && (
         <ModalEditarEstado isOpen={modalIsOpenEditarEstado} isClose={closeModalEditarEstado} pedido={pedidoEditarEstado} />
