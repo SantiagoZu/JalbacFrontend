@@ -84,9 +84,6 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
         }
         estadosDropdown.push(estado)
     }
-    function alertaEstadoProducto() {
-        showAlertEstadoDevuelto('¿Estás seguro que deseas devolver este producto?', 'warning', 'Producto devuelto correctamente', 'success')
-    }
     let updateDetallePedido = []
     return (
         <>
