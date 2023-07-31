@@ -1,73 +1,42 @@
 import React, { useState, useEffect } from 'react'
-
-import CTA from '../../components/CTA'
 import InfoCard from '../../components/Cards/InfoCard'
 import ChartCard from '../../components/Chart/ChartCard'
+import Calendario from './components/Calendario'
 import { Doughnut, Line } from 'react-chartjs-2'
 import ChartLegend from '../../components/Chart/ChartLegend'
 import PageTitle from '../../components/Typography/PageTitle'
-import { ChatIcon, CartIcon, MoneyIcon, PeopleIcon } from '../../icons'
+import { CartIcon, PeopleIcon } from '../../icons'
 import RoundIcon from '../../components/RoundIcon'
-import response from '../../utils/demo/tableData'
-import { SearchIcon } from '../../icons'
-import {
-  TableBody,
-  TableContainer,
-  Table,
-  TableHeader,
-  TableCell,
-  TableRow,
-  TableFooter,
-  Avatar,
-  Badge,
-  Pagination,
-} from '@windmill/react-ui'
 
-import {
-  doughnutOptions,
-  lineOptions,
+import Charts, {
   doughnutLegends,
-  lineLegends,
-  pedidosEmpleado,
+  lineLegends
 } from '../../utils/demo/chartsData'
 
+import Chart3 from '../../utils/demo/chartsData3'
+import Charts2 from '../../utils/demo/chartsData2'
+import { useEmpleados } from '../../services/hooks/useEmpleados'
+import { useClientes } from '../../services/hooks/useClientes'
+
 function Dashboard() {
-  const [page, setPage] = useState(1)
-  const [data, setData] = useState([])
 
-  // pagination setup
-  const resultsPerPage = 10
-  const totalResults = response.length
+  const [fechaInicioPedidos, setFechaInicioPedidos] = useState('');
+  const [fechaFinPedidos, setFechaFinPedidos] = useState('');
+  const [fechaInicioCantidadPedidos, setFechaInicioCantidadPedidos] = useState('');
+  const [fechaFinCantidadPedidos, setFechaFinCantidadPedidos] = useState('');
+  const [fechaInicioServicio, setFechaInicioServicio] = useState('');
+  const [fechaFinServicio, setFechaFinServicio] = useState('');
 
-  // pagination change control
-  function onPageChange(p) {
-    setPage(p)
-  }
-
-  // on page change, load new sliced data
-  // here you would make another server request for new data
-  useEffect(() => {
-    setData(response.slice((page - 1) * resultsPerPage, page * resultsPerPage))
-  }, [page])
+  const { empleados } = useEmpleados();
+  const { clientes } = useClientes();
 
   return (
     <>
       <PageTitle>Dashboard</PageTitle>
 
-      
-
       {/* <!-- Cards --> */}
       <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-        <InfoCard title="Usuarios" value="6389">
-          <RoundIcon
-            icon={PeopleIcon}
-            iconColorClass="text-orange-500 dark:text-orange-100"
-            bgColorClass="bg-orange-100 dark:bg-orange-500"
-            className="mr-4"
-          />
-        </InfoCard>
-
-        <InfoCard title="Nuevos clientes" value="376">
+        <InfoCard title="Clientes" value={clientes.length}>
           <RoundIcon
             icon={CartIcon}
             iconColorClass="text-blue-500 dark:text-blue-100"
@@ -76,38 +45,35 @@ function Dashboard() {
           />
         </InfoCard>
 
-        <InfoCard title="Empleados" value="35">
+        <InfoCard title="Empleados" value={empleados.length}>
           <RoundIcon
-            icon={ChatIcon}
+            icon={PeopleIcon}
             iconColorClass="text-teal-500 dark:text-teal-100"
             bgColorClass="bg-teal-100 dark:bg-teal-500"
             className="mr-4"
           />
         </InfoCard>
-      </div> 
+      </div>
 
       <PageTitle>Gráficos</PageTitle>
 
-      <div className="flex justify-left">
-        <div>
-          <input  className='block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id="fechaEditar"/> 
-        </div>
-      </div>
-
       <div className="grid gap-6 mb-8 md:grid-cols-2 mt-3">
-        <ChartCard title="Servicio mas solicitado">
-          <Doughnut {...doughnutOptions} />
-          <ChartLegend legends={doughnutLegends} />
-        </ChartCard>
-
+        <Calendario setFechaInicio={setFechaInicioPedidos} setFechaFin={setFechaFinPedidos}></Calendario>
         <ChartCard title="Cantidad de pedidos">
-          <Line {...lineOptions} />
+          <Line {...Charts(fechaInicioPedidos, fechaFinPedidos).cantidadPedidos} />
           <ChartLegend legends={lineLegends} />
         </ChartCard>
 
-        <ChartCard title="Cantidad de pedidos despachados por empleado">
-          <Line {...pedidosEmpleado} />
+        <Calendario setFechaInicio={setFechaInicioCantidadPedidos} setFechaFin={setFechaFinCantidadPedidos}></Calendario>
+        <ChartCard title="Cantidad de pedidos por empleado">
+          <Line {...Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos).pedidosEmpleado} />
           <ChartLegend legends={lineLegends} />
+        </ChartCard>
+
+        <Calendario setFechaInicio={setFechaInicioServicio} setFechaFin={setFechaFinServicio}></Calendario>
+        <ChartCard title="Servicio mas solicitado">
+          <Doughnut {...Chart3(fechaInicioServicio, fechaFinServicio).servicios} />
+          <ChartLegend legends={doughnutLegends} />
         </ChartCard>
       </div>
     </>
