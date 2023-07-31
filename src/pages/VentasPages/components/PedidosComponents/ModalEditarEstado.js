@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import { Formik } from 'formik';
+import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
@@ -13,19 +13,18 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
     const { detallePedidos, updateDetallePedidos } = useDetallePedidos();
     const { updatePedidos } = usePedidos()
     const { estados } = useEstados()
-    const estadosDropdown = [
-        { value: null, label: 'Elija el estado a cambiar' },
-        ...estados.map(estado => ({ value: estado.idEstado, label: estado.nombre })),
-    ];
+
     let detallesAEditar = detallePedidos.filter(detallePedido => detallePedido.idPedido == pedido.idPedido)
     console.log(detallesAEditar)
     return (
         <>
             <Formik
-                initialValues={{ estado: '' }}
-                validate={() => ({})}
+                initialValues={{ estado: null }}
+                validate={(value) => {
+                    return value.estado == null ? {estado : 'Escoge el estado a cambiar'} : {}
+                }}
                 onSubmit={(value, { resetForm }) => {
-
+                    console.log(value.estado)
                     const updatedValues = {
                         idPedido: pedido.idPedido,
                         idCliente: pedido.idCliente,
@@ -34,9 +33,9 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                         fechaEntrega: pedido.fechaEntrega
                     };
                     console.log(value)
-                    updatePedidos(pedido.idPedido, updatedValues).then( (response)  => {
+                    updatePedidos(pedido.idPedido, updatedValues).then((response) => {
                         resetForm();
-                        
+
                         setTimeout(() => window.location.reload(), 2000)
                         showAlertCorrect('Estado editado correctamente', 'success', isClose)
                         console.log(response);
@@ -60,7 +59,7 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             cantidad: detallePedido.cantidad || '',
                             motivoDevolucion: detallePedido.motivoDevolucion || ''
                         }
-                        let responseDetalles =  updateDetallePedidos(detallePedido.idDetallePedido, updateValuesDetalle)
+                        let responseDetalles = updateDetallePedidos(detallePedido.idDetallePedido, updateValuesDetalle)
                         console.log(responseDetalles)
                     }
                     console.log(updatedValues)
@@ -72,14 +71,19 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             <ModalHeader className='mb-3'>Editar estado del pedido</ModalHeader>
                             <ModalBody>
                                 <div className='flex gap-5'>
-                                    <Label className="mt-4">
-                                        <span>Nombre</span>
-                                        <CustomInput
-                                            type="select"
-                                            id="estado"
-                                            name="estado"
-                                            options={estadosDropdown}
-                                        />
+                                    <Label className="mt-4">                                     
+                                        <Field
+                                            as="select"
+                                            id='estado'
+                                            name='estado'
+                                            className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select"
+                                        >
+                                            <option value=''>Elije el estado a cambiar</option>
+                                            {
+                                                pedido.idEstado == 1 ? <option value='2'>En produccion</option> : pedido.idEstado == 2 ? <option value='3'>Entregado</option> : null
+                                            }
+                                        </Field>
+                                        {touched.estado && errors.estado && <SpanError>{errors.estado}</SpanError>}
                                     </Label>
                                 </div>
                             </ModalBody>
