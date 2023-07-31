@@ -15,7 +15,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 function RestablecerPassword() {
 
   const {resetPassword} = useUsuarios();
-  const {history} = useHistory();
+  const history = useHistory();
 
   return (
     <Formik

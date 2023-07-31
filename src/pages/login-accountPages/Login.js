@@ -39,14 +39,7 @@ function Login () {
       
     {({ errors, handleSubmit, touched }) => (
       
-      <div className="import { Link } from 'react-router-dom'
-
-import ImageJalbac from '../../assets/img/JalbacLogin.jpg'
-import { Label,  Button } from '@windmill/react-ui'
-import {  showAlertIncorrect } from '../../helpers/Alertas';
-import { Formik } from 'formik';
-import { CustomInput } from '../../components/CustomInput';
-import { SpanError } from '../../components/styles/styles';">
+      <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
         <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
           <div className="flex flex-col overflow-y-auto md:flex-row">
             <div className="h-32 md:h-auto md:w-1/2">
@@ -99,9 +92,9 @@ import { SpanError } from '../../components/styles/styles';">
                   </Button>
                 
 
-                  <hr className="my-8" />
+                  <hr className="mt-8 mb-2" />
 
-                  <p className="mt-4">
+                  <p>
                     <Link
                       className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                       to="/recuperar-password"
