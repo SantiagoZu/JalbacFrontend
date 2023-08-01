@@ -7,7 +7,6 @@ function Charts(fechaInicioPedidos, fechaFinPedidos) {
 
   const pedidosFiltrados = pedidos.filter(pedido => {
     if (fechaInicioPedidosFiltrar !== '') {
-      console.log(pedido.fechaPedido)
       const fechaPedido = new Date(pedido.fechaPedido);
       return fechaPedido >= new Date(fechaInicioPedidosFiltrar) &&
         (!fechaFinPedidos || fechaPedido <= new Date(fechaFinPedidos));

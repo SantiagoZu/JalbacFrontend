@@ -2,33 +2,55 @@ import React, { useState, useEffect } from 'react'
 import moment from 'moment';
 
 function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
-    const [fechaI, setFechaI] = useState(fechaInicio || '');
-    const [fechaF, setFechaF] = useState(fechaFin || '');
     const fechaActual = moment().format('YYYY-MM-DD');
+    const [fechaI, setFechaI] = useState(fechaInicio);
+    const [fechaF, setFechaF] = useState(fechaFin);
+
 
     const handleFechaInicioChange = (event) => {
-        setFechaI(event.target.value);
-    }
+        const nuevaFechaI = event.target.value;
+        if (validarFecha(nuevaFechaI, fechaF)) {
+            setFechaI(nuevaFechaI);
+        }
+    };
 
     const handleFechaFinChange = (event) => {
-        setFechaF(event.target.value);
-    }
+        const nuevaFechaF = event.target.value;
+        if (validarFecha(fechaI, nuevaFechaF)) {
+            setFechaF(nuevaFechaF);
+        }
+    };
+
+    const validarFecha = (inicio, fin) => {
+        return moment(inicio).isSameOrBefore(fin);
+    };
+
+    useEffect(() => {
+        setFechaI(fechaInicio);
+    }, [fechaInicio]);
+
+    useEffect(() => {
+        setFechaF(fechaFin);
+    }, [fechaFin]);
 
     useEffect(() => {
         setFechaInicio(fechaI);
         setFechaFin(fechaF);
-    }, [fechaI, fechaF, setFechaInicio, setFechaFin]);
+        console.log(fechaI,"mas", fechaF)
+    }, [fechaF, fechaI, setFechaFin, setFechaInicio]);
+
 
     return (
         <>
             <div className="flex justify-left">
                 <div>
                     <label className='font-medium dark:text-gray-300'>Fecha Inicio</label>
-                    <input className='block w-full pr-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaInicio} value={fechaI} onChange={handleFechaInicioChange} />
+                    <input className='block w-full pr-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaInicio} defaultValue={fechaInicio} onChange={handleFechaInicioChange} max={fechaActual}/>
                 </div>
+
                 <div>
                     <label className='font-medium dark:text-gray-300'>Fecha Fin</label>
-                    <input className='block w-full pr-4 ml-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaFin} value={fechaF} onChange={handleFechaFinChange} />
+                    <input className='block w-full pr-4 ml-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaFin} defaultValue={fechaFin} onChange={handleFechaFinChange} max={fechaActual}/>
                 </div>
             </div>
         </>

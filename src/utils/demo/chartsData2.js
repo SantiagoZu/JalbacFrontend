@@ -15,7 +15,6 @@ function Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos) {
             return fechaPedidoEmpleado >= new Date(fechaInicioCantidadPedidosFiltrar) &&
                 (!fechaFinCantidadPedidos || fechaPedidoEmpleado <= new Date(fechaFinCantidadPedidos));
         }
-        console.log(detalle.idPedidoNavigation.fechaPedido)
         return (!fechaFinCantidadPedidos || new Date(detalle.idPedidoNavigation.fechaPedido) <= new Date(fechaFinCantidadPedidos));
     });
 
