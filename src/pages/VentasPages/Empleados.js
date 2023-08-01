@@ -61,7 +61,11 @@ function Empleados() {
   useEffect(() => {
     const filteredData = searchFilter(empleados2, search);
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+    // cargarEmpleados();
   }, [empleados, pageTable2, search]);
+
+  
+  
 
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({});
 
@@ -120,6 +124,11 @@ function Empleados() {
     });
   }
 
+  useEffect(() => {
+    if (!modalIsOpen || !modalIsOpenCrear) {
+      cargarEmpleados()
+    }
+  }, [modalIsOpen, modalIsOpenCrear])
 
   return (
     <>

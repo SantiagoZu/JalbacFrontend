@@ -106,10 +106,10 @@ function Clientes() {
         deleteClientes(idCliente)
           .then(response => {
             showAlertCorrect('Cliente eliminado correctamente.', 'success');
-            setTimeout(() => {
-              window.location.reload();
-              // getClientes();
-            }, 1000);
+            // setTimeout(() => {
+            //   window.location.reload();
+            //   // getClientes();
+            // }, 1000);
           })
           .catch(response => {
             showAlertIncorrect('Error al eliminar el cliente.', 'error');
@@ -117,6 +117,12 @@ function Clientes() {
       }
     });
   }
+
+  useEffect(() => {
+    if (!modalIsOpenCreate || !modalIsOpenEdit) {
+      getClientes()
+    }
+  }, [modalIsOpenCreate, modalIsOpenEdit])
 
   return (
 

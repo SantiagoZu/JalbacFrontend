@@ -50,9 +50,9 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     .then(response => {
                         showAlertCorrect('Empleado editado correctamente', 'success', isClose);
                         resetForm();
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
+                        // setTimeout(() => {
+                        //     window.location.reload();
+                        // }, 1000);
                     })
                     .catch(response => {
                         showAlertIncorrect('Hubo un error en la edición del empleado', 'error');

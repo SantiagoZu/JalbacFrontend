@@ -28,17 +28,16 @@ export const useEmpleados = () => {
     const cargarEmpleado = async (idEmpleado) => {
         const response = await instance.get(`/${idEmpleado}`);
         const data = response.data.resultado;
+        setEmpleados(data)
     }
 
     const eliminarEmpleado = async (idEmpleado) => {
         const response = await instance.delete(`/${idEmpleado}`);
-        const data = response.data.resultado;
         setEmpleado(empleados);
     }
 
     const crearEmpleado = async (obj) => {
         const response = await instance.post("/", obj);
-        const data = response.data.resultado;
     }
 
     const validacionDocumento = async (documento) => {

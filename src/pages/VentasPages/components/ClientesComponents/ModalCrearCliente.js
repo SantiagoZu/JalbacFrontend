@@ -23,11 +23,10 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                     estado: true,
                 };
 
-                console.log(updatedValues);
                 postClientes(updatedValues).then(response => {
                     resetForm();
                     showAlertCorrect('Empleado creado correctamente', 'success', isClose)
-                    window.location.reload();
+                    // window.location.reload();
                 }).catch(response => {
                     showAlertIncorrect('No se pudo crear el empleado', 'error', isClose);
                 });

@@ -7,8 +7,6 @@ import ThemedSuspense from '../components/ThemedSuspense'
 import { SidebarContext } from '../context/SidebarContext'
 import { Routes } from '../routes'
 
-const Page404 = lazy(() => import('../pages/404'))
-const Dashboard = lazy(() => import('../pages/DashboardPages/Dashboard'))
 const Blank = lazy(() => import('../pages/Blank'))
 
 

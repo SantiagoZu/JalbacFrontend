@@ -38,22 +38,22 @@ function Dashboard() {
       const fechasPedidos = pedidos.map(pedido => moment(pedido.fechaPedido));
       const fechaPedidoMasAntigua = moment.min(fechasPedidos);
       const fechaPedidoMasNueva = moment.max(fechasPedidos);
-      
-      setFechaInicioPedidos(fechaPedidoMasAntigua.format('YYYY-MM-DD')); 
-      setFechaFinPedidos(fechaPedidoMasNueva.format('YYYY-MM-DD')); 
+
+      setFechaInicioPedidos(fechaPedidoMasAntigua.format('YYYY-MM-DD'));
+      setFechaFinPedidos(fechaPedidoMasNueva.format('YYYY-MM-DD'));
     }
   }, [pedidos]);
 
-  useEffect(() =>{
+  useEffect(() => {
     if (detallePedidos.length > 0) {
       const fechasDetallePedidos = detallePedidos.map(detalle => moment(detalle.idPedidoNavigation.fechaPedido));
       const fechaDetallePedidoMasAntigua = moment.min(fechasDetallePedidos);
       const fechaDetallePedidoMasNueva = moment.max(fechasDetallePedidos);
-      
-      setFechaInicioCantidadPedidos(fechaDetallePedidoMasAntigua.format('YYYY-MM-DD')); 
-      setFechaFinCantidadPedidos(fechaDetallePedidoMasNueva.format('YYYY-MM-DD')); 
-      setFechaInicioServicio(fechaDetallePedidoMasAntigua.format('YYYY-MM-DD')); 
-      setFechaFinServicio(fechaDetallePedidoMasNueva.format('YYYY-MM-DD')); 
+
+      setFechaInicioCantidadPedidos(fechaDetallePedidoMasAntigua.format('YYYY-MM-DD'));
+      setFechaFinCantidadPedidos(fechaDetallePedidoMasNueva.format('YYYY-MM-DD'));
+      setFechaInicioServicio(fechaDetallePedidoMasAntigua.format('YYYY-MM-DD'));
+      setFechaFinServicio(fechaDetallePedidoMasNueva.format('YYYY-MM-DD'));
     }
   }, [detallePedidos])
 
@@ -85,22 +85,27 @@ function Dashboard() {
       <PageTitle>Gráficos</PageTitle>
 
       <div className="grid gap-6 mb-8 md:grid-cols-2 mt-3">
-        <Calendario setFechaInicio={setFechaInicioPedidos} setFechaFin={setFechaFinPedidos} 
-        fechaInicio={fechaInicioPedidos} fechaFin={fechaFinPedidos}></Calendario>
-        <ChartCard title="Cantidad de pedidos">
-          <Line {...Charts(fechaInicioPedidos, fechaFinPedidos).cantidadPedidos} />
-          <ChartLegend legends={lineLegends} />
-        </ChartCard>
+      
+        <Calendario setFechaInicio={setFechaInicioPedidos} setFechaFin={setFechaFinPedidos}
+          fechaInicio={fechaInicioPedidos} fechaFin={fechaFinPedidos} className='flex flex-row justify-center'></Calendario>
+        <div >
+          <ChartCard title="Cantidad de pedidos">
+            <Line {...Charts(fechaInicioPedidos, fechaFinPedidos).cantidadPedidos} />
+            <ChartLegend legends={lineLegends} />
+          </ChartCard>
+        </div>
+
+
 
         <Calendario setFechaInicio={setFechaInicioCantidadPedidos} setFechaFin={setFechaFinCantidadPedidos}
-         fechaInicio={fechaInicioCantidadPedidos} fechaFin={fechaFinCantidadPedidos}></Calendario>
+          fechaInicio={fechaInicioCantidadPedidos} fechaFin={fechaFinCantidadPedidos}></Calendario>
         <ChartCard title="Cantidad de pedidos por empleado">
           <Line {...Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos).pedidosEmpleado} />
           <ChartLegend legends={lineLegends} />
         </ChartCard>
 
         <Calendario setFechaInicio={setFechaInicioServicio} setFechaFin={setFechaFinServicio}
-        fechaInicio={fechaInicioServicio} fechaFin={fechaFinServicio}></Calendario>
+          fechaInicio={fechaInicioServicio} fechaFin={fechaFinServicio}></Calendario>
         <ChartCard title="Servicio mas solicitado">
           <Doughnut {...Chart3(fechaInicioServicio, fechaFinServicio).servicios} />
           <ChartLegend legends={doughnutLegends} />

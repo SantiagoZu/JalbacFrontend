@@ -41,9 +41,9 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
                 updateClientes(object.idCliente, updatedValues).then(response => {
                     resetForm();
                     showAlertCorrect('Cliente editado correctamente', 'success', isClose)
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
+                    // setTimeout(() => {
+                    //     window.location.reload();
+                    // }, 1000);
                 }).catch(response => {
                     showAlertIncorrect('No se pudo editar el cliente', 'error', isClose);
                 })
