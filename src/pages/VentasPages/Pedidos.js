@@ -195,7 +195,7 @@ function Pedidos() {
       {modalIsOpenEditarEstado && (
         <ModalEditarEstado isOpen={modalIsOpenEditarEstado} isClose={closeModalEditarEstado} pedido={pedidoEditarEstado} />
       )}
-
+    
     </>
   )
 }

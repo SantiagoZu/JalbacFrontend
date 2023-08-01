@@ -104,13 +104,15 @@ function EditarPedido() {
     setDetallePedidos(updatedProducts)
   }
   async function deleteProduct(id) {
-    await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
+    await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(async (response) => {
       if (response.isConfirmed) {
+        await deleteDetallePedidos(id)
         setDetallePedidos(
           detallePedidos.filter((detallePedido) => {
             return detallePedido.idDetallePedido !== id
           })
         )
+        showAlertCorrect('Detalle eliminado correctamente', 'success', () => null)
       }
     })
   }
@@ -228,7 +230,7 @@ function EditarPedido() {
                               <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
                             </Button>
 
-                            <Button layout="link" size="icon" aria-label="Delete"  >
+                            <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(detallePedido.idDetallePedido)} >
                               <TrashIcon className="w-5 h-5" aria-hidden="true" />
                             </Button>
                           </div>
