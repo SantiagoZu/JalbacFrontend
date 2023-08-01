@@ -36,10 +36,16 @@ export const useEmpleados = () => {
         setEmpleado(empleados);
     }
 
-    const crearEmpleado = async(obj) => {
+    const crearEmpleado = async (obj) => {
         const response = await instance.post("/", obj);
         const data = response.data.resultado;
     }
+
+    const validacionDocumento = async (documento) => {
+        const response = await instance.post(`/${documento}`);
+        return response.data;
+        
+    };
 
     return {
         empleados,
@@ -48,6 +54,7 @@ export const useEmpleados = () => {
         editarEmpleado,
         cargarEmpleados,
         eliminarEmpleado,
-        crearEmpleado
+        crearEmpleado,
+        validacionDocumento,
     }
 }

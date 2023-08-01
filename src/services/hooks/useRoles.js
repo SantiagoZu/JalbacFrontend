@@ -29,10 +29,17 @@ export const useRoles = () => {
         return await instance.delete(`/${idRol}`);
     }
 
+    const validacionRol = async (nombre) => {
+        const response = await instance.post(`/${nombre}`);
+        return response.data;
+        
+    };
+
     return {
         roles,
         postRoles,
         editarRol,
-        eliminarRol
+        eliminarRol,
+        validacionRol
     }
 }

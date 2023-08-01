@@ -26,7 +26,7 @@ export const MensajeErrorFormulario = styled.label`
 `;
 
 export const SpanError = styled.span`
-font-size: 12px;
+font-size: 15px;
 margin-bottom: 0;
 margin-top: 0;
 color: red;

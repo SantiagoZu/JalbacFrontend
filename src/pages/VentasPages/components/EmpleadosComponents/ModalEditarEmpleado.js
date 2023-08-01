@@ -10,7 +10,7 @@ import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import { useRoles } from '../../../../services/hooks/useRoles';
 
 export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
-
+    // const [documentoUnico, setDocumentoUnico] = useState(false);
     const initialValues = {
         nombre: empleado.nombre || '',
         apellido: empleado.apellido || '',
@@ -28,6 +28,8 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
         ...roles.map((rol) => ({ value: rol.idRol, label: rol.nombre })),
     ];
 
+    
+
     return (
         <Formik
             initialValues={initialValues}
@@ -40,7 +42,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     estado: JSON.parse(valores.estado),
                     documento: valores.documento.toString(),
                     nombre: valores.nombre,
-                    correo: valores.correo, 
+                    correo: valores.correo,
                     apellido: valores.apellido,
                     cargo: valores.cargo
                 };
@@ -57,7 +59,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     });
             }}
         >
-            {({ errors, handleSubmit, touched }) => (
+            {({ errors, handleSubmit, touched, }) => (
                 <form onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
                         <ModalHeader className='mb-3'>Editar empleado</ModalHeader>
@@ -96,7 +98,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                                         type="number"
                                         id="documento"
                                         name="documento"
-                                        placeholder="1234567"
+                                        placeholder="12345678910"
                                     />
                                     {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
                                 </div>
@@ -123,7 +125,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                                     options={rolesDropdown}
                                 />
                             </Label>
-                            
+
                             <Label className="mt-4">
                                 <span>Cargo</span>
                                 <Field name="cargo" id="cargo">

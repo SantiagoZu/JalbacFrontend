@@ -48,12 +48,11 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
       setPermisosRol(data);
   
       // Agregar los idPermiso marcados inicialmente a la lista selectedPermisos
-      const selectedIds = data.map(permiso => permiso.idPermiso);
+      const selectedIds = data.map(permiso => ({ idPermiso: permiso.idPermiso }));
       setSelectedPermisos(selectedIds);
     });
-
-    
   }, [rol.idRol]);
+  
 
   console.log(selectedPermisos)
 
@@ -127,21 +126,21 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
                   ))}
                 </ul> */}
                 <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                  {allPermisos.map(mapPermiso => {
-                   const isChecked =
-                   permisosRol.some(permisoRol => permisoRol.idPermiso === mapPermiso.idPermiso) ||
-                   selectedPermisos.includes(mapPermiso.idPermiso);
-
-                    const handleCheckboxChange = (event) => {
-                      const permisoId = parseInt(event.target.value);
-                      setSelectedPermisos(prevSelected => {
-                        if (prevSelected.includes(permisoId)) {
-                          return prevSelected.filter(id => id !== permisoId);
-                        } else {
-                          return [...prevSelected, permisoId];
-                        }
-                      });
-                    };
+                {allPermisos.map(mapPermiso => {
+                  const isChecked =
+                    permisosRol.some(permisoRol => permisoRol.idPermiso === mapPermiso.idPermiso) ||
+                    selectedPermisos.some(selectedPermiso => selectedPermiso.idPermiso === mapPermiso.idPermiso);
+                                
+                  const handleCheckboxChange = (event) => {
+                    const permisoId = parseInt(event.target.value);
+                    setSelectedPermisos(prevSelected => {
+                      if (prevSelected.some(selectedPermiso => selectedPermiso.idPermiso === permisoId)) {
+                        return prevSelected.filter(permiso => permiso.idPermiso !== permisoId);
+                      } else {
+                        return [...prevSelected, { idPermiso: permisoId }];
+                      }
+                    });
+                  };
                     
 
                     return (

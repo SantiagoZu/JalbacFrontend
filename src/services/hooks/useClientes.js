@@ -28,11 +28,17 @@ export const useClientes = () => {
         await instance.delete(`/${id}`);
     }
 
+    const validacionDocumento = async (documento) => {
+        const response = await instance.post(`/${documento}`);
+        return response.data;
+        
+    };
     return {
         clientes,
         getClientes,
         postClientes,
         updateClientes,
-        deleteClientes
+        deleteClientes,
+        validacionDocumento
     }
 }

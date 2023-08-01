@@ -104,7 +104,9 @@ function HistorialEstadoPedidos() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((pedido, i) => (
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((pedido, i) => (
               <TableRow key={i}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.idPedidoNavigation.fechaPedido)}</p>
@@ -125,7 +127,8 @@ function HistorialEstadoPedidos() {
                 </TableCell>
 
               </TableRow>
-            ))}
+            )))}
+
           </TableBody>
         </Table>
         <TableFooter>

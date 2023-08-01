@@ -35,7 +35,7 @@ function Pedidos() {
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
   const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
-  
+
   const [idPedido, setIdPedido] = useState({})
   const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
@@ -134,7 +134,9 @@ function Pedidos() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((pedido) => (
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((pedido) => (
               <TableRow key={pedido.idPedido}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
@@ -159,7 +161,7 @@ function Pedidos() {
                       <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido })} >
                         <EditIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>
-                      ) : null 
+                    ) : null
                     }
                     <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido)}>
                       <SearchIcon className="w-5 h-5 " aria-hidden="true" />
@@ -172,7 +174,8 @@ function Pedidos() {
                   </div>
                 </TableCell>
               </TableRow>
-            ))}
+            )))}
+
           </TableBody>
         </Table>
         <TableFooter>
@@ -189,7 +192,7 @@ function Pedidos() {
       {modalIsOpenDetallePedido && (
         <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} />
       )}
-       {modalIsOpenDetallePedidoDevuelto && (
+      {modalIsOpenDetallePedidoDevuelto && (
         <ModalDetallePedidoDevuelto isOpen={modalIsOpenDetallePedidoDevuelto} isClose={closeModalDetallePedidoDevuelto} pedido={idPedido} />
       )}
       {modalIsOpenEditarEstado && (

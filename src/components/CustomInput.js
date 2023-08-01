@@ -2,7 +2,7 @@ import React from 'react';
 import { Field } from 'formik';
 import { minDate, returnDate } from '../helpers/parseDate';
 
-export const CustomInput = ({ type, id, name, placeholder, options}) => {
+export const CustomInput = ({ type, id, name, placeholder, options, onBlur=null}) => {
     if (type === 'select') {
         return (
             <Field
@@ -37,6 +37,7 @@ export const CustomInput = ({ type, id, name, placeholder, options}) => {
             id={id}
             name={name}
             placeholder={placeholder}
+            onBlur={onBlur}
             className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
         />
     );

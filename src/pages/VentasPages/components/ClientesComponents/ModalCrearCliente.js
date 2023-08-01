@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Label, Select } from '@windmill/react-ui'
+import React, { useState } from 'react'
+import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import { Formik, Field } from 'formik';
+import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputs } from './ClientesFormValidations/ClientesFormik';
@@ -10,24 +10,17 @@ import { useClientes } from '../../../../services/hooks/useClientes';
 
 export const ModalCrearCliente = ({ isOpen, isClose }) => {
 
-    const { postClientes, getClientes } = useClientes();
-    const estados = [
-        { value: '', label: 'Seleccione un estado' },
-        { value: true, label: 'Activo' },
-        { value: false, label: 'Inactivo' }
-    ];
-
-
+    const { postClientes, getClientes, validacionDocumento } = useClientes();
+    const [documentoError, setDocumentoError] = useState('');
     return (
         <Formik
             initialValues={initialValues}
             validate={(values) => validateInputs(values)}
             onSubmit={(values, { resetForm }) => {
-                const convertedValue = values.estado === 'true'; // Cambiar a booleano
 
                 const updatedValues = {
                     ...values,
-                    estado: convertedValue,
+                    estado: true,
                 };
 
                 console.log(updatedValues);
@@ -41,7 +34,7 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                 resetForm();
                 getClientes();
             }}>
-            {({ errors, handleSubmit, touched }) => (
+            {({ errors, handleSubmit, touched, setFieldError }) => (
                 <form onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
                         <ModalHeader className='mb-3'>Registar cliente</ModalHeader>
@@ -80,8 +73,20 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                                         id="documento"
                                         name="documento"
                                         placeholder="1234567"
+                                        onBlur={async (e) => {
+                                            const result = await validacionDocumento(e.target.value.toString());
+                                            if (result.isExistoso) {
+                                                setDocumentoError('Ya existe un cliente con el mismo documento');
+                                                setFieldError('documento', 'Ya existe un cliente con el mismo documento');
+                                            } else {
+                                                setDocumentoError('');
+                                                setFieldError('documento', '');
+                                            }
+
+                                        }}
                                     />
                                     {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
+                                    {documentoError && <SpanError>{documentoError}</SpanError>}
                                 </div>
                             </Label>
                             <Label className="mt-4">
@@ -95,15 +100,6 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                                     />
                                     {touched.telefono && errors.telefono && <SpanError>{errors.telefono}</SpanError>}
                                 </div>
-                            </Label>
-                            <Label className="mt-4">
-                                <span>Estado</span>
-                                <CustomInput
-                                    type="select"
-                                    id="estado"
-                                    name="estado"
-                                    options={estados}
-                                />
                             </Label>
                         </ModalBody>
                         <ModalFooter>

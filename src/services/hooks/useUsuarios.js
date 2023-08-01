@@ -15,9 +15,16 @@ export const useUsuarios = () => {
         return await instance.post("/ResetContraseña", obj)
     }
 
+    const validacionCorreo = async (correo) => {
+        const response = await instance.post(`/${correo}`);
+        return response.data;
+        
+    };
+
     return {
         crearCuenta,
         enviarCorreo,
-        resetPassword
+        resetPassword,
+        validacionCorreo
     }
 }

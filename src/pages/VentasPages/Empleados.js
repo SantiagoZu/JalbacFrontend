@@ -26,7 +26,7 @@ const response2 = response.concat([])
 
 function Empleados() {
 
-  const { empleados, eliminarEmpleado } = useEmpleados()
+  const { empleados, eliminarEmpleado, cargarEmpleados } = useEmpleados()
   const empleados2 = empleados.concat([])
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
@@ -105,7 +105,8 @@ function Empleados() {
             showAlertCorrect('Empleado eliminado correctamente.', 'success');
             setTimeout(() => {
               window.location.reload();
-            }, 1000);
+            }, 500);
+            // cargarEmpleados();
           })
           .catch(response => {
             if (response.response.data.errorMessages[0] !== null) {
@@ -154,7 +155,9 @@ function Empleados() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((empleado) => (
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((empleado) => (
               <TableRow key={empleado.idEmpleado}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.cargo}</p>
@@ -188,7 +191,8 @@ function Empleados() {
                 </TableCell>
               </TableRow>
 
-            ))}
+            )))}
+            
           </TableBody>
 
         </Table>

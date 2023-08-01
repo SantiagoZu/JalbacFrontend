@@ -18,7 +18,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
     ];
     const materialDropDown = [
         { value: null, label: 'Seleccione un material' },
-        { value: 'oroRosado', label: 'Oro rosado' },
+        { value: 'Oro rosado', label: 'Oro rosado' },
         { value: 'oro', label: 'Oro' },
         { value: 'plata', label: 'Plata' },
     ];
