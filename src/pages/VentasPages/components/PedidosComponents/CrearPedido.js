@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
 import { SpanError } from '../../../../components/styles/styles'
+import moment from "moment";
 import {
   Label,
   Table,
@@ -13,9 +14,9 @@ import {
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon} from '../../../../icons';
+import { EditIcon, TrashIcon } from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import { Formik } from 'formik'
+import { Field, Formik } from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
 import { useClientes } from '../../../../services/hooks/useClientes'
 import { ModalCrearProducto } from './ModalCrearProducto'
@@ -24,13 +25,13 @@ import { initialValues, validateInputs } from './PedidosFormValidations/PedidosF
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
-function CrearPedido() {  
+function CrearPedido() {
   const history = useHistory()
   const [productoAEditar, setProductoAEditar] = useState();
   const [idProducto, setIdProducto] = useState()
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
-  
+
   function openModalCrearProducto() {
     setModalIsOpenCrearProducto(true);
   }
@@ -61,9 +62,9 @@ function CrearPedido() {
     clientesDropdown.push(cliente)
   }
   const [productos, setProductos] = useState([]);
-  
+
   const productos2 = productos.concat([])
-  const [pageTable2, setPageTable2] = useState(1)  
+  const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
 
   const resultsPerPage = 5
@@ -72,12 +73,12 @@ function CrearPedido() {
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
-  useEffect(() => {    
+  useEffect(() => {
     setDataTable2(productos2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
   }, [productos, pageTable2]);
- 
+
   function getProduct(product) {
-    setProductos([...productos, product])   
+    setProductos([...productos, product])
   }
   function updateTable(product) {
     let updatedProducts = productos.map((detallePedido, index) => {
@@ -90,7 +91,7 @@ function CrearPedido() {
     })
     setProductos(updatedProducts)
   }
- 
+
   async function deleteProduct(id) {
     await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
       if (response.isConfirmed) {
@@ -99,7 +100,7 @@ function CrearPedido() {
             return index !== id
           })
         )
-        
+
       }
     })
   }
@@ -116,7 +117,7 @@ function CrearPedido() {
             idEstado: 1,
             detallesPedido: productos
           };
-          if(productos.length <= 0) {
+          if (productos.length <= 0) {
             showAlertIncorrect('Tienes que agregar almenos un producto', 'error', () => null);
           }
           else {
@@ -133,11 +134,11 @@ function CrearPedido() {
               console.log(updatedValues)
               console.log(response);
             });
-          }          
-          
+          }
+
         }}
       >
-        {({ errors, handleSubmit, touched}) => (
+        {({ errors, handleSubmit, touched }) => (
           <form onSubmit={handleSubmit}>
             <div className='flex flex-row'>
               <Label className="m-5 flex-none  ">
@@ -149,9 +150,9 @@ function CrearPedido() {
                   placeholder="Cliente ejemplo"
                   options={clientesDropdown}
                 />
-                {touched.idCliente && errors.idCliente && <SpanError>{errors.idCliente}</SpanError>} 
+                {touched.idCliente && errors.idCliente && <SpanError>{errors.idCliente}</SpanError>}
               </Label>
-              
+
               <Label className=" m-5 flex-none ">
                 <span>Fecha Entrega</span>
                 <CustomInput
@@ -160,15 +161,15 @@ function CrearPedido() {
                   name="fechaEntrega"
                   placeholder=""
 
-                />                
-              </Label>             
+                />
+              </Label>
               <Button className='flex-none  mt-5 mb-6 self-end  ' onClick={() => {
                 openModalCrearProducto()
               }}>
                 Agregar producto
                 <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
-            </div>            
+            </div>
             <TableContainer >
               <Table >
                 <TableHeader>
@@ -182,7 +183,7 @@ function CrearPedido() {
                     <TableCell>Detalle</TableCell>
                     <TableCell>Cantidad</TableCell>
                     <TableCell>Empleado encargado</TableCell>
-                 
+
                     <TableCell>Acciones</TableCell>
                   </tr>
                 </TableHeader>
@@ -218,7 +219,7 @@ function CrearPedido() {
                           {empleados.map((empleado) => {
                             return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {' '} {empleado.nombre}</p> : null
                           })}
-                        </TableCell>                     
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-4">
                             <Button layout="link" size="icon" aria-label="Edit" >
@@ -248,13 +249,13 @@ function CrearPedido() {
                 )}
               </TableFooter>
             </TableContainer>
-            
-            <div className="flex ml-auto mt-5 mb-6 space-x-5">              
+
+            <div className="flex ml-auto mt-5 mb-6 space-x-5">
               <Button onClick={handleSubmit}>
                 Crear pedido
                 <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
-              <Button layout="outline"  onClick={() => history.push('/app/pedidos')}>
+              <Button layout="outline" onClick={() => history.push('/app/pedidos')}>
                 Regresar a pedidos
               </Button>
             </div>
@@ -268,9 +269,11 @@ function CrearPedido() {
       {modalIsOpenEditarProducto && (
         <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={productoAEditar} updateTable={product => updateTable(product)} idProducto={idProducto} />
       )}
+   
 
     </>
   )
 }
+
 
 export default CrearPedido
