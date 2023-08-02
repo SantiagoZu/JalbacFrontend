@@ -158,7 +158,9 @@ function Roles() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((rol) => (
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : dataTable2.map((rol) => (
               <TableRow key={rol.idRol}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{rol.nombre}</p>

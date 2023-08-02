@@ -16,14 +16,8 @@ export const useHisEstadoPedido = () => {
         return hisEstadoPedido;
     }
 
-    const postHisEstadoPedido = async(obj) =>{
-        await instance.post("/", obj)
-    }
-
     return {
         hisEstadoPedido,
         getHisEstadoPedido,
-        postHisEstadoPedido,
-       
     }
 }

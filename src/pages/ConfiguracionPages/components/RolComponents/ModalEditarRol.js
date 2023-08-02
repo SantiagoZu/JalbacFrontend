@@ -35,32 +35,31 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
   //   }
   //   console.log(permisosSeleccionados)
   // };
-  
+
   // getPermisosRol(rol.idRol).then(response =>{
   //   const data = response.data.resultado;
   //   setPermisosRol(data)
   // })
 
- 
+
   useEffect(() => {
     getPermisosRol(rol.idRol).then(response => {
       const data = response.data.resultado;
       setPermisosRol(data);
-  
+
       // Agregar los idPermiso marcados inicialmente a la lista selectedPermisos
-      const selectedIds = data.map(permiso => permiso.idPermiso);
+      const selectedIds = data.map(permiso => ({ idPermiso: permiso.idPermiso }));
       setSelectedPermisos(selectedIds);
     });
-
-    
   }, [rol.idRol]);
+
 
   console.log(selectedPermisos)
 
   const initialValues = {
     rol: rol.nombre || '',
     estado: rol.estado ? 'true' : 'false'
-    
+
   };
 
   return (
@@ -75,13 +74,13 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
           permisos: selectedPermisos
         }
 
-        editarRol(rol.idRol, rolCompleto).then(response =>{
+        editarRol(rol.idRol, rolCompleto).then(response => {
           showAlertCorrect("Rol editado correctamente", "success", isClose)
           resetForm();
           setTimeout(() => {
-              window.location.reload();
+            window.location.reload();
           }, 1000);
-        }).catch(response =>{
+        }).catch(response => {
           showAlertIncorrect("No se pudo editar el rol", "error", isClose)
         })
 
@@ -107,7 +106,7 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
               </Label>
 
               <Label className="mt-4">
-              <span>Permisos</span> <br />
+                <span>Permisos</span> <br />
                 {/* <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                   {allPermisos.map((mapPermiso) => (
                     <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600" key={mapPermiso.idPermiso}>
@@ -128,21 +127,21 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
                 </ul> */}
                 <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                   {allPermisos.map(mapPermiso => {
-                   const isChecked =
-                   permisosRol.some(permisoRol => permisoRol.idPermiso === mapPermiso.idPermiso) ||
-                   selectedPermisos.includes(mapPermiso.idPermiso);
+                    const isChecked =
+                      permisosRol.some(permisoRol => permisoRol.idPermiso === mapPermiso.idPermiso) ||
+                      selectedPermisos.some(selectedPermiso => selectedPermiso.idPermiso === mapPermiso.idPermiso);
 
                     const handleCheckboxChange = (event) => {
                       const permisoId = parseInt(event.target.value);
                       setSelectedPermisos(prevSelected => {
-                        if (prevSelected.includes(permisoId)) {
-                          return prevSelected.filter(id => id !== permisoId);
+                        if (prevSelected.some(selectedPermiso => selectedPermiso.idPermiso === permisoId)) {
+                          return prevSelected.filter(permiso => permiso.idPermiso !== permisoId);
                         } else {
-                          return [...prevSelected, permisoId];
+                          return [...prevSelected, { idPermiso: permisoId }];
                         }
                       });
                     };
-                    
+
 
                     return (
                       <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600" key={mapPermiso.idPermiso}>

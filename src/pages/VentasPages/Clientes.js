@@ -28,7 +28,7 @@ const response2 = response.concat([])
 
 function Clientes() {
 
-  const { clientes, deleteClientes } = useClientes();
+  const { clientes, deleteClientes, getClientes } = useClientes();
   const clientes2 = clientes.concat([])
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
@@ -106,9 +106,10 @@ function Clientes() {
         deleteClientes(idCliente)
           .then(response => {
             showAlertCorrect('Cliente eliminado correctamente.', 'success');
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //   window.location.reload();
+            //   // getClientes();
+            // }, 1000);
           })
           .catch(response => {
             showAlertIncorrect('Error al eliminar el cliente.', 'error');
@@ -116,6 +117,12 @@ function Clientes() {
       }
     });
   }
+
+  useEffect(() => {
+    if (!modalIsOpenCreate || !modalIsOpenEdit) {
+      getClientes()
+    }
+  }, [modalIsOpenCreate, modalIsOpenEdit])
 
   return (
 
@@ -125,7 +132,7 @@ function Clientes() {
       <div className="flex ml-auto mb-6">
         <ModalCrearCliente isOpen={modalIsOpenCreate} isClose={closeModal} />
         <Button onClick={openModalCreate}>
-          Registrar Cliente
+          Crear cliente
           <span className="ml-2" aria-hidden="true">
             +
           </span>
@@ -157,41 +164,37 @@ function Clientes() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((cliente, i) => {
-
-              return (
-                <TableRow key={i}>
-                  
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.documento}</p>
-                  </TableCell>
-
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.nombre}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.apellido}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.telefono}</p>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className="text-xs text-gray-600 dark:text-gray-400" type={cliente.estado ? "success" : "danger"}>{cliente.estado ? 'Activo' : 'Inactivo'}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-4">
-                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEdit(cliente)}>
-                        <EditIcon className="w-5 h-5" aria-hidden="true" />
-                      </Button>
-                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarCliente(cliente.idCliente)}>
-                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>);
-            }
-            )
-            }
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((cliente, i) => (
+              <TableRow key={i}>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.documento}</p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.nombre}</p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.apellido}</p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{cliente.telefono}</p>
+                </TableCell>
+                <TableCell>
+                  <Badge className="text-xs text-gray-600 dark:text-gray-400" type={cliente.estado ? "success" : "danger"}>{cliente.estado ? 'Activo' : 'Inactivo'}</Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-4">
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEdit(cliente)}>
+                      <EditIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarCliente(cliente.idCliente)}>
+                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )))}
           </TableBody>
         </Table>
         <TableFooter>

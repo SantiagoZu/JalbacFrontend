@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
-
+import { returnDate } from '../../helpers/parseDate'
 import {
   Table,
   TableHeader,
@@ -14,45 +13,50 @@ import {
   Pagination,
   Input
 } from '@windmill/react-ui'
-import {  SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataPedidos'
-import responseDetalles from '../../utils/demo/dataHistorialEstadoPedido'
-import {ModalDetallesProducto} from './components/HistorialPedidosComponents/ModalDetallesProducto';
+import { SearchIcon } from '../../icons';
 import { useHisEstadoPedido } from '../../services/hooks/useHisEstadoPedido'
-const response2 = response.concat([])
-const responseDetallesProductos = responseDetalles.concat([])
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 function HistorialEstadoPedidos() {
-
+  const history = useHistory();
+  const { hisEstadoPedido } = useHisEstadoPedido()
+  const hisPedidos2 = hisEstadoPedido.concat([])
   const [pageTable2, setPageTable2] = useState(1)
-  const [pageTable3, setPageTable3] = useState(1)
-
+  const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
-  const [dataTable3, setDataTable3] = useState([])
-
   // pagination setup
-  const resultsPerPage = 10
-  const totalResults = response.length
-  const totalResults2 = response.length
+  const resultsPerPage = 5
+  const totalResults = hisPedidos2.length
 
   // pagination change control
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
-  function onPageChangeTable3(p) {
-    setPageTable3(p)
-  }
+
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+
+    return data.filter((hisEstadoPedido) => (
+      hisEstadoPedido.idPedidoNavigation.fechaPedido.toLowerCase().includes(searchTerm) ||
+      hisEstadoPedido.idPedidoNavigation.fechaEntrega.toLowerCase().includes(searchTerm) ||
+      hisEstadoPedido.idPedidoNavigation.idClienteNavigation.nombre.toLowerCase().includes(searchTerm)
+    ));
+  };
 
   // on page change, load new sliced data
   // here you would make another server request for new data
   useEffect(() => {
-    setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
-  useEffect(() => {
-    setDataTable3(responseDetallesProductos.slice((pageTable3 - 1) * resultsPerPage, pageTable3 * resultsPerPage))
-  }, [pageTable3])
-  /* Despliegue modal editar */
+    const filteredData = searchFilter(hisPedidos2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  }, [hisEstadoPedido, pageTable2, search]);
 
+  const searcher = (e) => {
+    setSearch(e.target.value)
+  }
 
   /* Despliegue modal ver detalle */
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -65,14 +69,12 @@ function HistorialEstadoPedidos() {
     setModalIsOpen(false)
   }
 
-  const {hisEstadoPedido} = useHisEstadoPedido()
 
 
 
   return (
     <>
-      <PageTitle>Historial Estado Pedidos</PageTitle>
-      <SectionTitle>Tabla Historial Estado Pedidos</SectionTitle>
+      <PageTitle>Historial de estados</PageTitle>
 
       <div className="flex ml-auto mb-6">
 
@@ -83,7 +85,9 @@ function HistorialEstadoPedidos() {
             </div>
             <Input
               className="pl-8 text-gray-700"
-              placeholder="Buscar usuario"
+              placeholder="Buscar pedido"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>
@@ -92,54 +96,54 @@ function HistorialEstadoPedidos() {
         <Table>
           <TableHeader>
             <tr >
-              <TableCell>ID</TableCell>
-              <TableCell>Fecha pedido recibido</TableCell>
-              <TableCell>Cliente</TableCell>              
+              <TableCell>Fecha recibido</TableCell>
+              <TableCell>Cliente</TableCell>
               <TableCell>Fecha entrega</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Detalles Producto</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {hisEstadoPedido.map((pedido, i) => (
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((pedido, i) => (
               <TableRow key={i}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idHisEstadoPedido}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.idPedidoNavigation.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.fechaPedido}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idClienteNavigation.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idCliente}</p>
-                </TableCell>               
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.fechaEntrega}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.idPedidoNavigation.fechaEntrega)}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
                 <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={openModal}>
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => history.push('/app/mostrarDetalles', { idPedidoHistorial: pedido.idPedido })}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
-                  <ModalDetallesProducto isOpen={modalIsOpen} isClose={closeModal}/>
                 </TableCell>
 
               </TableRow>
-            ))}
+            )))}
+
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
 
-      
+
 
 
     </>

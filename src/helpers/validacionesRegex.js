@@ -5,7 +5,7 @@ export const expresiones = {
     correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
     telefono: /^\d{7,14}$/, // 7 a 14 numeros.
     documento: /^[a-zA-Z0-9\_\-\.]{4,10}$/,
-    estado:/^[a-zA-Z0-9\_\-]{4,16}$/,
+    estado: /^[a-zA-Z0-9\_\-]{4,16}$/,
 }
 
 export const expresionesRol = {
@@ -19,8 +19,8 @@ export const expresionesProducto = {
     peso: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos decimal
     tamanoAnillo: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos
     tamanoPiedra: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos
-    detalle: /^[A-Za-z0-9]{0,100}$/,
-    cantidad : /^\d+(\.\d{1,12})?$/, 
+    detalle: /^[A-Za-z0-9 ]{0,100}$/,
+    cantidad: /^\d+(\.\d{1,12})?$/,
     motivoDevolucion: /^[A-Za-z0-9]{0,100}$/,     // solo acepta de 0 a 200 caracteres
 
 }

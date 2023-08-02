@@ -1,116 +1,141 @@
 import React, { useState, useEffect } from 'react'
 import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { Input2 } from '../../../../components/Input';
-import Swal from 'sweetalert2'
-import {
-    Table,
-    TableHeader,
-    TableCell,
-    TableBody,
-    TableRow,
-    TableFooter,
-    TableContainer,
-    Badge,
-    Avatar,
-    Pagination,
-} from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../../../icons';
-
-import { expresionesProducto } from '../../../../helpers/validacionesRegex';
-import { showAlertCorrect, showAlertIncorrect, showAlertEstadoDevuelto } from '../../../../helpers/Alertas';
-import response from '../../../../utils/demo/dataProductos'
+import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
-import { useEmpleados } from '../../../../services/hooks/useEmpleados'
+import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import { useEstados } from '../../../../services/hooks/useEstados'
-const responseProducto = response.concat([])
 
-
-export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
-
-    console.log(object)
+export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = undefined, idProducto = undefined }) => {
+    let updateValues
+    console.log(product)
+    console.log(idProducto)
+    if (product.idDetallePedido === undefined) {
+        updateValues = {
+            nombreAnillido: product.nombreAnillido || '',
+            tipo: product.tipo || '',
+            peso: product.peso || '',
+            tamanoAnillo: product.tamanoAnillo || '',
+            tamanoPiedra: product.tamanoPiedra || '',
+            material: product.material || '',
+            detalle: product.detalle || '',
+            cantidad: product.cantidad || '',
+            idEmpleado: product.idEmpleado || '',
+        };
+    }
+    else {
+        updateValues = {
+            idDetallePedido: product.idDetallePedido || '',
+            idPedido: product.idPedido || '',
+            nombreAnillido: product.nombreAnillido || '',
+            tipo: product.tipo || '',
+            peso: product.peso || '',
+            tamanoAnillo: product.tamanoAnillo || '',
+            tamanoPiedra: product.tamanoPiedra || '',
+            material: product.material || '',
+            detalle: product.detalle || '',
+            cantidad: product.cantidad || '',
+            idEmpleado: product.idEmpleado || '',
+            idEstado: product.idEstado || '',
+            motivoDevolucion: product.motivoDevolucion || '',
+        };
+    }
     const { updateDetallePedidos } = useDetallePedidos();
-    const updateValues = {
-        idDetallePedido: parseInt(object.idDetallePedido) || '',
-        idPedido: parseInt(object.idPedido) || '',
-        nombreAnillo: object.nombreAnillido || '',
-        tipo: object.tipo || '',
-        peso: object.peso || '',
-        tamanoAnillo: object.tamanoAnillo || '',
-        tamanoPiedra: object.tamanoPiedra || '',
-        material: object.material || '',
-        detalle: object.detalle || '',
-        detalle: object.cantidad || '',
-        idEmpleado: object.idEmpleado || '',
-        idEstado: object.idEstado || '',
-        motivoDevolucion: object.motivoDevolucion || '',
-    };
+
     const { empleados } = useEmpleados()
     const empleadosDropdown = [
-        { value: '', label: 'Elija el empleado' }
+        { value: null, label: 'Elija el empleado' }
+        
     ]
+   
     for (const id in empleados) {
         const empleado = {
             value: parseInt(empleados[id].idEmpleado),
             label: empleados[id].nombre
         }
+           
         empleadosDropdown.push(empleado)
     }
     const tiposDropDown = [
-        { value: '', label: 'Seleccione un tipo de anillo' },
+        { value: null, label: 'Seleccione un tipo de anillo' },
+        { value: '3D', label: '3D' },
         { value: '3D', label: '3D' },
         { value: 'A mano', label: 'A mano' },
         { value: 'Vaceado', label: 'Vaceado' },
     ];
     const materialDropDown = [
-        { value: '', label: 'Seleccione un material' },
+        { value: null, label: 'Seleccione un material' },
+        { value: 'oroRosado', label: 'Oro rosado' },
         { value: 'oroRosado', label: 'Oro rosado' },
         { value: 'oro', label: 'Oro' },
         { value: 'plata', label: 'Plata' },
     ];
     const { estados } = useEstados()
+    
     const estadosDropdown = [
         { value: '', label: 'Elija el estado' }
+        
     ]
     for (const id in estados) {
         const estado = {
             value: parseInt(estados[id].idEstado),
             label: estados[id].nombre
-        }
+        }      
         estadosDropdown.push(estado)
     }
-    function alertaEstadoProducto() {
-        showAlertEstadoDevuelto('¿Estás seguro que deseas devolver este producto?', 'warning', 'Producto devuelto correctamente', 'success')
-    }
-    let updateDetallePedido = []
     return (
         <>
             <Formik
                 initialValues={updateValues}
-                validate={(values) => validateInputsEditarProducto(values)}
+                validate={values => validateInputsEditarProducto(values)}
                 onSubmit={(values, { resetForm }) => {
-
                     const updatedValues = {
                         ...values,
+                        idDetallePedido : product.idDetallePedido,
+                        idPedido : product.idPedido,
+                        idEstado : product.idEstado,
+                        motivoDevolucion : ''
                     };
-                    updateDetallePedido.push(updatedValues)
-                    updateDetallePedidos(parseInt(object.idDetallePedido), updatedValues).then(response => {
-                        resetForm();
-                        showAlertCorrect('Producto editado correctamente', 'success', isClose)
-                        console.log(response);
-                    }).catch(response => {
-                        showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
-                        console.log(response);
-                    })
+                    if (product.idDetallePedido === undefined) { // uso este modal desde la vista Crear pedido
+                        const updatedValuesTable = {
+                            id : idProducto,
+                            nombreAnillido: values.nombreAnillido || '',
+                            tipo: values.tipo || '',
+                            peso: values.peso || '',
+                            tamanoAnillo: values.tamanoAnillo || '',
+                            tamanoPiedra: values.tamanoPiedra || '',
+                            material: values.material || '',
+                            detalle: values.detalle || '',
+                            cantidad: values.cantidad || '',
+                            idEmpleado: values.idEmpleado || '',
+                            idEmpleado : values.idEmpleado || '',
+                            idEstado : 1,                       
+                            motivoDevolucion: '',                    
+                        }
+                        showAlertCorrect('El producto ha sido editado' , 'success', isClose)
+                        updateTable(updatedValuesTable)
+                        console.log(updatedValuesTable)
+                    }
+                    else { //uso la vista desde Editar pedido
+                        updateDetallePedidos(product.idDetallePedido, updatedValues).then(response => {
+                            resetForm();
+                            updateTable(updatedValues)
+                            showAlertCorrect('Producto editado correctamente', 'success', isClose)
+                            console.log(response);
+                        }).catch(response => {
+                            showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
+                            console.log(response);
+                        })
+                    }
+
                     console.log(updatedValues)
                 }}
             >
-                {({ errors, handleSubmit, touched }) => (
-
+                {({ errors, handleSubmit, touched }) => (               
                     <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
                             <ModalHeader className='mb-3'>Editar producto</ModalHeader>
@@ -206,33 +231,10 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                                                 name="idEmpleado"
                                                 options={empleadosDropdown}
                                             />
-                                        </Label>
-                                        <Label className="mt-5">
-                                            <span >Estado</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="idEstado"
-                                                name="idEstado"
-                                                options={estadosDropdown}
-                                            />
-                                        </Label>
-                                        <Label className="mt-5">
-                                            <span>Motivo devolucion</span>
-                                            <CustomInput
-                                                type="text"
-                                                id="motivoDevolucion"
-                                                name="motivoDevolucion"
-                                                placeholder="12 1/2"
-                                            />
-                                            {touched.motivoDevolucion && errors.motivoDevolucion && <SpanError>{errors.motivoDevolucion}</SpanError>}
-                                        </Label>
+                                        </Label>                                                                            
                                     </div>
                                 </div>
-
-
-
-                            </ModalBody>
-
+                            </ModalBody>                            
                             <ModalFooter>
                                 <div className="hidden sm:block">
                                     <Button layout="outline" onClick={isClose}>
@@ -248,11 +250,17 @@ export const ModalEditarProducto = ({ isOpen, isClose, object }) => {
                                         Cancel
                                     </Button>
                                 </div>
+                                <div className="block w-full sm:hidden">
+                                    <Button block size="large" layout="outline" onClick={isClose}>
+                                        Cancel
+                                    </Button>
+                                </div>
 
                             </ModalFooter>
                         </Modal>
                     </form>
                 )}
+                 
             </Formik>
         </>
     );

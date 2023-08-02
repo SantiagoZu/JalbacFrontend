@@ -7,11 +7,16 @@ import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { validateInputs, initialValues } from './EmpleadosFormValidations/EmpleadosFormik';
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
+import { useUsuarios } from '../../../../services/hooks/useUsuarios';
 import { useRoles } from '../../../../services/hooks/useRoles';
 
 export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
 
-    const { crearEmpleado } = useEmpleados();
+
+    const { crearEmpleado, validacionDocumento } = useEmpleados();
+    const {validacionCorreo} = useUsuarios();
+    const [documentoError, setDocumentoError] = useState('');
+    const [correoError, setCorreoError] = useState('');
     const { roles } = useRoles();
     const rolesDropdown = [
         { value: '', label: 'Elija el rol' },
@@ -32,11 +37,18 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                     correo: valores.correo,
                     contrasena: valores.contrasena,
                 }
-                crearEmpleado(empleado)
-                console.log(valores)
+                crearEmpleado(empleado).then(response => {
+                    showAlertCorrect("Empleado creado correctamente", "success", isClose)
+                    resetForm();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }).catch(response => {
+                    showAlertIncorrect("No se pudo crear el empleado", "error", isClose)
+                })
             }}
         >
-            {({ errors, handleSubmit, touched }) => (
+            {({ errors, handleSubmit, touched, setFieldError }) => (
                 <form onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
                         <ModalHeader className='mb-3'>Crear empleado</ModalHeader>
@@ -49,8 +61,21 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                                         id="documento"
                                         name="documento"
                                         placeholder="1234567"
+                                        onBlur={async (e) => {
+                                            const result = await validacionDocumento(e.target.value.toString());
+                                            if (result.isExistoso) {
+                                                setDocumentoError('Ya existe un empleado con el mismo documento');
+                                                setFieldError('documento', 'Ya existe un empleado con el mismo documento');
+                                            } else {
+                                                setDocumentoError('');
+                                                setFieldError('documento', '');
+                                            }
+
+                                        }}
+
                                     />
                                     {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
+                                    {documentoError && <SpanError>{documentoError}</SpanError>}
                                 </div>
                             </Label>
 
@@ -88,8 +113,20 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                                         id="correo"
                                         name="correo"
                                         placeholder="email@email.com"
+                                        onBlur={async (e) => {
+                                            const result = await validacionCorreo(e.target.value.toString());
+                                            if (result.isExistoso) {
+                                                setCorreoError('Ya existe un empleado con el mismo correo');
+                                                setFieldError('correo', 'Ya existe un empleado con el mismo correo');
+                                            } else {
+                                                setCorreoError('');
+                                                setFieldError('correo', '');
+                                            }
+
+                                        }}
                                     />
                                     {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
+                                    {correoError && <SpanError>{correoError}</SpanError>}
                                 </div>
                             </Label>
 

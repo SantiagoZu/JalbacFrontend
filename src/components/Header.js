@@ -35,7 +35,7 @@ function Header() {
   }
 
   const closeSesion = () =>{
-    showCloseSesion('¿Estás seguro que desea cerrar sesión?', 'warning', 'Vuelva pronto', 'success', ()=> deleteCookie(), () => history.push('/login'))
+    showCloseSesion('¿Estás seguro que desea cerrar sesión?', 'warning', ()=> deleteCookie(), () => history.push('/login'))
   }
 
   return (

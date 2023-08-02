@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
+import SectionTitle from '../../components/Typography/SectionTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
-import { Input } from '@windmill/react-ui'
+import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 
 import {
   Table,
@@ -11,114 +12,101 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
+  Badge,
+  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataPedidos'
-import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
-import { ModalCrearPedido } from './components/PedidosComponents/ModalCrearPedido';
+import { EditIcon, TrashIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto } from '../../icons';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
-import { ModalEditarPedido } from './components/PedidosComponents/ModalEditarPedido';
+import { ModalDetallePedidoDevuelto } from './components/PedidosComponents/ModalDetallePedidoDevuelto'
+import { ModalEditarEstado } from './components/PedidosComponents/ModalEditarEstado'
 import { returnDate } from '../../helpers/parseDate'
-const responsePedido = response.concat([])
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 
 
 function Pedidos() {
 
-  const [dataPedido, setDataPedidos] = useState([]);
-  const { pedidos, deletePedidos } = usePedidos();
+  const { pedidos, pedidosEmpleado } = usePedidos();
+  const { detallePedidos } = useDetallePedidos()
 
-
-  const [PageTable, setPageTable] = useState(1)
-  const [dataTable, setDataTable] = useState([])
-
-
-
-  const resultsPerPage = 10
-  const totalResults = pedidos.length
-
-
-  function onPageChangeTable2(p) {
-    setPageTable(p)
-  }
-
-  useEffect(() => {
-    setDataTable(pedidos.slice((PageTable - 1) * resultsPerPage, PageTable * resultsPerPage))
-  }, [PageTable])
-
-
-  const [modalIsOpenAgregarPedido, setModalIsOpenAgregarPedido] = useState(false)
+  const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
-  const [modalIsOpenEditarPedido, setModalIsOpenEditarPedido] = useState(false)
+  const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
+  const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
 
-  const [idPedidoForDetalle, setIdPedidoForDetalle] = useState()
-  function openModalCrearPedido() {
-    setModalIsOpenAgregarPedido(true);
-  }
+  const [idPedido, setIdPedido] = useState({})
+  const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
-  function closeModalAgregarPedido() {
-    setModalIsOpenAgregarPedido(false);
-  }
-  function openModalDetallePedido(idPedido) {
+  function openModalDetallePedido(pedido) {
     setModalIsOpenDetallePedido(true);
-    setIdPedido(idPedido)
+    setIdPedido(pedido)
   }
-  function setIdPedido(idPedido) {
-    setIdPedidoForDetalle(idPedido)
-  }
+
   function closeModalDetallePedido() {
     setModalIsOpenDetallePedido(false);
   }
-  function openModalEditarPedido(obj) {
-    setModalIsOpenEditarPedido(true);
-    setData(obj)
-  }
-  function closeModalEditarPedido() {
-    setModalIsOpenEditarPedido(false);
+  function openModalDetallePedidoDevuelto(pedido) {
+    setModalIsOpenDetallePedidoDevuelto(true);
+    setIdPedido(pedido)
   }
 
-  function setData(obj) {
-    setDataPedidos(obj);
+  function closeModalDetallePedidoDevuelto() {
+    setModalIsOpenDetallePedidoDevuelto(false);
+  }
+  function openModalEditarEstado(pedido) {
+    setModalIsOpenEditarEstado(true);
+    setPedidoEditarEstado(pedido)
+  }
+
+  function closeModalEditarEstado() {
+    setModalIsOpenEditarEstado(false);
   }
 
 
-  function eliminarPedido(idPedido) {
-    showAlertDeleted(
-      '¿Estás seguro que deseas eliminar el pedido?',
-      'warning',
-      'Eliminado correctamente',
-      'success'
-    ).then((result) => {
-      if (result.isConfirmed) {
-        deletePedidos(idPedido)
-          .then(response => {
-            showAlertCorrect('Pedido eliminado correctamente.', 'success');
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
-          })
-          .catch(response => {
-            showAlertIncorrect('Error al eliminar el pedido.', 'error');
-            console.log(response)
-          });
-      }
-    });
+  const pedidos2 = pedidos.concat([])
+  const [pageTable2, setPageTable2] = useState(1)
+  const [search, setSearch] = useState("")
+  const [dataTable2, setDataTable2] = useState([])
+  // pagination setup
+  const resultsPerPage = 5
+  const totalResults = pedidos2.length
+
+  function onPageChangeTable2(p) {
+    setPageTable2(p)
+  }
+  useEffect(() => {
+    const filteredData = searchFilter(pedidos2, search);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  }, [pedidos, pageTable2, search]);
+
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+
+    return data.filter((pedido) => (
+      pedido.fechaPedido.toLowerCase().includes(searchTerm) ||
+      pedido.idClienteNavigation.nombre.toLowerCase().includes(searchTerm) ||
+      pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||
+      pedido.idEstadoNavigation.nombre.toLowerCase().includes(searchTerm)
+    ));
+  };
+  const searcher = (e) => {
+    setSearch(e.target.value)
   }
 
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
-
       <div className="flex ml-auto mb-6">
-        <Button onClick={openModalCrearPedido}>
+        <Button onClick={() => history.push('/app/crearPedido')}>
           Crear pedido
           <span className="ml-1" aria-hidden="true">+</span>
         </Button>
-        {modalIsOpenAgregarPedido &&
-          (<ModalCrearPedido isOpen={modalIsOpenAgregarPedido} isClose={closeModalAgregarPedido} />)
-        }
-
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
@@ -126,7 +114,9 @@ function Pedidos() {
             </div>
             <Input
               className="pl-8 text-gray-700"
-              placeholder="Buscar usuario"
+              placeholder="Buscar pedido"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>
@@ -139,14 +129,15 @@ function Pedidos() {
               <TableCell>Cliente</TableCell>
               <TableCell>Fecha Entrega</TableCell>
               <TableCell>Estado</TableCell>
-              <TableCell>Detalles Producto</TableCell>
+              <TableCell>Cambiar estado</TableCell>
               <TableCell>Acciones</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {pedidos.map((pedido) => (
-              <TableRow key={pedido.id}>
-
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((pedido) => (
+              <TableRow key={pedido.idPedido}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
                 </TableCell>
@@ -159,43 +150,55 @@ function Pedidos() {
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
-                <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido.idPedido)}>
-                    <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
+                <TableCell>
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
+                    <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
-
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEditarPedido(pedido)}>
-                      <EditIcon className="w-5 h-5" aria-hidden="true" />
+                    {pedido.idEstadoNavigation.idEstado == 1 ? (
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido })} >
+                        <EditIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                    ) : null
+                    }
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido)}>
+                      <SearchIcon className="w-5 h-5 " aria-hidden="true" />
                     </Button>
-
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarPedido(parseInt(pedido.idPedido))}>
-                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModalDetallePedidoDevuelto(pedido)} >
+                      {pedido.idEstadoNavigation.nombre == 'Devuelto' ? (
+                        <AdvertenciaPedidoDevuelto className='text-red-500 w-5 h-5' aria-hidden="true" />
+                      ) : null}
                     </Button>
                   </div>
                 </TableCell>
               </TableRow>
-            ))}
+            )))}
+
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
       {modalIsOpenDetallePedido && (
-        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} idPedido={idPedidoForDetalle} />
+        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} />
       )}
-      {modalIsOpenEditarPedido && (
-        <ModalEditarPedido isOpen={modalIsOpenEditarPedido} isClose={closeModalEditarPedido} object={dataPedido} />
+      {modalIsOpenDetallePedidoDevuelto && (
+        <ModalDetallePedidoDevuelto isOpen={modalIsOpenDetallePedidoDevuelto} isClose={closeModalDetallePedidoDevuelto} pedido={idPedido} />
       )}
-
+      {modalIsOpenEditarEstado && (
+        <ModalEditarEstado isOpen={modalIsOpenEditarEstado} isClose={closeModalEditarEstado} pedido={pedidoEditarEstado} />
+      )}
+    
     </>
   )
 }

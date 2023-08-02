@@ -34,7 +34,7 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
     });
 };
 
-export const showCloseSesion = (message, icon,secondMessage, secondIcon, onDelete ,onClose) => {
+export const showCloseSesion = (message, icon, onDelete ,onClose) => {
     Swal.fire({
         title: message,
         icon: icon,
@@ -45,11 +45,6 @@ export const showCloseSesion = (message, icon,secondMessage, secondIcon, onDelet
     }).then((result) => {
         if (result.isConfirmed) {
             onDelete();
-            Swal.fire(
-                '',
-                secondMessage,
-                secondIcon,
-            )
             onClose();
         }
     });

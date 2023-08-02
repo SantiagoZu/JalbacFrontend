@@ -1,17 +1,91 @@
-export const doughnutLegends = [
-  { title: 'Vaceado', color: 'bg-blue-500' },
-  { title: 'Diseño 3D', color: 'bg-teal-600' },
-  { title: 'Terminado a mano', color: 'bg-purple-600' },
-]
+import { usePedidos } from './../../services/hooks/usePedidos';
 
-export const lineLegends = [
-  { title: 'Pedidos', color: 'bg-teal-600' },
-]
+function Charts(fechaInicioPedidos, fechaFinPedidos) {
+  const { pedidos } = usePedidos()
 
-export const barLegends = [
-  { title: 'Shoes', color: 'bg-teal-600' },
-  { title: 'Bags', color: 'bg-purple-600' },
-]
+  const fechaInicioPedidosFiltrar = fechaInicioPedidos || '';
+
+  const pedidosFiltrados = pedidos.filter(pedido => {
+    if (fechaInicioPedidosFiltrar !== '') {
+      const fechaPedido = new Date(pedido.fechaPedido);
+      return fechaPedido >= new Date(fechaInicioPedidosFiltrar) &&
+        (!fechaFinPedidos || fechaPedido <= new Date(fechaFinPedidos));
+    }
+    return (!fechaFinPedidos || new Date(pedido.fechaPedido) <= new Date(fechaFinPedidos));
+  });
+
+
+  const cantidadPedidosPorMes = pedidosFiltrados.reduce((acc, pedido) => {
+    const fechaPedido = new Date(pedido.fechaPedido);
+    const mes = fechaPedido.getMonth();
+    if (!acc[mes]) {
+      acc[mes] = 1;
+    } else {
+      acc[mes]++;
+    }
+    return acc;
+  }, []);
+
+  const cantidadPedidos = {
+    data: {
+      labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      datasets: [
+        {
+          label: 'Pedidos',
+          /**
+           * These colors come from Tailwind CSS palette
+           * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
+           */
+          backgroundColor: '#0694a2',
+          borderColor: '#0694a2',
+          data: cantidadPedidosPorMes,
+          fill: false,
+        },
+
+      ],
+    },
+    options: {
+      responsive: true,
+      tooltips: {
+        mode: 'index',
+        intersect: false,
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: true,
+      },
+      scales: {
+        x: {
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Month',
+          },
+        },
+        y: {
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Value',
+          },
+        },
+      },
+    },
+    legend: {
+      display: false,
+    },
+  }
+
+  return {
+    cantidadPedidos
+  };
+}
+
+export default Charts;
+
+
+
+
 
 export const doughnutOptions = {
   data: {
@@ -26,7 +100,7 @@ export const doughnutOptions = {
         label: 'Dataset 1',
       },
     ],
-    labels: ['% Vaceado', '% Diseño 3D', '% Terminado a mano'],
+    labels: [],
   },
   options: {
     responsive: true,
@@ -37,105 +111,20 @@ export const doughnutOptions = {
   },
 }
 
-export const lineOptions = {
-  data: {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre'],
-    datasets: [
-      {
-        label: 'Pedidos',
-        /**
-         * These colors come from Tailwind CSS palette
-         * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-         */
-        backgroundColor: '#0694a2',
-        borderColor: '#0694a2',
-        data: [43, 48, 40, 54, 67, 73, 70, 42, 21, 34, 21],
-        fill: false,
-      },
-      
-    ],
-  },
-  options: {
-    responsive: true,
-    tooltips: {
-      mode: 'index',
-      intersect: false,
-    },
-    hover: {
-      mode: 'nearest',
-      intersect: true,
-    },
-    scales: {
-      x: {
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Month',
-        },
-      },
-      y: {
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Value',
-        },
-      },
-    },
-  },
-  legend: {
-    display: false,
-  },
-}
+export const doughnutLegends = [
+  { title: 'Diseño 3D', color: 'bg-blue-500' },
+  { title: 'Terminado a mano', color: 'bg-teal-600' },
+  { title: 'Vaceado', color: 'bg-purple-600' },
+]
 
-export const pedidosEmpleado = {
-  data: {
-    labels: ['Josué', 'Santiago', 'Samuel', 'Colorado'],
-    datasets: [
-      {
-        label: 'Pedidos',
-        /**
-         * These colors come from Tailwind CSS palette
-         * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-         */
-        backgroundColor: '#0694a2',
-        borderColor: '#0694a2',
-        data: [25, 42, 20, 2],
-        fill: false,
-      },
-      
-    ],
-  },
-  options: {
-    responsive: true,
-    tooltips: {
-      mode: 'index',
-      intersect: false,
-    },
-    hover: {
-      mode: 'nearest',
-      intersect: true,
-    },
-    scales: {
-      x: {
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Month',
-        },
-      },
-      y: {
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Value',
-        },
-      },
-    },
-  },
-  legend: {
-    display: false,
-  },
-}
+export const lineLegends = [
+  { title: 'Pedidos', color: 'bg-teal-600' },
+]
+
+export const barLegends = [
+  { title: 'Shoes', color: 'bg-teal-600' },
+  { title: 'Bags', color: 'bg-purple-600' },
+]
 
 export const barOptions = {
   data: {

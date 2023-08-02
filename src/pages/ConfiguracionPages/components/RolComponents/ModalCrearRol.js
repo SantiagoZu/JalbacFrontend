@@ -13,7 +13,8 @@ import { useRoles } from '../../../../services/hooks/useRoles';
 
 export const ModalCrearRol = ({ isOpen, isClose }) => {
 
-  const {postRoles} = useRoles();
+  const {postRoles, validacionRol} = useRoles();
+  const [nombreError, setNombreError] = useState('');
   const {allPermisos} = usePermisos();
   const [select, setSelect] = useState([]);
   const [formValues, setFormValues] = useState({
@@ -57,7 +58,7 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
       })
         
       }}>
-      {({ errors, handleSubmit, touched }) => (
+      {({ errors, handleSubmit, touched, setFieldError }) => (
         <form onSubmit={handleSubmit}>
           <Modal isOpen={isOpen} onClose={isClose}>
             <ModalHeader className='mb-3'>Registrar Rol</ModalHeader>
@@ -70,8 +71,20 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
                     id="rol"
                     name="rol"
                     placeholder="Empleado"
+                    onBlur={async (e) => {
+                      const result = await validacionRol(e.target.value.toString());
+                      if (result.isExistoso) {
+                          setNombreError('Ya existe un rol con el mismo nombre');
+                          setFieldError('rol', 'Ya existe un rol con el mismo nombre');
+                      } else {
+                        setNombreError('');
+                          setFieldError('rol', '');
+                      }
+
+                  }}
                   />
                   {touched.rol && errors.rol && <SpanError>{errors.rol}</SpanError>}
+                  {nombreError && <SpanError>{nombreError}</SpanError>}
                 </div>
               </Label>
 
@@ -85,7 +98,7 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
                     </div>
                 ))}    
               </Label>
-              {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
+              
               
             </ModalBody>
             <ModalFooter>

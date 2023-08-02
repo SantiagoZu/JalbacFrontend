@@ -8,7 +8,7 @@ import { Formik } from 'formik';
 import { CustomInput } from '../../components/CustomInput';
 import { SpanError } from '../../components/styles/styles';
 import { initialValues, validateInputs } from './Components/LoginFormValidations/LoginFormik';
-import { useLogin } from '../../services/hooks/useLogin'
+import { useLogin } from '../../services/hooks/UseLogin'
 
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
@@ -28,7 +28,7 @@ function Login () {
         postLogin(updatedValues).then(response => {
           
             history.push('/app')
-            
+            console.log(response)    
         }).catch(response => {
             showAlertIncorrect('Las credenciales para el inicio de sesión no son validas', 'error');
             console.log(response);
@@ -92,9 +92,9 @@ function Login () {
                   </Button>
                 
 
-                  <hr className="my-8" />
+                  <hr className="mt-8 mb-2" />
 
-                  <p className="mt-4">
+                  <p>
                     <Link
                       className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                       to="/recuperar-password"
