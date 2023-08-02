@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+    import React, { useState, useEffect } from 'react'
 import { Label, Select } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
@@ -16,7 +16,6 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
         { value: true, label: 'Activo' },
         { value: false, label: 'Inactivo' }
     ];
-
 
     return (
         <Formik
@@ -80,8 +79,10 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
                                         id="documento"
                                         name="documento"
                                         placeholder="1234567"
+                                        
                                     />
                                     {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
+                                    
                                 </div>
                             </Label>
                             <Label className="mt-4">
