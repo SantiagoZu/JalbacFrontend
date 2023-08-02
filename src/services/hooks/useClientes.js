@@ -28,8 +28,6 @@ export const useClientes = () => {
         await instance.delete(`/${id}`);
     }
 
-    
-
     return {
         clientes,
         getClientes,
