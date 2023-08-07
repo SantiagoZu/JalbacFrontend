@@ -13,6 +13,7 @@ const EditarPedido = lazy(() => import('../pages/VentasPages/components/PedidosC
 const Devoluciones = lazy(() => import('../pages/VentasPages/Devoluciones'))
 const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
 const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
+const HistorialDetalles = lazy(() => import('../pages/VentasPages/components/HistorialPedidosComponents/HistorialDetalles'))
 
 
 export const Routes = () => {
@@ -71,7 +72,11 @@ export const Routes = () => {
         routes.push({
           path: '/historial',
           component: Historial,
-        });
+        },
+          {
+            path: '/mostrarDetalles',
+            component: HistorialDetalles
+          });
       }
       if (item.nombrePermiso === "Devoluciones") {
         routes.push({

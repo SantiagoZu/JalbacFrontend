@@ -27,11 +27,14 @@ function Login () {
         };
         postLogin(updatedValues).then(response => {
           
-            history.push('/app')
-            console.log(response)    
+            history.push('/app')  
         }).catch(response => {
-            showAlertIncorrect('Las credenciales para el inicio de sesión no son validas', 'error');
-            console.log(response);
+          if (response.response.data.errorMessages[0] !== null) {
+            showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+          }else{
+            showAlertIncorrect('Error al iniciar sesión', 'error');
+          }
+            
         });
         resetForm();
       }}

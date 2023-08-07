@@ -14,7 +14,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
 function RestablecerPassword() {
 
-  const {resetPassword} = useUsuarios();
+  const { resetPassword } = useUsuarios();
   const history = useHistory();
 
   return (
@@ -23,84 +23,91 @@ function RestablecerPassword() {
       validate={(values) => validateInputs(values)}
       onSubmit={(values, { resetForm }) => {
         const correo = localStorage.getItem('correo')
-        const valores ={
+        const valores = {
           correo: correo,
           contrasena: values.contrasena
         }
 
-        resetPassword(valores).then(response =>{
+        resetPassword(valores).then(response => {
           showAlertCorrect('Contraseña reestablecida correctamente', 'success');
           localStorage.removeItem('correo')
           history.push('/login')
-        }).catch(response =>{
+        }).catch(response => {
           if (response.response.data.errorMessages[0] !== null) {
             showAlertIncorrect(response.response.data.errorMessages[0], 'error');
-          }else{  
+          } else {
             showAlertIncorrect('Error al recuperar contraseña', 'error');
           }
         })
       }}
     >
 
-    {({ errors, handleSubmit, touched }) => (
-      <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
-        <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
-          <div className="flex flex-col overflow-y-auto md:flex-row">
-            <div className="h-32 md:h-auto md:w-1/2">
-              <img
-                aria-hidden="true"
-                className="object-cover w-full h-full dark:hidden"
-                src={ImageLight}
-                alt="Office"
-              />
-              <img
-                aria-hidden="true"
-                className="hidden object-cover w-full h-full dark:block"
-                src={ImageDark}
-                alt="Office"
-              />
+      {({ errors, handleSubmit, touched }) => (
+        <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
+          <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
+            <div className="flex flex-col overflow-y-auto md:flex-row">
+              <div className="h-32 md:h-auto md:w-1/2">
+                <img
+                  aria-hidden="true"
+                  className="object-cover w-full h-full dark:hidden"
+                  src={ImageLight}
+                  alt="Office"
+                />
+                <img
+                  aria-hidden="true"
+                  className="hidden object-cover w-full h-full dark:block"
+                  src={ImageDark}
+                  alt="Office"
+                />
+              </div>
+              <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
+                <form onSubmit={handleSubmit}>
+                  <div className="w-full">
+                    <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+                      Restablecer contraseña
+                    </h1>
+
+                    <Label>
+                      <span>Contraseña nueva</span>
+                      <div className="mt-1">
+                        <CustomInput
+                          type="text"
+                          id="contrasena"
+                          name="contrasena"
+                          placeholder="Introduzca su nueva contraseña"
+                        />
+                        {touched.contrasena && errors.contrasena && <SpanError>{errors.contrasena}</SpanError>}
+                      </div>
+
+                    </Label>
+
+
+                    <Label className="mt-2">
+                      <span>Confirmar nueva contraseña</span>
+                      <div className="mt-1">
+                        <CustomInput
+                          type="text"
+                          id="confirmContrasena"
+                          name="confirmContrasena"
+                          placeholder="Introduzca su nueva contraseña"
+                        />
+                        {touched.confirmContrasena && errors.confirmContrasena && <SpanError>{errors.confirmContrasena}</SpanError>}
+                      </div>
+                    </Label>
+
+
+                    <Button block tag={Link} className="mt-4" onClick={handleSubmit}>
+                      Restablecer
+                    </Button>
+                  </div>
+                </form>
+              </main>
             </div>
-            <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
-              <form onSubmit={handleSubmit}>
-                <div className="w-full">
-                  <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
-                    Restablecer contraseña
-                  </h1>
-
-                  <Label>
-                    <span>Contraseña nueva</span>
-                      <CustomInput
-                        type="text"
-                        id="contrasena"
-                        name="contrasena"
-                        placeholder="Introduzca su nueva contraseña"
-                      />
-                  </Label>
-                  {touched.contrasena && errors.contrasena && <SpanError>{errors.contrasena}</SpanError>}
-
-                  <Label className ="mt-2">
-                    <span>Confirmar nueva contraseña</span>
-                    <CustomInput
-                        type="text"
-                        id="confirmContrasena"
-                        name="confirmContrasena"
-                        placeholder="Introduzca su nueva contraseña"
-                    />
-                  </Label>
-                  {touched.confirmContrasena && errors.confirmContrasena && <SpanError>{errors.confirmContrasena}</SpanError>}
-
-                  <Button block tag={Link} className="mt-4" onClick={handleSubmit}>
-                    Restablecer
-                  </Button>
-                </div>
-              </form>
-            </main>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </Formik>
-    
+
   )
 }
 
