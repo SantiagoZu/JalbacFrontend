@@ -31,17 +31,12 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                         idEstado: value.estado,
                         fechaPedido: pedido.fechaPedido,
                         fechaEntrega: pedido.fechaEntrega
-                    };
-                    console.log(value)
+                    };                    
                     updatePedidos(pedido.idPedido, updatedValues).then((response) => {
-                        resetForm();
-
-                        setTimeout(() => window.location.reload(), 2000)
-                        showAlertCorrect('Estado editado correctamente', 'success', isClose)
-                        console.log(response);
+                        resetForm();                        
+                        showAlertCorrect('Estado editado correctamente', 'success', isClose)                        
                     }).catch(response => {
-                        showAlertIncorrect('No se pudo editar el estado', 'error', isClose);
-                        console.log(response);
+                        showAlertIncorrect('No se pudo editar el estado', 'error', isClose);                        
                     })
                     for (const detallePedido of detallesAEditar) {
                         const updateValuesDetalle = {
@@ -57,7 +52,7 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             material: detallePedido.material || '',
                             detalle: detallePedido.detalle || '',
                             cantidad: detallePedido.cantidad || '',
-                            motivoDevolucion: detallePedido.motivoDevolucion || ''
+                            motivoDevolucion: null
                         }
                         let responseDetalles = updateDetallePedidos(detallePedido.idDetallePedido, updateValuesDetalle)
                         console.log(responseDetalles)
@@ -78,7 +73,7 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                                             name='estado'
                                             className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select"
                                         >
-                                            <option value=''>Elije el estado a cambiar</option>
+                                            <option hidden>Cambiar...</option>
                                             {
                                                 pedido.idEstado == 1 ? <option value='2'>En produccion</option> : pedido.idEstado == 2 ? <option value='3'>Entregado</option> : null
                                             }

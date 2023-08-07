@@ -43,7 +43,7 @@ function EditarPedido() {
   function closeModalCrearProducto() {
     setModalIsOpenCrearProducto(false);
   }
-  function openModalEditarProducto(obj, id = null) {
+  function openModalEditarProducto(obj) {
     setModalIsOpenEditarProducto(true);
     setdetallePedidoAEditar(obj)
   }
@@ -51,7 +51,7 @@ function EditarPedido() {
   function closeModalEditarProducto() {
     setModalIsOpenEditarProducto(false);
   }
-  const { detallePedidos, setDetallePedidos, deleteDetallePedidos } = useDetallePedidos()
+  const { detallePedidos, getDetallePedidos, deleteDetallePedidos } = useDetallePedidos()
   const detallePedidosFiltered = detallePedidos.filter(detallePedido => idPedido == detallePedido.idPedido)
   const detallePedidos2 = detallePedidosFiltered.concat([])
   
@@ -71,47 +71,23 @@ function EditarPedido() {
   const { updatePedidos } = usePedidos()
   const { clientes } = useClientes()
   const { empleados } = useEmpleados();
-  const clientesDropdown = [
-   
-  ]
-  for (const id in clientes) {
-    const cliente = {
-      value: parseInt(clientes[id].idCliente),
-      label: clientes[id].nombre
-    }
-    clientesDropdown.push(cliente)
-  }
+  const clientesDropdown = []
+  clientes.forEach(cliente => cliente.estado ? clientesDropdown.push({value : cliente.idCliente, label : cliente.nombre}) : null)
   const initialValuesPedido = {
     idCliente: pedido.idCliente || clientes[0].idCliente,
     fechaEntrega: moment(pedido.fechaEntrega).format('YYYY-MM-DD') || ''
   }
 
-  function getProduct(product) {
-    setDetallePedidos([
-      ...detallePedidos,
-      product
-    ])
-  }
-  function updateTable(product) {
-    let updatedProducts = detallePedidos.map(detallePedido => {
-      if (product.idDetallePedido == detallePedido.idDetallePedido) {
-        return product
-      }
-      else {
-        return detallePedido
-      }
-    })
-    setDetallePedidos(updatedProducts)
-  }
+  useEffect(() => {
+    if(!modalIsOpenCrearProducto || !modalIsOpenEditarProducto) {
+      getDetallePedidos()
+    }
+  }, [modalIsOpenCrearProducto, modalIsOpenEditarProducto])
   async function deleteProduct(id) {
     await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(async (response) => {
       if (response.isConfirmed) {
         await deleteDetallePedidos(id)
-        setDetallePedidos(
-          detallePedidos.filter((detallePedido) => {
-            return detallePedido.idDetallePedido !== id
-          })
-        )
+        
         showAlertCorrect('Detalle eliminado correctamente', 'success', () => null)
       }
     })
@@ -130,7 +106,7 @@ function EditarPedido() {
             fechaPedido: pedido.fechaPedido
           };
           console.log(updatedValues);
-          let responseEditarPedido = updatePedidos(idPedido, updatedValues).then((response) => {
+          updatePedidos(idPedido, updatedValues).then((response) => {
             resetForm();    
             showAlertCorrect('pedido editado correctamente', 'success', () => null)
             setTimeout(() => {
@@ -264,10 +240,10 @@ function EditarPedido() {
         )}
       </Formik>
       {modalIsOpenCrearProducto && (
-        <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedido} updateTable={(product) => getProduct(product)} />
+        <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedido}  />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} updateTable={product => updateTable(product)} />
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar}  />
       )}
 
     </>

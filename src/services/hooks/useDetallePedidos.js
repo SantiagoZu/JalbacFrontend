@@ -23,7 +23,10 @@ export const useDetallePedidos = () => {
     }
 
     const updateDetallePedidos = async(id, obj) =>{
-        return await instance.put(`/${id}`, obj).then(response => response)
+        return await instance.put(`/${id}`, obj).then(response => {
+            
+            return response
+        })
     }
 
     const deleteDetallePedidos = async(id) =>{

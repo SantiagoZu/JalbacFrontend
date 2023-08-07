@@ -162,6 +162,7 @@ function CrearPedido() {
                   placeholder=""
 
                 />
+                {touched.fechaEntrega && errors.fechaEntrega && <SpanError>{errors.fechaEntrega}</SpanError>}
               </Label>
               <Button className='flex-none  mt-5 mb-6 self-end  ' onClick={() => {
                 openModalCrearProducto()
