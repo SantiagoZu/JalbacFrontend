@@ -19,16 +19,6 @@ export const validationScheme = {
 
 export const validateInputs = (values) => {
 
-    // const {validarDocumento} = useClientes();
-    // const [documentoRepetido, setDocumentoRepetido] = useState(false);
-
-    // validarDocumento(values.documento).then(response =>{
-    //     const data = response.data.resultado.isExistoso;
-    //     setDocumentoRepetido(data);
-    // }).catch(response =>{
-
-    // })
-
     let errores = {};
 
     if (!values.nombre) {
@@ -42,9 +32,6 @@ export const validateInputs = (values) => {
     } else if (!validationScheme.documento.test(values.documento)) {
         errores.documento = 'El campo documento debe tener mínimo 4 caracteres.'
     } 
-    // else if (documentoRepetido) {
-    //     errores.documento = 'Ya existe un cliente con el mismo documento.'
-    // }
 
     if (!values.apellido) {
         errores.apellido = 'El campo apellidos es oblígatorio.'

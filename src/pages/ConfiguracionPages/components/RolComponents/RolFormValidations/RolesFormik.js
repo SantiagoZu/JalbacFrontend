@@ -9,7 +9,7 @@ export const validationScheme = {
     rol: regex.rol
 }
 
-export const validateInputs = (values) => {
+export const validateInputs = (values, select) => {
 
     let errores = {};
 
@@ -18,12 +18,14 @@ export const validateInputs = (values) => {
     } else if (!validationScheme.rol.test(values.rol)) {
         errores.rol = 'El campo rol no debe tener números ni caracteres especiales.'
     }
-    
+    if (select.lenght < 1) {
+        errores.checked = 'Ceda al rol por lo menos un permiso.'
+    }
     return errores;
 
 };
 
-export const validateEditInputs = (values) =>{
+export const validateEditInputs = (values, selectedPermisos) =>{
 
     let errores = {};
 
@@ -31,6 +33,10 @@ export const validateEditInputs = (values) =>{
         errores.rol = 'El campo rol es oblígatorio.'
     } else if (!validationScheme.rol.test(values.rol)) {
         errores.rol = 'El campo rol no debe tener números ni caracteres especiales.'
+    } 
+
+    if (selectedPermisos.lenght < 1) {
+        errores.checked = 'Ceda al rol por lo menos un permiso.'
     }
 
     // if (values.checked.length < 1){

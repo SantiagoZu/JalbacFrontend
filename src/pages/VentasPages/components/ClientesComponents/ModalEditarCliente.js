@@ -5,7 +5,7 @@ import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alerta
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { ValidateInputs } from './ClientesFormValidations/ClientesFormik';
+import { validateInputs } from './ClientesFormValidations/ClientesFormik';
 import { useClientes } from '../../../../services/hooks/useClientes';
 
 export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
@@ -29,7 +29,7 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
     return (
         <Formik
             initialValues={initialValues}
-            validate={(values) => ValidateInputs(values)}
+            validate={(values) => validateInputs(values)}
             onSubmit={(values, { resetForm }) => {
                 const convertedValue = values.estado === 'true';
 
