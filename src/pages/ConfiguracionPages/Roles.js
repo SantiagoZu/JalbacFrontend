@@ -21,10 +21,8 @@ import {
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
 import { SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataRoles';
 import { showAlertCorrect, showAlertDeleted, showAlertIncorrect } from '../../helpers/Alertas';
 import { useRoles } from '../../services/hooks/useRoles'
-import { ModalPermisos } from './components/RolComponents/ModalPermisos'
 
 function Roles() {
 
@@ -60,8 +58,6 @@ function Roles() {
   
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  const [modalIsOpenPermisos, setModalIsOpenPermisos] = useState(false)
-  const [idRolPermisos, setIdRolPermisos] = useState()
   const [rolSeleccionado, setRolSeleccionado] = useState([]);
 
   const searcher = (e) => {
@@ -85,18 +81,6 @@ function Roles() {
 
   function closeModalEdit() {
     setModalIsOpenEdit(false);
-  }
-
-  //Modal permisos
-  function openModalPermisos(idRol) {
-    setModalIsOpenPermisos(true);
-    setIdRol(idRol)
-  }
-  function setIdRol(idRol) {
-    setIdRolPermisos(idRol)
-  }
-  function closeModalPermisos() {
-    setModalIsOpenPermisos(false);
   }
 
   //Eliminar
@@ -153,7 +137,6 @@ function Roles() {
             <tr >
               <TableCell>Rol</TableCell>
               <TableCell>Estado</TableCell>
-              <TableCell>Permisos</TableCell>
               <TableCell>Acciones</TableCell>
             </tr>
           </TableHeader>
@@ -167,11 +150,6 @@ function Roles() {
                 </TableCell>
                 <TableCell>
                   <Badge className="text-xs text-gray-600 dark:text-gray-400" type={rol.estado ? "success" : "danger"}>{rol.estado ? 'Activo' : 'Inactivo'}</Badge>
-                </TableCell>
-                <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalPermisos(rol.idRol)}>
-                    <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
-                  </Button>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
@@ -196,9 +174,6 @@ function Roles() {
           />
         </TableFooter>
       </TableContainer>
-      {modalIsOpenPermisos && (
-        <ModalPermisos isOpen={modalIsOpenPermisos} isClose={closeModalPermisos} idRol={idRolPermisos} />
-      )}
       {modalIsOpenEdit && (
         <ModalEditarRol isOpen={modalIsOpenEdit} isClose={closeModalEdit} rol={rolSeleccionado} />
       )}

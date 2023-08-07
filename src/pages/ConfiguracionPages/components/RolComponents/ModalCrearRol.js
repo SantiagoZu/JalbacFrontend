@@ -11,38 +11,33 @@ import { initialValues, validateInputs } from './RolFormValidations/RolesFormik'
 import { usePermisos } from "../../../../services/hooks/UsePermisos";
 import { useRoles } from '../../../../services/hooks/useRoles';
 
+import { Switch } from "antd";
+
 export const ModalCrearRol = ({ isOpen, isClose }) => {
 
   const {postRoles, validacionRol} = useRoles();
   const [nombreError, setNombreError] = useState('');
   const {allPermisos} = usePermisos();
   const [select, setSelect] = useState([]);
-  const [formValues, setFormValues] = useState({
-    checked: {}
-  });
 
-  const handleChange = (event) => {
-    const { value, checked } = event.target;
+
+  const handleChange = (checked, permisoId  ) => {
     if (checked) {
-      setSelect([...select, { idPermiso: value }]);
-    } else {
-      setSelect(select.filter((obj) => obj.idPermiso !== value));
-    }
-
-    setFormValues((prevFormValues) => ({
-      ...prevFormValues,
-      checked: {
-        ...prevFormValues.checked,
-        [value]: checked 
+      if (!select.some((permiso) => permiso.idPermiso === permisoId)) {
+        setSelect((prevS) => [...prevS, { idPermiso: permisoId}]);
       }
-    }));
+    }
+    else {
+      setSelect((prevS) => prevS.filter((id) => id.idPermiso !== permisoId));
+    }
   };
+  console.log(select)
 
 
   return (
     <Formik
       initialValues={initialValues}
-      validate={(values) => validateInputs(values)}
+      validate={(values) => validateInputs(values, select)}
       onSubmit={(valores, { resetForm }) => {
         const updatedValues = {
           nombre: valores.rol,
@@ -90,13 +85,14 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
 
               <Label className="mt-4">
                 <span>Permisos</span> <br />
-                  {allPermisos.map((permiso)=>(
-                    <div key={permiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                      <Input type="checkbox" id={`checked_${permiso.idPermiso}`} name="checked" className="mr-1" value={permiso.idPermiso} checked={formValues.checked[permiso.idPermiso] || false} onChange={handleChange}/>
-                      {permiso.nombrePermiso}
+                  {allPermisos.map((mapPermiso)=>(
+                    <div key={mapPermiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+                      <Switch name="checked" className="mr-3 mt-2" checked={select.some((permiso) => permiso.idPermiso === mapPermiso.idPermiso)} onChange={(checked) => handleChange(checked, mapPermiso.idPermiso)}/>
+                      {mapPermiso.nombrePermiso}
                       <br/>
                     </div>
                 ))}    
+                {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
               </Label>
               
               
