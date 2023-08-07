@@ -12,8 +12,7 @@ import { useEstados } from '../../../../services/hooks/useEstados'
 
 export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = undefined, idProducto = undefined }) => {
     let updateValues
-    console.log(product)
-    console.log(idProducto)
+  
     if (product.idDetallePedido === undefined) {
         updateValues = {
             nombreAnillido: product.nombreAnillido || '',
@@ -118,17 +117,16 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                         }
                         showAlertCorrect('El producto ha sido editado' , 'success', isClose)
                         updateTable(updatedValuesTable)
-                        console.log(updatedValuesTable)
+                      
                     }
                     else { //uso la vista desde Editar pedido
                         updateDetallePedidos(product.idDetallePedido, updatedValues).then(response => {
-                            resetForm();
-                            updateTable(updatedValues)
+                            resetForm();                            
                             showAlertCorrect('Producto editado correctamente', 'success', isClose)
-                            console.log(response);
+                           
                         }).catch(response => {
                             showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
-                            console.log(response);
+                           
                         })
                     }
 

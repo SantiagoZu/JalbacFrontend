@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
 import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
 
@@ -28,8 +27,8 @@ import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 
 function Pedidos() {
 
-  const { pedidos, pedidosEmpleado } = usePedidos();
-  const { detallePedidos } = useDetallePedidos()
+  const { pedidos, getPedidos } = usePedidos();
+  const { getDetallePedidos, detallePedidos } = useDetallePedidos()
 
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
@@ -98,7 +97,13 @@ function Pedidos() {
   const searcher = (e) => {
     setSearch(e.target.value)
   }
-
+  useEffect(() => {
+    if (!modalIsOpenDetallePedido || !modalIsOpenEditarEstado || !modalIsOpenDetallePedidoDevuelto) {
+      getDetallePedidos()
+      getPedidos()
+     
+    }
+  }, [modalIsOpenDetallePedido, modalIsOpenEditarEstado, modalIsOpenDetallePedidoDevuelto])
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -151,7 +156,7 @@ function Pedidos() {
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
+                  <Button disabled={pedido.idEstado == 3 || pedido.idEstado == 4 ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
                     <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
                 </TableCell>
@@ -198,7 +203,7 @@ function Pedidos() {
       {modalIsOpenEditarEstado && (
         <ModalEditarEstado isOpen={modalIsOpenEditarEstado} isClose={closeModalEditarEstado} pedido={pedidoEditarEstado} />
       )}
-    
+
     </>
   )
 }
