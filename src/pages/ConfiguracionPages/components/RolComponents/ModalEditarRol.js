@@ -28,10 +28,10 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
     });
   }, [rol.idRol]);
 
-  const handleChange = (checked, permisoId  ) => {
+  const handleChange = (checked, permisoId) => {
     if (checked) {
       if (!selectedPermisos.some((permiso) => permiso.idPermiso === permisoId)) {
-        setSelectedPermisos((prevS) => [...prevS, { idPermiso: permisoId}]);
+        setSelectedPermisos((prevS) => [...prevS, { idPermiso: permisoId }]);
       }
     }
     else {
@@ -90,18 +90,18 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
               </Label>
 
               <Label className="mt-4">
-                <span>Permisos</span> <br />
-
-                {allPermisos.map((mapPermiso)=>(
-                    <div key={mapPermiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                      <Switch name="checked" className="mr-3 mt-3" checked={selectedPermisos.some((permiso) => permiso.idPermiso === mapPermiso.idPermiso)} onChange={(checked) => handleChange(checked, mapPermiso.idPermiso)}/>
-                      {mapPermiso.nombrePermiso}
-                      <br/>
-                    </div>
-                ))}    
-                {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
+                <span>Permisos</span>
               </Label>
-              
+              <div className='grid grid-cols-2'>
+                {allPermisos.map((mapPermiso) => (
+                  <div key={mapPermiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400 mt-2">
+                    <Switch name="checked" className="mr-3" checked={selectedPermisos.some((permiso) => permiso.idPermiso === mapPermiso.idPermiso)} onChange={(checked) => handleChange(checked, mapPermiso.idPermiso)} />
+                    {mapPermiso.nombrePermiso}
+                  </div>
+                ))}
+              </div>
+              {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
+
 
               <Label className="mt-4">
                 <span>Estado</span>
