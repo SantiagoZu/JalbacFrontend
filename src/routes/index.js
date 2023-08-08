@@ -12,6 +12,7 @@ const CrearPedido = lazy(() => import('../pages/VentasPages/components/PedidosCo
 const EditarPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/EditarPedido'))
 const Devoluciones = lazy(() => import('../pages/VentasPages/Devoluciones'))
 const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
+const HisDetalles = lazy(() => import('../pages/VentasPages/components/HistorialPedidosComponents/HisDetalles'))
 const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
 
 
@@ -71,6 +72,9 @@ export const Routes = () => {
         routes.push({
           path: '/historial',
           component: Historial,
+        },{
+          path: '/hisDetalles',
+          component: HisDetalles,
         });
       }
       if (item.nombrePermiso === "Devoluciones") {

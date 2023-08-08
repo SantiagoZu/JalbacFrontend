@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import response from '../../../../utils/demo/dataProductos'
+import { Modal, ModalHeader} from '@windmill/react-ui';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { CardDetalles } from './CardDetalles'
-
-
 export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
-
     const { detallePedidos, getDetallePedidos } = useDetallePedidos()
     function recargarCarta(val) {
         if(val) {

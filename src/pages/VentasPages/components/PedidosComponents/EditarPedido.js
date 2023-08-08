@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
-import {
-  Label,
-  Table,
-  TableHeader,
-  TableCell,
-  TableBody,
-  TableRow,
-  TableFooter,
-  TableContainer,
-  Button,
-  Pagination,
-} from '@windmill/react-ui'
+import {Label, Table, TableHeader, TableCell, TableBody, TableRow, TableFooter, TableContainer, Button, Pagination} from '@windmill/react-ui'
 import { EditIcon, TrashIcon} from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import moment from 'moment'
-import {Formik } from 'formik'
+import {Formik} from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
 import { useClientes } from '../../../../services/hooks/useClientes'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
@@ -105,7 +94,7 @@ function EditarPedido() {
             idEstado: pedido.idEstado,
             fechaPedido: pedido.fechaPedido
           };
-          console.log(updatedValues);
+   
           updatePedidos(idPedido, updatedValues).then((response) => {
             resetForm();    
             showAlertCorrect('pedido editado correctamente', 'success', () => null)
@@ -115,8 +104,7 @@ function EditarPedido() {
             return response
           }).catch(response => {
             showAlertIncorrect('No se pudo editar el pedido', 'error');
-            console.log(updatedValues)
-            console.log(response);
+    
           });
           resetForm();
         }}

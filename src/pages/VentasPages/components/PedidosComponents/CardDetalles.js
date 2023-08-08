@@ -5,7 +5,7 @@ import {
     Button
 } from '@windmill/react-ui'
 import { Devolver } from '../../../../icons'
-import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas'
+import { showAlertCorrect } from '../../../../helpers/Alertas'
 import Swal from 'sweetalert2';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
@@ -214,7 +214,7 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
                             </div>
                         ) : null}
                         <div className='absolute top-0 right-0'>
-                            {detallePedido.idEstado == 3 ? (
+                            {detallePedido.idEstado == 2 ? (
                                 <Button icon={Devolver} onClick={() => cambiarEstado(true)}>
                                 </Button>
                             ) : null}

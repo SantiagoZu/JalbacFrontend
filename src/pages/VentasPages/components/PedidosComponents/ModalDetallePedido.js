@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-
+import { Modal, ModalHeader } from '@windmill/react-ui';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { CardDetalles } from './CardDetalles'
-
-
 export const ModalDetallePedido = ({ isOpen, isClose, pedido }) => {
-
     const { detallePedidos, getDetallePedidos } = useDetallePedidos()
     function recargarCarta(val) {
         if(val) {
@@ -15,7 +11,6 @@ export const ModalDetallePedido = ({ isOpen, isClose, pedido }) => {
     }
     return (
         <>
-
             <Modal isOpen={isOpen} onClose={isClose}>
                 <ModalHeader className='mb-5'>Detalles del pedido</ModalHeader>
                 <div className='-m-5 p-4 text-sm text-gray-700 dark:text-gray-400'>

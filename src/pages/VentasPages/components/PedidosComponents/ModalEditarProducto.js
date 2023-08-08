@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
+import { validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import { useEstados } from '../../../../services/hooks/useEstados'

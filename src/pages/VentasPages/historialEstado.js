@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
 import { returnDate } from '../../helpers/parseDate'
-import {
-  Table,
-  TableHeader,
-  TableCell,
-  TableBody,
-  TableRow,
+import { Table, TableHeader, TableCell, TableBody, TableRow,
   TableFooter,
   TableContainer,
   Button,
@@ -24,11 +19,11 @@ function HistorialEstadoPedidos() {
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
-  // pagination setup
+
   const resultsPerPage = 5
   const totalResults = hisPedidos2.length
-
-  // pagination change control
+  console.log(hisEstadoPedido)
+ 
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
@@ -47,8 +42,6 @@ function HistorialEstadoPedidos() {
     ));
   };
 
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
     const filteredData = searchFilter(hisPedidos2, search);
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
@@ -58,7 +51,7 @@ function HistorialEstadoPedidos() {
     setSearch(e.target.value)
   }
 
-  /* Despliegue modal ver detalle */
+
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
   function openModal() {
@@ -75,9 +68,7 @@ function HistorialEstadoPedidos() {
   return (
     <>
       <PageTitle>Historial de estados</PageTitle>
-
       <div className="flex ml-auto mb-6">
-
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
@@ -100,6 +91,7 @@ function HistorialEstadoPedidos() {
               <TableCell>Cliente</TableCell>
               <TableCell>Fecha entrega</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Fecha cambio de estado</TableCell>
               <TableCell>Detalles Producto</TableCell>
             </tr>
           </TableHeader>
@@ -120,8 +112,11 @@ function HistorialEstadoPedidos() {
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fecha)}</p>
+                </TableCell>
                 <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => history.push('/app/mostrarDetalles', { idPedidoHistorial: pedido.idPedido })}>
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => history.push('/app/hisDetalles', { idPedidoHistorial: pedido.idPedido })}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
                 </TableCell>
@@ -142,10 +137,6 @@ function HistorialEstadoPedidos() {
           )}
         </TableFooter>
       </TableContainer>
-
-
-
-
     </>
   )
 }

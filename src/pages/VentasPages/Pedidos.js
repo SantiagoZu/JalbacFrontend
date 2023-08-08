@@ -27,8 +27,8 @@ import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 
 function Pedidos() {
 
-  const { pedidos, getPedidos } = usePedidos();
-  const { getDetallePedidos, detallePedidos } = useDetallePedidos()
+  const { pedidos, getPedidos, pedidosEmpleado } = usePedidos();
+  const { getDetallePedidos } = useDetallePedidos()
 
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)

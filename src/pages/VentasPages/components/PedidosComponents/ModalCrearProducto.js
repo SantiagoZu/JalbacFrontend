@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import {  Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
+import { showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
@@ -23,7 +23,6 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
         { value: 'plata', label: 'Plata' },
     ];
     const { empleados } = useEmpleados()
-    console.log(empleados)
     const empleadosDropdown = []
     for (const id in empleados) {
         const empleado = {
@@ -45,9 +44,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                         ...values,
                         idPedido : idPedido,
                         idEmpleado : values.idEmpleado,
-                        idEstado : 1,                       
-                        
-                    
+                        idEstado : 1,                                                                   
                     };                   
                     if(idPedido === undefined) {                        
                         updateTable(updatedValues)

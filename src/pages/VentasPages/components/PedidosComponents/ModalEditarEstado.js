@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik, Field } from 'formik';
-import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEstados } from '../../../../services/hooks/useEstados'
@@ -12,10 +11,8 @@ import { usePedidos } from '../../../../services/hooks/usePedidos';
 export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
     const { detallePedidos, updateDetallePedidos } = useDetallePedidos();
     const { updatePedidos } = usePedidos()
-    const { estados } = useEstados()
-
     let detallesAEditar = detallePedidos.filter(detallePedido => detallePedido.idPedido == pedido.idPedido)
-    console.log(detallesAEditar)
+
     return (
         <>
             <Formik

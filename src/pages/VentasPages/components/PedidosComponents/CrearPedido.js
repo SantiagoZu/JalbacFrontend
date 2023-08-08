@@ -123,7 +123,7 @@ function CrearPedido() {
           else {
             let responseCrearPedido = postPedidos(updatedValues).then((response) => {
               resetForm();
-              console.log('creacion de pedido')
+           
               showAlertCorrect('Pedido creado correctamente', 'success', () => null)
               setTimeout(() => {
                 window.location.reload();
@@ -131,8 +131,7 @@ function CrearPedido() {
               return response
             }).catch(response => {
               showAlertIncorrect('No se pudo crear el pedido', 'error', () => null);
-              console.log(updatedValues)
-              console.log(response);
+      
             });
           }
 
@@ -218,7 +217,7 @@ function CrearPedido() {
                         </TableCell>
                         <TableCell>
                           {empleados.map((empleado) => {
-                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {' '} {empleado.nombre}</p> : null
+                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {empleado.nombre}</p> : null
                           })}
                         </TableCell>
                         <TableCell>
