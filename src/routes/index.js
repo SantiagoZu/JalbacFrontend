@@ -10,9 +10,9 @@ const Clientes = lazy(() => import('../pages/VentasPages/Clientes'))
 const Pedidos = lazy(() => import('../pages/VentasPages/Pedidos'))
 const CrearPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/CrearPedido'))
 const EditarPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/EditarPedido'))
-const Devoluciones = lazy(() => import('../pages/VentasPages/Devoluciones'))
 const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
 const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
+const HistorialDetalles = lazy(() => import('../pages/VentasPages/components/HistorialPedidosComponents/HistorialDetalles'))
 
 
 export const Routes = () => {
@@ -71,14 +71,13 @@ export const Routes = () => {
         routes.push({
           path: '/historial',
           component: Historial,
-        });
+        },
+          {
+            path: '/mostrarDetalles',
+            component: HistorialDetalles
+          });
       }
-      if (item.nombrePermiso === "Devoluciones") {
-        routes.push({
-          path: '/devoluciones',
-          component: Devoluciones,
-        });
-      }
+      
     });
   }
 

@@ -38,7 +38,7 @@
     "react-switch": "^7.0.0",
     "react-transition-group": "4.4.1",
     "styled-components": "^5.3.6",
-    "sweetalert2": "^11.6.9"
+    "sweetalert2": "^11.7.20"
   },
   "resolutions": {
     "styled-components": "^5"

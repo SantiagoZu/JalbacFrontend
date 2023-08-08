@@ -1,6 +1,6 @@
 
 import { minDate } from '../../../../../helpers/parseDate';
-
+import moment from 'moment'
 
 export const initialValues = {    
     idCliente : null,
@@ -14,7 +14,9 @@ export const validateInputs = (values) => {
     if (values.idCliente === null) {
         errores.idCliente = 'Tienes que seleccionar un cliente' 
     }
-   
+    if(moment(values.fechaEntrega).format('YYYY-MM-DD') <= moment().format('YYYY-MM-DD')){
+        errores.fechaEntrega = 'La fecha de entrega no puede ser hoy o una fecha pasada'
+    }
     console.log(errores)
     return errores;
 

@@ -28,6 +28,7 @@ function Empleados() {
 
   const { empleados, eliminarEmpleado, cargarEmpleados } = useEmpleados()
   const empleados2 = empleados.concat([])
+  const [eliminadoExistoso, setEliminadoExistoso] = useState(false)
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
@@ -107,13 +108,11 @@ function Empleados() {
         eliminarEmpleado(idEmpleado)
           .then(response => {
             showAlertCorrect('Empleado eliminado correctamente.', 'success');
-            setTimeout(() => {
-              window.location.reload();
-            }, 500);
-            // cargarEmpleados();
+            setEliminadoExistoso(true)
+            
           })
           .catch(response => {
-            if (response.response.data.errorMessages[0] !== null) {
+            if (response.response.data?.errorMessages[0] !== null) {
               showAlertIncorrect(response.response.data.errorMessages[0], 'error');
             } else {
               showAlertIncorrect('Error al eliminar el empleado', 'error');
@@ -128,7 +127,11 @@ function Empleados() {
     if (!modalIsOpen || !modalIsOpenCrear) {
       cargarEmpleados()
     }
-  }, [modalIsOpen, modalIsOpenCrear])
+    if (eliminadoExistoso) {
+      cargarEmpleados()
+      setEliminadoExistoso(false)
+    }
+  }, [modalIsOpen, modalIsOpenCrear, eliminadoExistoso])
 
   return (
     <>
@@ -221,7 +224,7 @@ function Empleados() {
       )}
 
       {modalIsOpenCrear && (
-        <ModalCrearEmpleado isOpen={modalIsOpenCrear} isClose={closeModalCrear} />
+        <ModalCrearEmpleado isOpen={modalIsOpenCrear} isClose={closeModalCrear}/>
       )}
     </>
   )
