@@ -22,7 +22,6 @@ export const useEmpleados = () => {
 
     const editarEmpleado = async (id, obj) => {
         const response = await instance.put(`/${id}`, obj);
-        const data = response.data.resultado;
     }
 
     const cargarEmpleado = async (idEmpleado) => {

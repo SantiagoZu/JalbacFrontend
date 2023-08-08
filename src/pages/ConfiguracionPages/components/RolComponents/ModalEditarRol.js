@@ -8,6 +8,7 @@ import { SpanError } from '../../../../components/styles/styles';
 import { validateEditInputs } from './RolFormValidations/RolesFormik';
 import { usePermisos } from '../../../../services/hooks/UsePermisos';
 import { useRoles } from '../../../../services/hooks/useRoles';
+import { Switch } from "antd";
 
 export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
 
@@ -15,32 +16,6 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
   const { allPermisos, getPermisosRol } = usePermisos();
   const [permisosRol, setPermisosRol] = useState([]);
   const [selectedPermisos, setSelectedPermisos] = useState([]);
-  // const [permisosSeleccionados, setPermisosSeleccionados] = useState([]);
-
-  // useEffect(() => {
-  //   setPermisosSeleccionados(permisosRol.map(permiso => ({idPermiso: permiso.idPermiso})));
-  // }, [permisosRol]);
-
-  // const handleChange = (event) => {
-  //   const { value, checked } = event.target;
-  //   if (checked) {
-  //     setPermisosSeleccionados([...permisosSeleccionados, { idPermiso: value }]);
-  //   } else {
-  //     const permisoIndex = permisosSeleccionados.findIndex(permiso => permiso.idPermiso === value);
-  //     if (permisoIndex !== -1) {
-  //       const updatedPermisos = [...permisosSeleccionados];
-  //       updatedPermisos.splice(permisoIndex, 1);
-  //       setPermisosSeleccionados(updatedPermisos);
-  //     }
-  //   }
-  //   console.log(permisosSeleccionados)
-  // };
-
-  // getPermisosRol(rol.idRol).then(response =>{
-  //   const data = response.data.resultado;
-  //   setPermisosRol(data)
-  // })
-
 
   useEffect(() => {
     getPermisosRol(rol.idRol).then(response => {
@@ -53,7 +28,16 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
     });
   }, [rol.idRol]);
 
-
+  const handleChange = (checked, permisoId) => {
+    if (checked) {
+      if (!selectedPermisos.some((permiso) => permiso.idPermiso === permisoId)) {
+        setSelectedPermisos((prevS) => [...prevS, { idPermiso: permisoId }]);
+      }
+    }
+    else {
+      setSelectedPermisos((prevS) => prevS.filter((id) => id.idPermiso !== permisoId));
+    }
+  };
   console.log(selectedPermisos)
 
   const initialValues = {
@@ -65,7 +49,7 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validate={(values) => validateEditInputs(values)}
+      validate={(values) => validateEditInputs(values, selectedPermisos)}
       onSubmit={(valores, { resetForm }) => {
         const rolCompleto = {
           idRol: rol.idRol,
@@ -106,65 +90,18 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
               </Label>
 
               <Label className="mt-4">
-                <span>Permisos</span> <br />
-                {/* <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                  {allPermisos.map((mapPermiso) => (
-                    <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600" key={mapPermiso.idPermiso}>
-                      <div className="flex items-center pl-3">
-                        <Input
-                           id="checked"
-                           name="checked"
-                           type="checkbox"
-                           value={mapPermiso.idPermiso}
-                           className="w-4 h-4 text-blue-600  bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                           onChange={handleChange}
-                           checked={permisosSeleccionados.findIndex(permiso => permiso.idPermiso === mapPermiso.idPermiso) !== -1}
-                        />
-                        <label className="w-full py-3 ml-2 text-sm font-medium text-gray-900  dark:text-gray-300">{mapPermiso.nombrePermiso}</label>
-                      </div>
-                    </li>
-                  ))}
-                </ul> */}
-                <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                  {allPermisos.map(mapPermiso => {
-                    const isChecked =
-                      permisosRol.some(permisoRol => permisoRol.idPermiso === mapPermiso.idPermiso) ||
-                      selectedPermisos.some(selectedPermiso => selectedPermiso.idPermiso === mapPermiso.idPermiso);
-
-                    const handleCheckboxChange = (event) => {
-                      const permisoId = parseInt(event.target.value);
-                      setSelectedPermisos(prevSelected => {
-                        if (prevSelected.some(selectedPermiso => selectedPermiso.idPermiso === permisoId)) {
-                          return prevSelected.filter(permiso => permiso.idPermiso !== permisoId);
-                        } else {
-                          return [...prevSelected, { idPermiso: permisoId }];
-                        }
-                      });
-                    };
-
-
-                    return (
-                      <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600" key={mapPermiso.idPermiso}>
-                        <div className="flex items-center pl-3">
-                          <input
-                            id={`permiso-${mapPermiso.idPermiso}`}
-                            name={`permiso-${mapPermiso.idPermiso}`}
-                            type="checkbox"
-                            value={mapPermiso.idPermiso}
-                            className="w-4 h-4 text-blue-600  bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                            checked={isChecked}
-                            onChange={handleCheckboxChange}
-                          />
-                          <label className="w-full py-3 ml-2 text-sm font-medium text-gray-900  dark:text-gray-300">
-                            {mapPermiso.nombrePermiso}
-                          </label>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
+                <span>Permisos</span>
               </Label>
-              {/* {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>} */}
+              <div className='grid grid-cols-2'>
+                {allPermisos.map((mapPermiso) => (
+                  <div key={mapPermiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400 mt-2">
+                    <Switch name="checked" className="mr-3" checked={selectedPermisos.some((permiso) => permiso.idPermiso === mapPermiso.idPermiso)} onChange={(checked) => handleChange(checked, mapPermiso.idPermiso)} />
+                    {mapPermiso.nombrePermiso}
+                  </div>
+                ))}
+              </div>
+              {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
+
 
               <Label className="mt-4">
                 <span>Estado</span>

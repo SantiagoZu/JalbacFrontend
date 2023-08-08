@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Label, Select } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
@@ -14,18 +14,12 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
 
 
     const { crearEmpleado, validacionDocumento } = useEmpleados();
-    const {validacionCorreo} = useUsuarios();
-    const [documentoError, setDocumentoError] = useState('');
-    const [correoError, setCorreoError] = useState('');
+    const { validacionCorreo } = useUsuarios();
     const { roles } = useRoles();
-    const rolesDropdown = [
-        { value: '', label: 'Elija el rol' },
-        ...roles.map((rol) => ({ value: rol.idRol, label: rol.nombre })),
-    ];
     return (
         <Formik
             initialValues={initialValues}
-            validate={(values) => validateInputs(values)}
+            validate={(values) => validateInputs(values, validacionDocumento, validacionCorreo)}
             onSubmit={(valores, { resetForm }) => {
                 const empleado = {
                     estado: true,
@@ -38,17 +32,18 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                     contrasena: valores.contrasena,
                 }
                 crearEmpleado(empleado).then(response => {
-                    showAlertCorrect("Empleado creado correctamente", "success", isClose)
+                    isClose()
+                    showAlertCorrect("Empleado creado correctamente", "success")
                     resetForm();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
+                    // setTimeout(() => {
+                    //     window.location.reload();
+                    // }, 1000);
                 }).catch(response => {
                     showAlertIncorrect("No se pudo crear el empleado", "error", isClose)
                 })
             }}
         >
-            {({ errors, handleSubmit, touched, setFieldError }) => (
+            {({ errors, handleSubmit, touched }) => (
                 <form onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
                         <ModalHeader className='mb-3'>Crear empleado</ModalHeader>
@@ -60,22 +55,9 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                                         type="number"
                                         id="documento"
                                         name="documento"
-                                        placeholder="1234567"
-                                        onBlur={async (e) => {
-                                            const result = await validacionDocumento(e.target.value.toString());
-                                            if (result.isExistoso) {
-                                                setDocumentoError('Ya existe un empleado con el mismo documento');
-                                                setFieldError('documento', 'Ya existe un empleado con el mismo documento');
-                                            } else {
-                                                setDocumentoError('');
-                                                setFieldError('documento', '');
-                                            }
-
-                                        }}
-
+                                        placeholder="1234567890"
                                     />
                                     {touched.documento && errors.documento && <SpanError>{errors.documento}</SpanError>}
-                                    {documentoError && <SpanError>{documentoError}</SpanError>}
                                 </div>
                             </Label>
 
@@ -113,20 +95,8 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                                         id="correo"
                                         name="correo"
                                         placeholder="email@email.com"
-                                        onBlur={async (e) => {
-                                            const result = await validacionCorreo(e.target.value.toString());
-                                            if (result.isExistoso) {
-                                                setCorreoError('Ya existe un empleado con el mismo correo');
-                                                setFieldError('correo', 'Ya existe un empleado con el mismo correo');
-                                            } else {
-                                                setCorreoError('');
-                                                setFieldError('correo', '');
-                                            }
-
-                                        }}
                                     />
                                     {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
-                                    {correoError && <SpanError>{correoError}</SpanError>}
                                 </div>
                             </Label>
 
@@ -139,20 +109,28 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                                         name="contrasena"
                                         placeholder="Contraseña"
                                     />
-                                    {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
+                                    {touched.contrasena && errors.contrasena && <SpanError>{errors.contrasena}</SpanError>}
                                 </div>
                             </Label>
 
                             <Label className="mt-4">
                                 <span>Rol</span>
-                                <CustomInput
-                                    type="select"
+                                <Field
+                                    as="select"
                                     id="idRol"
                                     name="idRol"
-                                    options={rolesDropdown}
-                                />
-                            </Label>
+                                    className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select"
+                                >
+                                    <option value="" label="Seleccionar..." hidden />
+                                    {roles.map((rol) => (
+                                        <option key={rol.idRol} value={rol.idRol}>
+                                            {rol.nombre}
+                                        </option>
+                                    ))}
 
+                                </Field>
+                            </Label>
+                            {touched.idRol && errors.idRol && <SpanError>{errors.idRol}</SpanError>}
                             <Label className="mt-4">
                                 <span>Cargo</span>
                                 <Field name="cargo" id="cargo">
@@ -165,6 +143,7 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                                         </Select>
                                     )}
                                 </Field>
+                                {touched.cargo && errors.cargo && <SpanError>{errors.cargo}</SpanError>}
                             </Label>
                         </ModalBody>
                         <ModalFooter>

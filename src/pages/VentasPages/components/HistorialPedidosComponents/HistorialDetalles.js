@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
+import PageTitle from '../../../../components/Typography/PageTitle';
 import {
-    PageTitle,
     Input,
     Table,
     TableCell,
@@ -15,15 +15,15 @@ import { SearchIcon } from '../../../../icons';
 import {useHisEstadoDetallePedido} from '../../../../services/hooks/useHisEstadoDetallePedido'
 import {useEmpleados} from '../../../../services/hooks/useEmpleados'
 
-function HisotrialDetalles () {
+function HistorialDetalles () {
     
     return (
         <>
-            <div>
-                Hostiroas
-            </div>
+            <PageTitle>
+                Hositals
+            </PageTitle>
         </>
     )
 }
 
-export default HisotrialDetalles
+export default HistorialDetalles

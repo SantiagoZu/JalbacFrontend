@@ -6,12 +6,9 @@ export const useLogin = () => {
 
     const postLogin = async(obj) =>{
         const response = await instance.post("/login/", obj);
-
         const tokenCookie = response.data.resultado.token;
         const cookieValue = Cookies.set('CookieJalbac', tokenCookie);
         document.cookie = cookieValue;
-
-        return response;
     }
 
     const deleteCookie = async() =>{

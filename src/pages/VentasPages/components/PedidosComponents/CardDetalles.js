@@ -62,8 +62,8 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
                             if (!response) {
                                 Swal.showValidationMessage('Tienes que escribir un motivo de devolucion')
                             }
-                            else if (!(/^[a-zA-Z0-9 ]{5,100}$/.test(response))) {
-                                Swal.showValidationMessage('El motivo de devolucion no debe tener caracteres especiales')
+                            else if (!(/^[a-zA-ZÀ-ÿ0-9\s\,\"]{5,100}$/.test(response))) {
+                                Swal.showValidationMessage('El motivo de devolución no debe tener caracteres especiales')
                             }
                         },
                         showCancelButton: true,

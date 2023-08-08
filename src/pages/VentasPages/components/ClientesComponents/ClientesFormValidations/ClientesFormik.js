@@ -1,4 +1,6 @@
 import { expresiones as regex } from '../../../../../helpers/validacionesRegex';
+import { useClientes } from '../../../../../services/hooks/useClientes';
+import {useState} from 'react';
 
 export const initialValues = {
     nombre: '',
@@ -29,7 +31,7 @@ export const validateInputs = (values) => {
         errores.documento = 'El campo documento es oblígatorio.'
     } else if (!validationScheme.documento.test(values.documento)) {
         errores.documento = 'El campo documento debe tener mínimo 4 caracteres.'
-    }
+    } 
 
     if (!values.apellido) {
         errores.apellido = 'El campo apellidos es oblígatorio.'

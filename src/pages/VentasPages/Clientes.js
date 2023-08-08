@@ -207,10 +207,12 @@ function Clientes() {
             />
           )}
         </TableFooter>
+        {modalIsOpenEdit && (
+          <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} object={dataCliente} />
+        )}
       </TableContainer>
-      {modalIsOpenEdit && (
-        <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} object={dataCliente} />
-      )}
+
+
     </>
   )
 }

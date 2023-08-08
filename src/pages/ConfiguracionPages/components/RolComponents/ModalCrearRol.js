@@ -11,54 +11,50 @@ import { initialValues, validateInputs } from './RolFormValidations/RolesFormik'
 import { usePermisos } from "../../../../services/hooks/UsePermisos";
 import { useRoles } from '../../../../services/hooks/useRoles';
 
+import { Switch } from "antd";
+
 export const ModalCrearRol = ({ isOpen, isClose }) => {
 
-  const {postRoles, validacionRol} = useRoles();
+  const { postRoles, validacionRol } = useRoles();
   const [nombreError, setNombreError] = useState('');
-  const {allPermisos} = usePermisos();
+  const { allPermisos } = usePermisos();
   const [select, setSelect] = useState([]);
-  const [formValues, setFormValues] = useState({
-    checked: {}
-  });
 
-  const handleChange = (event) => {
-    const { value, checked } = event.target;
+
+  const handleChange = (checked, permisoId) => {
     if (checked) {
-      setSelect([...select, { idPermiso: value }]);
-    } else {
-      setSelect(select.filter((obj) => obj.idPermiso !== value));
-    }
-
-    setFormValues((prevFormValues) => ({
-      ...prevFormValues,
-      checked: {
-        ...prevFormValues.checked,
-        [value]: checked 
+      if (!select.some((permiso) => permiso.idPermiso === permisoId)) {
+        setSelect((prevS) => [...prevS, { idPermiso: permisoId }]);
       }
-    }));
+    }
+    else {
+      setSelect((prevS) => prevS.filter((id) => id.idPermiso !== permisoId));
+    }
   };
+  console.log(select)
 
 
   return (
     <Formik
       initialValues={initialValues}
-      validate={(values) => validateInputs(values)}
+      validate={(values) => validateInputs(values, select, validacionRol)}
       onSubmit={(valores, { resetForm }) => {
         const updatedValues = {
           nombre: valores.rol,
           estado: true,
           permisos: select
-      };
-      postRoles(updatedValues).then(response =>{
-        resetForm();
-        showAlertCorrect('Rol creado correctamente', 'success', isClose)
-        window.location.reload();
-      }).catch(response =>{
-        showAlertIncorrect('No se pudo crear el rol', 'error', isClose)
-      })
-        
+        };
+        postRoles(updatedValues).then(response => {
+          isClose()
+          resetForm();
+          showAlertCorrect('Rol creado correctamente', 'success')
+          // window.location.reload();
+        }).catch(response => {
+          showAlertIncorrect('No se pudo crear el rol', 'error')
+        })
+
       }}>
-      {({ errors, handleSubmit, touched, setFieldError }) => (
+      {({ errors, handleSubmit, touched }) => (
         <form onSubmit={handleSubmit}>
           <Modal isOpen={isOpen} onClose={isClose}>
             <ModalHeader className='mb-3'>Registrar Rol</ModalHeader>
@@ -71,35 +67,27 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
                     id="rol"
                     name="rol"
                     placeholder="Empleado"
-                    onBlur={async (e) => {
-                      const result = await validacionRol(e.target.value.toString());
-                      if (result.isExistoso) {
-                          setNombreError('Ya existe un rol con el mismo nombre');
-                          setFieldError('rol', 'Ya existe un rol con el mismo nombre');
-                      } else {
-                        setNombreError('');
-                          setFieldError('rol', '');
-                      }
-
-                  }}
                   />
                   {touched.rol && errors.rol && <SpanError>{errors.rol}</SpanError>}
-                  {nombreError && <SpanError>{nombreError}</SpanError>}
+
                 </div>
               </Label>
 
               <Label className="mt-4">
-                <span>Permisos</span> <br />
-                  {allPermisos.map((permiso)=>(
-                    <div key={permiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
-                      <Input type="checkbox" id={`checked_${permiso.idPermiso}`} name="checked" className="mr-1" value={permiso.idPermiso} checked={formValues.checked[permiso.idPermiso] || false} onChange={handleChange}/>
-                      {permiso.nombrePermiso}
-                      <br/>
-                    </div>
-                ))}    
+                <span>Permisos</span>
               </Label>
-              
-              
+              <div className='grid grid-cols-2'>
+                {allPermisos.map((mapPermiso) => (
+                  <div key={mapPermiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400 mt-2">
+                    <Switch name="checked" className="mr-3" checked={select.some((permiso) => permiso.idPermiso === mapPermiso.idPermiso)} onChange={(checked) => handleChange(checked, mapPermiso.idPermiso)} />
+                    {mapPermiso.nombrePermiso}
+                  </div>
+                ))}
+              </div>
+
+              <div className='mt-2'>
+                {touched.checked && errors.checked && <SpanError>{errors.checked}</SpanError>}
+              </div>
             </ModalBody>
             <ModalFooter>
               <div className="hidden sm:block">
@@ -118,6 +106,6 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
       )}
     </Formik>
 
-    
+
   )
 }

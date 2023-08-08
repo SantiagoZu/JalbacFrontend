@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Label, Select } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
@@ -7,38 +7,35 @@ import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { validateEditInputs } from './EmpleadosFormValidations/EmpleadosFormik';
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
+import { useUsuarios } from '../../../../services/hooks/useUsuarios';
 import { useRoles } from '../../../../services/hooks/useRoles';
 
 export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
-    // const [documentoUnico, setDocumentoUnico] = useState(false);
     const initialValues = {
         nombre: empleado.nombre || '',
         apellido: empleado.apellido || '',
         documento: empleado.documento || '',
         correo: empleado.idUsuarioNavigation?.correo || '',
         cargo: empleado.cargo || '',
-        rol: empleado.idUsuarioNavigation?.idRolNavigation?.nombre || '',
+        rol: empleado.idUsuarioNavigation?.idRolNavigation?.idRol || '',
         estado: empleado.estado ? 'true' : 'false',
+        originalRol: empleado.idUsuarioNavigation?.idRolNavigation?.idRol || '',
     };
 
-    const { editarEmpleado } = useEmpleados();
+    const { editarEmpleado, validacionDocumento } = useEmpleados();
+    const { validacionCorreo } = useUsuarios();
     const { roles } = useRoles();
-    const rolesDropdown = [
-        { value: '', label: initialValues.rol },
-        ...roles.map((rol) => ({ value: rol.idRol, label: rol.nombre })),
-    ];
-
     
-
+    console.log(initialValues)
     return (
         <Formik
             initialValues={initialValues}
-            validate={(values) => validateEditInputs(values)}
+            validate={(values) => validateEditInputs(values, validacionDocumento, validacionCorreo)}
             onSubmit={(valores, { resetForm }) => {
                 const empleadoEditado = {
                     idEmpleado: empleado.idEmpleado,
                     idUsuario: empleado.idUsuario,
-                    idRol: empleado.idUsuarioNavigation.idRol,
+                    idRol: valores.idRol || initialValues.originalRol,
                     estado: JSON.parse(valores.estado),
                     documento: valores.documento.toString(),
                     nombre: valores.nombre,
@@ -46,16 +43,20 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     apellido: valores.apellido,
                     cargo: valores.cargo
                 };
+                console.log(empleadoEditado)
                 editarEmpleado(empleado.idEmpleado, empleadoEditado)
                     .then(response => {
-                        showAlertCorrect('Empleado editado correctamente', 'success', isClose);
                         resetForm();
-                        // setTimeout(() => {
-                        //     window.location.reload();
-                        // }, 1000);
+                        isClose()
+                        showAlertCorrect('Empleado editado correctamente', 'success', isClose);
+                        
                     })
                     .catch(response => {
-                        showAlertIncorrect('Hubo un error en la edición del empleado', 'error');
+                        if (response.response.data.errorMessages[0] !== null) {
+                            showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+                        } else {
+                            showAlertIncorrect('Hubo un error en la edición del empleado', 'error');
+                        }
                     });
             }}
         >
@@ -118,12 +119,23 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
 
                             <Label className="mt-4">
                                 <span>Rol</span>
-                                <CustomInput
-                                    type="select"
+                                <Field
                                     id="idRol"
                                     name="idRol"
-                                    options={rolesDropdown}
-                                />
+                                // className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select"
+                                >
+                                    {({ field }) => (
+                                        <Select {...field}>
+                                            {/* <option value={null} label='Seleccionar...'/> */}
+                                            {roles.map((rol) => (
+                                                <option key={rol.idRol} value={rol.idRol}>
+                                                    {rol.nombre}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    )}
+
+                                </Field>
                             </Label>
 
                             <Label className="mt-4">
