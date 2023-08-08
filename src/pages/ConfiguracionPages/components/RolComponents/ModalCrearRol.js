@@ -55,7 +55,7 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
       }}>
       {({ errors, handleSubmit, touched }) => (
         <form onSubmit={handleSubmit}>
-          <Modal isOpen={isOpen} onClose={isClose(resetForm())}>
+          <Modal isOpen={isOpen} onClose={isClose}>
             <ModalHeader className='mb-3'>Registrar Rol</ModalHeader>
             <ModalBody>
               <Label className="mt-4">
@@ -90,7 +90,7 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
             </ModalBody>
             <ModalFooter>
               <div className="hidden sm:block">
-                <Button layout="outline" onClick={isClose(resetForm())}>
+                <Button layout="outline" onClick={isClose}>
                   Cancelar
                 </Button>
               </div>
