@@ -33,7 +33,6 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
   };
   console.log(select)
 
-
   return (
     <Formik
       initialValues={initialValues}
@@ -53,9 +52,9 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
       })
         
       }}>
-      {({ errors, handleSubmit, touched, setFieldError }) => (
+      {({ errors, handleSubmit, touched, setFieldError, resetForm }) => (
         <form onSubmit={handleSubmit}>
-          <Modal isOpen={isOpen} onClose={isClose}>
+          <Modal isOpen={isOpen} onClose={isClose(resetForm())}>
             <ModalHeader className='mb-3'>Registrar Rol</ModalHeader>
             <ModalBody>
               <Label className="mt-4">
@@ -99,7 +98,7 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
             </ModalBody>
             <ModalFooter>
               <div className="hidden sm:block">
-                <Button layout="outline" onClick={isClose}>
+                <Button layout="outline" onClick={isClose(resetForm())}>
                   Cancelar
                 </Button>
               </div>
