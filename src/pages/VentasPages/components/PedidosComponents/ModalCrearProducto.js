@@ -48,6 +48,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                     };                   
                     if(idPedido === undefined) {                        
                         updateTable(updatedValues)
+                        isClose()
                         
                     } else {
                         postDetallePedidoArray.push(updatedValues)

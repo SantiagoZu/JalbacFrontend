@@ -64,7 +64,8 @@ function EditarPedido() {
   clientes.forEach(cliente => cliente.estado ? clientesDropdown.push({value : cliente.idCliente, label : cliente.nombre}) : null)
   const initialValuesPedido = {
     idCliente: pedido.idCliente || clientes[0].idCliente,
-    fechaEntrega: moment(pedido.fechaEntrega).format('YYYY-MM-DD') || ''
+    fechaEntrega: moment(pedido.fechaEntrega).format('YYYY-MM-DD') || '',
+    isActivo : pedido.isActivo || ''
   }
 
   useEffect(() => {

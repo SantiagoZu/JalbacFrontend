@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FetchData } from "../GenericAxios";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
-import { useLogin } from "./useLogin";
+import { useLogin } from "./UseLogin";
 
 export const usePermisos = () => {
     const { idUser } = useLogin();

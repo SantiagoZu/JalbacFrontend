@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
-import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import { Input } from '@windmill/react-ui'
 
 import {
   Table,
@@ -23,13 +23,16 @@ import { ModalEditarEstado } from './components/PedidosComponents/ModalEditarEst
 import { returnDate } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
-
+import { useEmpleados } from '../../services/hooks/useEmpleados'
 
 function Pedidos() {
 
-  const { pedidos, getPedidos, pedidosEmpleado } = usePedidos();
+  const { pedidos, getPedidos, pedidosEmpleado, idUsuario } = usePedidos();
+  const {empleados} = useEmpleados()
   const { getDetallePedidos } = useDetallePedidos()
-
+  const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
+  console.log(empleadoLogged)
+  const isAdministrador = empleadoLogged != undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre == 'administrador' : null
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
@@ -42,7 +45,7 @@ function Pedidos() {
     setModalIsOpenDetallePedido(true);
     setIdPedido(pedido)
   }
-
+  
   function closeModalDetallePedido() {
     setModalIsOpenDetallePedido(false);
   }
@@ -63,8 +66,7 @@ function Pedidos() {
     setModalIsOpenEditarEstado(false);
   }
 
-
-  const pedidos2 = pedidos.concat([])
+  const pedidos2 =  isAdministrador ? pedidos.concat([]) : pedidosEmpleado.concat([]) 
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
@@ -77,8 +79,8 @@ function Pedidos() {
   }
   useEffect(() => {
     const filteredData = searchFilter(pedidos2, search);
-    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
-  }, [pedidos, pageTable2, search]);
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage).reverse());
+  }, [isAdministrador ? pedidos :  pedidosEmpleado, pageTable2, search]);
 
   const searchFilter = (data, searchValue) => {
     if (!searchValue) {
@@ -91,6 +93,7 @@ function Pedidos() {
       pedido.fechaPedido.toLowerCase().includes(searchTerm) ||
       pedido.idClienteNavigation.nombre.toLowerCase().includes(searchTerm) ||
       pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||
+      pedido.isActivo.toLowerCase().includes(searchTerm) ||
       pedido.idEstadoNavigation.nombre.toLowerCase().includes(searchTerm)
     ));
   };
@@ -101,7 +104,7 @@ function Pedidos() {
     if (!modalIsOpenDetallePedido || !modalIsOpenEditarEstado || !modalIsOpenDetallePedidoDevuelto) {
       getDetallePedidos()
       getPedidos()
-     
+      
     }
   }, [modalIsOpenDetallePedido, modalIsOpenEditarEstado, modalIsOpenDetallePedidoDevuelto])
   return (
@@ -134,14 +137,15 @@ function Pedidos() {
               <TableCell>Cliente</TableCell>
               <TableCell>Fecha Entrega</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Activado?</TableCell>
               <TableCell>Cambiar estado</TableCell>
               <TableCell>Acciones</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
             {dataTable2.length === 0 ? (<TableRow>
-              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
-            </TableRow>) : (dataTable2.map((pedido) => (
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell> {console.log(dataTable2)}
+            </TableRow>) : (dataTable2.toReversed().map((pedido) => (
               <TableRow key={pedido.idPedido}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fechaPedido)}</p>
@@ -154,6 +158,9 @@ function Pedidos() {
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{!pedido.isActivo ? 'Desactivado' : 'Activado'}</p>
                 </TableCell>
                 <TableCell>
                   <Button disabled={pedido.idEstado == 3 || pedido.idEstado == 4 ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
