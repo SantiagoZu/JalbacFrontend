@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {  Label } from '@windmill/react-ui'
+import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik } from 'formik';
@@ -8,8 +8,9 @@ import { SpanError } from '../../../../components/styles/styles';
 import { initialValuesAgregarProducto, validateInputsAgregarProducto } from './PedidosFormValidations/ProductosFormik';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
-export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , updateTable = undefined}) => {
-    const {postDetallePedidos} = useDetallePedidos();
+import InputDataList from '../../../../helpers/inputDataList';
+export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, updateTable = undefined }) => {
+    const { postDetallePedidos } = useDetallePedidos();
     const tiposDropDown = [
         { value: null, label: 'Seleccione un tipo de anillo' },
         { value: '3D', label: '3D' },
@@ -23,42 +24,36 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
         { value: 'plata', label: 'Plata' },
     ];
     const { empleados } = useEmpleados()
-    const empleadosDropdown = []
-    for (const id in empleados) {
-        const empleado = {
-            value: parseInt(empleados[id].idEmpleado),
-            label: empleados[id].nombre
-        }
-        empleadosDropdown.push(empleado)
-    }
-    
-   let postDetallePedidoArray = []
+    const empleadosDropdown = [
+        ...empleados.map(empleado => empleado.estado ? <option dataValue={empleado.idEmpleado}>{empleado.nombre} {empleado.apellido} </option> : null)
+    ]
+    let postDetallePedidoArray = []
     return (
         <>
             <Formik
                 initialValues={initialValuesAgregarProducto}
                 validate={(values) => validateInputsAgregarProducto(values)}
                 onSubmit={(values, { resetForm }) => {
-                    console.log(values)                    
+                    console.log(values)
                     const updatedValues = {
                         ...values,
-                        idPedido : idPedido,
-                        idEmpleado : values.idEmpleado,
-                        idEstado : 1,                                                                   
-                    };                   
-                    if(idPedido === undefined) {                        
+                        idPedido: idPedido,
+                        idEmpleado: values.idEmpleado,
+                        idEstado: 1,
+                    };
+                    if (idPedido === undefined) {
                         updateTable(updatedValues)
                         isClose()
-                        
+
                     } else {
                         postDetallePedidoArray.push(updatedValues)
-                        postDetallePedidos(postDetallePedidoArray).then(response => {                            
+                        postDetallePedidos(postDetallePedidoArray).then(response => {
                             resetForm();
                             updatedValues.idDetallePedido = response.data.resultado[0].idDetallePedido
-                           
-                           
+
+
                             console.log(response)
-                                                                           
+
                         }).catch(error => {
                             showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
                             console.log(error);
@@ -66,7 +61,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                         });
                     }
                     console.log(updatedValues)
-                   
+
                     resetForm();
 
                 }}
@@ -150,14 +145,11 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                                             {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>Asignar empleado</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="idEmpleado"
-                                                name="idEmpleado"
-                                                placeholder="12 1/2"
-                                                options={empleadosDropdown}
-                                            />
+                                            <span> Empleado </span>
+                                            <InputDataList list="idEmpleado" className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select" />
+                                            <datalist id="idEmpleado" >
+                                                {empleadosDropdown}
+                                            </datalist>
 
                                         </Label>
                                         <Label className="mt-4">

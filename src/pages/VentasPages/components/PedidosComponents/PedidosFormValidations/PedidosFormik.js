@@ -17,7 +17,7 @@ export const validateInputs = (values) => {
     if(moment(values.fechaEntrega).format('YYYY-MM-DD') <= moment().format('YYYY-MM-DD')){
         errores.fechaEntrega = 'La fecha de entrega no puede ser hoy o una fecha pasada'
     }
-    console.log(errores)
+    console.log(values)
     return errores;
 
 };

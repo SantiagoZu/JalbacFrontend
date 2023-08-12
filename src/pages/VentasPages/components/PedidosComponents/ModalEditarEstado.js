@@ -1,35 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik, Field } from 'formik';
 import { SpanError } from '../../../../components/styles/styles';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
-import { useEstados } from '../../../../services/hooks/useEstados'
 import { usePedidos } from '../../../../services/hooks/usePedidos';
 
 export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
     const { detallePedidos, updateDetallePedidos } = useDetallePedidos();
     const { updatePedidos } = usePedidos()
     let detallesAEditar = detallePedidos.filter(detallePedido => detallePedido.idPedido == pedido.idPedido)
-
+   
     return (
         <>
             <Formik
                 initialValues={{ estado: null }}
-                validate={(value) => {
-                    return value.estado == null ? {estado : 'Escoge el estado a cambiar'} : {}
-                }}
-                onSubmit={(value, { resetForm }) => {
-                    console.log(value.estado)
-                    const updatedValues = {
+                validate={(value) => value.estado == null ? {estado : 'Escoge el estado a cambiar'} : {}}
+                onSubmit={(value, { resetForm }) => {   
+                    const updatedValuesPedido = {
                         idPedido: pedido.idPedido,
                         idCliente: pedido.idCliente,
                         idEstado: value.estado,
                         fechaPedido: pedido.fechaPedido,
-                        fechaEntrega: pedido.fechaEntrega
-                    };                    
-                    updatePedidos(pedido.idPedido, updatedValues).then((response) => {
+                        fechaEntrega: pedido.fechaEntrega,
+                        isActivo : pedido.isActivo
+                    };                                                       
+                    updatePedidos(pedido.idPedido, updatedValuesPedido).then((response) => {
                         resetForm();                        
                         showAlertCorrect('Estado editado correctamente', 'success', isClose)                        
                     }).catch(response => {
@@ -54,7 +51,8 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                         let responseDetalles = updateDetallePedidos(detallePedido.idDetallePedido, updateValuesDetalle)
                         console.log(responseDetalles)
                     }
-                    console.log(updatedValues)
+                   
+                    isClose()
                 }}
             >
                 {({ errors, handleSubmit, touched }) => (

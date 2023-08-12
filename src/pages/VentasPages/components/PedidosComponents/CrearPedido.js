@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
 import { SpanError } from '../../../../components/styles/styles'
-import moment from "moment";
+
 import {
   Label,
   Table,
@@ -25,6 +25,7 @@ import { initialValues, validateInputs } from './PedidosFormValidations/PedidosF
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
+import InputDataList from '../../../../helpers/inputDataList';
 function CrearPedido() {
   const history = useHistory()
   const [productoAEditar, setProductoAEditar] = useState();
@@ -52,15 +53,9 @@ function CrearPedido() {
   const { clientes } = useClientes()
   const { empleados } = useEmpleados();
   const clientesDropdown = [
-    { value: null, label: 'Elija el cliente' }
+    ...clientes.map(cliente => cliente.estado ? (<option  value={cliente.idCliente}>{cliente.nombre} {cliente.apellido}</option>) : null)
   ]
-  for (const id in clientes) {
-    const cliente = {
-      value: parseInt(clientes[id].idCliente),
-      label: clientes[id].nombre
-    }
-    clientesDropdown.push(cliente)
-  }
+ 
   const [productos, setProductos] = useState([]);
 
   const productos2 = productos.concat([])
@@ -82,26 +77,15 @@ function CrearPedido() {
   }
   function updateTable(product) {
     let updatedProducts = productos.map((detallePedido, index) => {
-      if (product.id == index) {
-        return product
-      }
-      else {
-        return detallePedido
-      }
+      if (product.id == index) return product      
+      else return detallePedido      
     })
     setProductos(updatedProducts)
   }
 
   async function deleteProduct(id) {
     await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
-      if (response.isConfirmed) {
-        setProductos(
-          productos.filter((detallePedido, index) => {
-            return index !== id
-          })
-        )
-
-      }
+      if (response.isConfirmed) setProductos(productos.filter((detallePedido, index) => id !== index))      
     })
   }
 
@@ -121,9 +105,9 @@ function CrearPedido() {
             showAlertIncorrect('Tienes que agregar almenos un producto', 'error', () => null);
           }
           else {
-            let responseCrearPedido = postPedidos(updatedValues).then((response) => {
+            postPedidos(updatedValues).then((response) => {
               resetForm();
-           
+
               showAlertCorrect('Pedido creado correctamente', 'success', () => null)
               setTimeout(() => {
                 window.location.reload();
@@ -131,7 +115,7 @@ function CrearPedido() {
               return response
             }).catch(response => {
               showAlertIncorrect('No se pudo crear el pedido', 'error', () => null);
-      
+
             });
           }
 
@@ -139,18 +123,24 @@ function CrearPedido() {
       >
         {({ errors, handleSubmit, touched }) => (
           <form onSubmit={handleSubmit}>
-            <div className='flex flex-row'>
+            <div className='flex flex-row'>              
               <Label className="m-5 flex-none  ">
-                <span>Cliente</span>s
-                <CustomInput
-                  type="select"
-                  id="idCliente"
-                  name="idCliente"
-                  placeholder="Cliente ejemplo"
-                  options={clientesDropdown}
+                <span> Clientes </span>
+                <Field 
+                  list="dataListCliente" 
+                  name='idCliente'                                
+                  id="idCliente" 
+                  className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select"
+                  type="text"
+                  as='input'
+                  required={true}
                 />
+                <datalist id="dataListCliente" >                  
+                  {clientesDropdown}
+                </datalist>
                 {touched.idCliente && errors.idCliente && <SpanError>{errors.idCliente}</SpanError>}
               </Label>
+
 
               <Label className=" m-5 flex-none ">
                 <span>Fecha Entrega</span>
@@ -269,7 +259,7 @@ function CrearPedido() {
       {modalIsOpenEditarProducto && (
         <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={productoAEditar} updateTable={product => updateTable(product)} idProducto={idProducto} />
       )}
-   
+
 
     </>
   )

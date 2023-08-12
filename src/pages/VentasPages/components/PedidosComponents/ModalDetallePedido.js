@@ -6,7 +6,8 @@ export const ModalDetallePedido = ({ isOpen, isClose, pedido }) => {
     const { detallePedidos, getDetallePedidos } = useDetallePedidos()
     function recargarCarta(val) {
         if(val) {
-            getDetallePedidos()            
+            getDetallePedidos()     
+            console.log(val)       
         }
     }
     return (

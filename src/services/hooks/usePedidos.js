@@ -3,7 +3,6 @@ import { FetchData } from "../GenericAxios";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
 
-
 export const usePedidos = () => {
     const [pedidos, setPedidos] = useState([]);
     const [pedidosEmpleado, setPedidosEmpleado] = useState([]);
@@ -13,18 +12,13 @@ export const usePedidos = () => {
     const idUsuario = unencryptToken.unique_name;
     useEffect(() => {
         getPedidos();
-        getPedidosEmpleado(idUsuario)
-        
+        getPedidosEmpleado(idUsuario)        
     }, []);
-    
-
-    
-
     const getPedidos = async () => {
         const response = await instance.get()
         const data = response.data.resultado;
-       
-        setPedidos(data.toReversed())
+
+        setPedidos(data)
         return pedidos;
     }
     const getPedidosEmpleado = async (idUsuario) => {
