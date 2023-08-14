@@ -13,9 +13,10 @@ import {
   Pagination,
   Input
 } from '@windmill/react-ui'
-import { SearchIcon } from '../../icons';
+import { SearchIcon, History } from '../../icons';
 import { useHisEstadoPedido } from '../../services/hooks/useHisEstadoPedido'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { ModalHistorialPedidos } from './components/HistorialPedidosComponents/ModalHistorialPedidos';
 
 function HistorialEstadoPedidos() {
   const history = useHistory();
@@ -60,8 +61,10 @@ function HistorialEstadoPedidos() {
 
   /* Despliegue modal ver detalle */
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [pedidoSeleccionado, setPedidoSeleccionado] = useState({});
 
-  function openModal() {
+  function openModal(pedido) {
+    setPedidoSeleccionado(pedido)
     setModalIsOpen(true)
   }
 
@@ -70,11 +73,9 @@ function HistorialEstadoPedidos() {
   }
 
 
-
-
   return (
     <>
-      <PageTitle>Historial de estados</PageTitle>
+      <PageTitle>Historial pedidos</PageTitle>
 
       <div className="flex ml-auto mb-6">
 
@@ -100,29 +101,35 @@ function HistorialEstadoPedidos() {
               <TableCell>Cliente</TableCell>
               <TableCell>Fecha entrega</TableCell>
               <TableCell>Estado</TableCell>
-              <TableCell>Detalles Producto</TableCell>
+              <TableCell>Detalles producto</TableCell>
+              <TableCell>Historial estados</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
             {dataTable2.length === 0 ? (<TableRow>
               <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
-            </TableRow>) : (dataTable2.map((pedido, i) => (
-              <TableRow key={i}>
+            </TableRow>) : (dataTable2.map((pedido) => (
+              <TableRow key={pedido.idPedido}>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.idPedidoNavigation.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idClienteNavigation.nombre}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idClienteNavigation.nombre} {pedido.idPedidoNavigation.idClienteNavigation.apellido}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.idPedidoNavigation.fechaEntrega)}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idEstadoNavigation.nombre}</p>
                 </TableCell>
                 <TableCell >
-                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => history.push('/app/mostrarDetalles', { idPedidoHistorial: pedido.idPedido })}>
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => history.push('/app/mostrarDetalles', { idPedido: pedido.idPedido })}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />
+                  </Button>
+                </TableCell>
+                <TableCell >
+                  <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" onClick={() => openModal(pedido)}>
+                    <History className="w-5 h-5 ml-6" aria-hidden="true" />
                   </Button>
                 </TableCell>
 
@@ -142,10 +149,9 @@ function HistorialEstadoPedidos() {
           )}
         </TableFooter>
       </TableContainer>
-
-
-
-
+      
+      <ModalHistorialPedidos isOpen={modalIsOpen} isClose={closeModal} pedido={pedidoSeleccionado}/>
+      
     </>
   )
 }

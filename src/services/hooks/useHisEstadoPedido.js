@@ -13,8 +13,8 @@ export const useHisEstadoPedido = () => {
         const response = await instance.get()
         const data = response.data.resultado;
         setHisEstadoPedido(data)
-        return hisEstadoPedido;
     }
+
 
     return {
         hisEstadoPedido,

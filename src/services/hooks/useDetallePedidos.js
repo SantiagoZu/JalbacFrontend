@@ -19,7 +19,6 @@ export const useDetallePedidos = () => {
         return await instance.post("/", obj).then((response) => {           
             return response
         })
- 
     }
 
     const updateDetallePedidos = async(id, obj) =>{

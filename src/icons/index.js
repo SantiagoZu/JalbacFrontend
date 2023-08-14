@@ -29,6 +29,14 @@ import { ReactComponent as OutlineLogoutIcon } from './outlineLogout.svg'
 import { ReactComponent as Arrow } from './arrow.svg'
 import { ReactComponent as AdvertenciaPedidoDevuelto } from './advertenciaPedidoDevuelto.svg'
 import { ReactComponent as Devolver } from './devolver.svg'
+import { ReactComponent as History } from './arrow-path.svg'
+import { ReactComponent as Chart } from './chart-bar.svg'
+import { ReactComponent as CircleStack } from './circle-stack.svg'
+import { ReactComponent as Cog } from './cog-6.svg'
+import { ReactComponent as User } from './user.svg'
+import { ReactComponent as Users } from './user-group.svg'
+import { ReactComponent as Clipboard } from './clipboard.svg'
+import { ReactComponent as DocumentGlass } from './document-glass.svg'
 export {
   ButtonsIcon,
   CardsIcon,
@@ -60,5 +68,13 @@ export {
   OutlineLogoutIcon,
   Arrow,
   AdvertenciaPedidoDevuelto,
-  Devolver
+  Devolver,
+  History,
+  Chart,
+  CircleStack,
+  Cog,
+  User,
+  Users,
+  Clipboard,
+  DocumentGlass,
 }

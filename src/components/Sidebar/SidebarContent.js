@@ -18,7 +18,7 @@ function SidebarContent() {
       newPermisos.push({
         idPermiso: item.idPermiso,
         nombre: item.nombrePermiso,
-        icono: "HomeIcon",
+        icono: "Chart",
         url: "/app/dashboard",
       });
     }
@@ -26,7 +26,7 @@ function SidebarContent() {
       newPermisos.push({
         idPermiso: item.idPermiso,
         nombre: item.nombrePermiso,
-        icono: "MoonIcon",
+        icono: "CircleStack",
         url: "/app/backup",
       });
     }
@@ -34,7 +34,7 @@ function SidebarContent() {
       newPermisos.push({
         idPermiso: item.idPermiso,
         nombre: item.nombrePermiso,
-        icono: "BellIcon",
+        icono: "Cog",
         url: "/app/roles",
       });
     }
@@ -42,7 +42,7 @@ function SidebarContent() {
       newPermisos.push({
         idPermiso: item.idPermiso,
         nombre: item.nombrePermiso,
-        icono: "SunIcon",
+        icono: "Users",
         url: "/app/empleados",
       });
     }
@@ -50,7 +50,7 @@ function SidebarContent() {
       newPermisos.push({
         idPermiso: item.idPermiso,
         nombre: item.nombrePermiso,
-        icono: "TablesIcon",
+        icono: "User",
         url: "/app/clientes",
       });
     }
@@ -58,7 +58,7 @@ function SidebarContent() {
       newPermisos.push({
         idPermiso: item.idPermiso,
         nombre: item.nombrePermiso,
-        icono: "MoneyIcon",
+        icono: "Clipboard",
         url: "/app/pedidos",
       });
     }
@@ -66,16 +66,8 @@ function SidebarContent() {
       newPermisos.push({
         idPermiso: item.idPermiso,
         nombre: item.nombrePermiso,
-        icono: "SearchIcon",
+        icono: "DocumentGlass",
         url: "/app/historial",
-      });
-    }
-    if (item.nombrePermiso === "Devoluciones") {
-      newPermisos.push({
-        idPermiso: item.idPermiso,
-        nombre: item.nombrePermiso,
-        icono: "TrashIcon",
-        url: "/app/devoluciones",
       });
     }
   });

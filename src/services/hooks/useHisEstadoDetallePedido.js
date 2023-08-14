@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { FetchData } from "../GenericAxios";
 
 export const useHisEstadoDetallePedido = () => {
-    const [hisEstadoDetallePedidos, setHisEstadoDetallePedido] = useState([]);
+    const [hisEstadoDetallePedidos, setHisEstadoDetallePedidos] = useState([]);
+    const [hisEstadoDetallePedido, setHisEstadoDetallePedido] = useState({});
     const instance = FetchData('HisEstadoDetallePedido')
 
     useEffect(() => {
@@ -12,13 +13,21 @@ export const useHisEstadoDetallePedido = () => {
     const getHisEstadoDetallePedido = async () => {
         const response = await instance.get()
         const data = response.data.resultado;
-        setHisEstadoDetallePedido(data)
+        setHisEstadoDetallePedidos(data)
         return hisEstadoDetallePedidos;
+    }
+
+    const HistorialDelDetalle = async (id) => {
+        const response = await instance.get(`/${id}`)
+        const data = response.data.resultado;
+        setHisEstadoDetallePedido(data)
+        return hisEstadoDetallePedido;
     }
 
 
     return {
-        hisEstadoDetallePedidos,
+        hisEstadoDetallePedidos,        
         getHisEstadoDetallePedido,
+        HistorialDelDetalle,
     }
 }

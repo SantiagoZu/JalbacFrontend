@@ -198,7 +198,7 @@ function EditarPedido() {
                           {empleados.map((empleado) => {
                             return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}{' '}{empleado.apellido}</p> : null
                           })}
-                        </TableCell>
+                        </TableCell>  
 
                         <TableCell>
                           <div className="flex items-center space-x-4">

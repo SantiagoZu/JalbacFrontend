@@ -106,13 +106,15 @@ function Clientes() {
         deleteClientes(idCliente)
           .then(response => {
             showAlertCorrect('Cliente eliminado correctamente.', 'success');
-            // setTimeout(() => {
-            //   window.location.reload();
-            //   // getClientes();
-            // }, 1000);
           })
           .catch(response => {
-            showAlertIncorrect('Error al eliminar el cliente.', 'error');
+            console.log(response)
+            if (response.response.data?.errorMessages[0] !== null) {
+              showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+            } else {
+              showAlertIncorrect('Error al eliminar el cliente', 'error');
+            }
+
           });
       }
     });

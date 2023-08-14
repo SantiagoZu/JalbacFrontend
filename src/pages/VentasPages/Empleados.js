@@ -112,6 +112,7 @@ function Empleados() {
             
           })
           .catch(response => {
+            console.log(response)
             if (response.response.data?.errorMessages[0] !== null) {
               showAlertIncorrect(response.response.data.errorMessages[0], 'error');
             } else {
