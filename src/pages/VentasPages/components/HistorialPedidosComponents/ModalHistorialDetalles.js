@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, ModalHeader, ModalBody, TableContainer, TableCell, Table, TableBody, TableRow, TableHeader } from '@windmill/react-ui';
-import { returnDate } from '../../../../helpers/parseDate';
+import { parsearFecha } from '../../../../helpers/parseDate';
 import { useHisEstadoDetallePedido } from '../../../../services/hooks/useHisEstadoDetallePedido';
 
 export const ModalHistorialDetalles = ({ isOpen, isClose, detalle }) => {
@@ -34,7 +34,7 @@ export const ModalHistorialDetalles = ({ isOpen, isClose, detalle }) => {
 
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(historial.fecha)}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(historial.fecha)}</p>
 
                                         </TableCell>
                                     </TableRow>

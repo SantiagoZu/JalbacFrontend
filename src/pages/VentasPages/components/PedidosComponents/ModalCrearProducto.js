@@ -11,12 +11,12 @@ import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, recargarTabla = undefined }) => {
     const { postDetallePedidos } = useDetallePedidos();
-    const { empleados , validacionDocumento } = useEmpleados()
+    const { empleados, validacionDocumento } = useEmpleados()
     const empleadosDropdown = [
         ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
     ]
     let postDetallePedidoArray = []
-   
+
     return (
         <>
             <Formik
@@ -26,15 +26,15 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                     console.log(values)
                     const valuesDetalle = {
                         ...values,
-                        idPedido: idPedido,                        
+                        idPedido: idPedido,
                         idEstado: 1,
                     };
-                    if (idPedido === undefined) {                        
+                    if (idPedido === undefined) {
                         recargarTabla(valuesDetalle)
                         isClose()
                     } else {
                         const empleadoProducto = empleados.find(empleado => empleado.documento == values.documentoEmpleado)
-                        valuesDetalle.idEmpleado = empleadoProducto.idEmpleado                        
+                        valuesDetalle.idEmpleado = empleadoProducto.idEmpleado
                         postDetallePedidoArray.push(valuesDetalle)
                         postDetallePedidos(postDetallePedidoArray).then(response => {
                             resetForm();
@@ -42,9 +42,9 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                             console.log(response)
                         }).catch(error => {
                             showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
-                            console.log(error);                          
+                            console.log(error);
                         });
-                    }                  
+                    }
                     resetForm();
                 }}
             >
@@ -61,7 +61,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                             <CustomInput
                                                 type="text"
                                                 id="nombreAnillido"
-                                                name="nombreAnillido"                                                
+                                                name="nombreAnillido"
                                             />
                                             {touched.nombreAnillido && errors.nombreAnillido && <SpanError>{errors.nombreAnillido}</SpanError>}
                                         </Label>
@@ -83,7 +83,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                             <CustomInput
                                                 type="text"
                                                 id="peso"
-                                                name="peso"                                                
+                                                name="peso"
                                             />
                                             {touched.peso && errors.peso && <SpanError>{errors.peso}</SpanError>}
                                         </Label>
@@ -93,7 +93,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="tamanoAnillo"
                                                 name="tamanoAnillo"
-                                                 
+
                                             />
                                             {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
                                         </Label>
@@ -102,7 +102,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                             <CustomInput
                                                 type="text"
                                                 id="tamanoPiedra"
-                                                name="tamanoPiedra"                                                 
+                                                name="tamanoPiedra"
                                             />
                                             {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
                                         </Label>
@@ -128,7 +128,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="detalle"
                                                 name="detalle"
-                                                 
+
                                             />
                                             {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                         </Label>
@@ -155,7 +155,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="cantidad"
                                                 name="cantidad"
-                                                
+
                                             />
                                             {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                         </Label>
