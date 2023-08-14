@@ -36,7 +36,7 @@ export const ModalCrearCliente = ({ isOpen, isClose }) => {
             {({ errors, handleSubmit, touched, setFieldError }) => (
                 <form onSubmit={handleSubmit}>
                     <Modal isOpen={isOpen} onClose={isClose}>
-                        <ModalHeader className='mb-3'>Registar cliente</ModalHeader>
+                        <ModalHeader className='mb-3'>Crear cliente</ModalHeader>
                         <ModalBody>
                             <Label className="mt-4">
                                 <span>Nombre</span>

@@ -85,31 +85,33 @@ function Dashboard() {
       <PageTitle>Gráficos</PageTitle>
 
       <div className="grid gap-6 mb-8 md:grid-cols-2 mt-3">
-      
-        <Calendario setFechaInicio={setFechaInicioPedidos} setFechaFin={setFechaFinPedidos}
-          fechaInicio={fechaInicioPedidos} fechaFin={fechaFinPedidos} className='flex flex-row justify-center'></Calendario>
-        <div >
+        <div className='mt-3' >
+          <Calendario setFechaInicio={setFechaInicioPedidos} setFechaFin={setFechaFinPedidos}
+            fechaInicio={fechaInicioPedidos} fechaFin={fechaFinPedidos} className='flex flex-row justify-center'></Calendario>
           <ChartCard title="Cantidad de pedidos">
             <Line {...Charts(fechaInicioPedidos, fechaFinPedidos).cantidadPedidos} />
             <ChartLegend legends={lineLegends} />
           </ChartCard>
         </div>
 
+        <div className='mt-3'>
+          <Calendario setFechaInicio={setFechaInicioCantidadPedidos} setFechaFin={setFechaFinCantidadPedidos}
+            fechaInicio={fechaInicioCantidadPedidos} fechaFin={fechaFinCantidadPedidos}></Calendario>
+          <ChartCard title="Cantidad de pedidos por empleado">
+            <Line {...Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos).pedidosEmpleado} />
+            <ChartLegend legends={lineLegends} />
+          </ChartCard>
+        </div>
 
+        <div className='mt-3'>
+          <Calendario setFechaInicio={setFechaInicioServicio} setFechaFin={setFechaFinServicio}
+            fechaInicio={fechaInicioServicio} fechaFin={fechaFinServicio}></Calendario>
+          <ChartCard title="Servicio mas solicitado">
+            <Doughnut {...Chart3(fechaInicioServicio, fechaFinServicio).servicios} />
+            <ChartLegend legends={doughnutLegends} />
+          </ChartCard>
+        </div>
 
-        <Calendario setFechaInicio={setFechaInicioCantidadPedidos} setFechaFin={setFechaFinCantidadPedidos}
-          fechaInicio={fechaInicioCantidadPedidos} fechaFin={fechaFinCantidadPedidos}></Calendario>
-        <ChartCard title="Cantidad de pedidos por empleado">
-          <Line {...Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos).pedidosEmpleado} />
-          <ChartLegend legends={lineLegends} />
-        </ChartCard>
-
-        <Calendario setFechaInicio={setFechaInicioServicio} setFechaFin={setFechaFinServicio}
-          fechaInicio={fechaInicioServicio} fechaFin={fechaFinServicio}></Calendario>
-        <ChartCard title="Servicio mas solicitado">
-          <Doughnut {...Chart3(fechaInicioServicio, fechaFinServicio).servicios} />
-          <ChartLegend legends={doughnutLegends} />
-        </ChartCard>
       </div>
     </>
   )
