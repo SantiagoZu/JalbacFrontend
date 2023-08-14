@@ -11,6 +11,7 @@ const Pedidos = lazy(() => import('../pages/VentasPages/Pedidos'))
 const CrearPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/CrearPedido'))
 const EditarPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/EditarPedido'))
 const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
+
 const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
 const HistorialDetalles = lazy(() => import('../pages/VentasPages/components/HistorialPedidosComponents/HistorialDetalles'))
 

@@ -1,76 +1,51 @@
-import React, { useState, useEffect } from 'react'
-import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import React from 'react'
+import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import { Formik } from 'formik';
+import { showAlertIncorrect } from '../../../../helpers/Alertas';
+import { Field, Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValuesAgregarProducto, validateInputsAgregarProducto } from './PedidosFormValidations/ProductosFormik';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
-export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , updateTable = undefined}) => {
-    const {postDetallePedidos} = useDetallePedidos();
-    const tiposDropDown = [
-        { value: null, label: 'Seleccione un tipo de anillo' },
-        { value: '3D', label: '3D' },
-        { value: 'A mano', label: 'A mano' },
-        { value: 'Vaceado', label: 'Vaceado' },
-    ];
-    const materialDropDown = [
-        { value: null, label: 'Seleccione un material' },
-        { value: 'Oro rosado', label: 'Oro rosado' },
-        { value: 'oro', label: 'Oro' },
-        { value: 'plata', label: 'Plata' },
-    ];
-    const { empleados } = useEmpleados()
-    console.log(empleados)
-    const empleadosDropdown = []
-    for (const id in empleados) {
-        const empleado = {
-            value: parseInt(empleados[id].idEmpleado),
-            label: empleados[id].nombre
-        }
-        empleadosDropdown.push(empleado)
-    }
-    
-   let postDetallePedidoArray = []
+import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
+export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, recargarTabla = undefined }) => {
+    const { postDetallePedidos } = useDetallePedidos();
+    const { empleados , validacionDocumento } = useEmpleados()
+    const empleadosDropdown = [
+        ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
+    ]
+    let postDetallePedidoArray = []
+   
     return (
         <>
             <Formik
                 initialValues={initialValuesAgregarProducto}
-                validate={(values) => validateInputsAgregarProducto(values)}
+                validate={(values) => validateInputsAgregarProducto(values, validacionDocumento)}
                 onSubmit={(values, { resetForm }) => {
-                    console.log(values)                    
-                    const updatedValues = {
+                    console.log(values)
+                    const valuesDetalle = {
                         ...values,
-                        idPedido : idPedido,
-                        idEmpleado : values.idEmpleado,
-                        idEstado : 1,                       
-                        
-                    
-                    };                   
-                    if(idPedido === undefined) {                        
-                        updateTable(updatedValues)
-                        
+                        idPedido: idPedido,                        
+                        idEstado: 1,
+                    };
+                    if (idPedido === undefined) {                        
+                        recargarTabla(valuesDetalle)
+                        isClose()
                     } else {
-                        postDetallePedidoArray.push(updatedValues)
-                        postDetallePedidos(postDetallePedidoArray).then(response => {                            
+                        const empleadoProducto = empleados.find(empleado => empleado.documento == values.documentoEmpleado)
+                        valuesDetalle.idEmpleado = empleadoProducto.idEmpleado                        
+                        postDetallePedidoArray.push(valuesDetalle)
+                        postDetallePedidos(postDetallePedidoArray).then(response => {
                             resetForm();
-                            updatedValues.idDetallePedido = response.data.resultado[0].idDetallePedido
-                           
-                           
+                            isClose()
                             console.log(response)
-                                                                           
                         }).catch(error => {
                             showAlertIncorrect('No se pudo crear el producto', 'error', isClose);
-                            console.log(error);
-                            console.log(updatedValues)
+                            console.log(error);                          
                         });
-                    }
-                    console.log(updatedValues)
-                   
+                    }                  
                     resetForm();
-
                 }}
             >
                 {({ errors, handleSubmit, touched }) => (
@@ -86,27 +61,29 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                                             <CustomInput
                                                 type="text"
                                                 id="nombreAnillido"
-                                                name="nombreAnillido"
-                                                placeholder="Nombre ejemplo"
+                                                name="nombreAnillido"                                                
                                             />
                                             {touched.nombreAnillido && errors.nombreAnillido && <SpanError>{errors.nombreAnillido}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>Tipo</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="tipo"
-                                                name="tipo"
-                                                options={tiposDropDown}
-                                            />
+                                            <span>Servicio</span>
+                                            <Field
+                                                as="select"
+                                                id='tipo'
+                                                name='tipo'
+                                                className={STYLE_INPUT.replace('form-input', 'form-select')}
+                                            >
+                                                <option hidden>Seleccionar...</option>
+                                                <option>3D</option>
+                                                <option>A mano</option>
+                                            </Field>
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>peso</span>
+                                            <span>peso(gr)</span>
                                             <CustomInput
                                                 type="text"
                                                 id="peso"
-                                                name="peso"
-                                                placeholder="12gr"
+                                                name="peso"                                                
                                             />
                                             {touched.peso && errors.peso && <SpanError>{errors.peso}</SpanError>}
                                         </Label>
@@ -116,30 +93,34 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                                                 type="text"
                                                 id="tamanoAnillo"
                                                 name="tamanoAnillo"
-                                                placeholder="12 1/2"
+                                                 
                                             />
                                             {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>Tamaño piedra</span>
+                                            <span>Tamaño piedra(mm)</span>
                                             <CustomInput
                                                 type="text"
                                                 id="tamanoPiedra"
-                                                name="tamanoPiedra"
-                                                placeholder="12 1/2"
+                                                name="tamanoPiedra"                                                 
                                             />
                                             {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
                                         </Label>
                                     </div>
                                     <div className='flex-auto'>
                                         <Label className="mt-4">
-                                            <span>Material</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="material"
-                                                name="material"
-                                                options={materialDropDown}
-                                            />
+                                            <span>Material del anillo</span>
+                                            <Field
+                                                as="select"
+                                                id='material'
+                                                name='material'
+                                                className={STYLE_INPUT.replace('form-input', 'form-select')}
+                                            >
+                                                <option hidden>Seleccionar...</option>
+                                                <option>Oro</option>
+                                                <option>Plata</option>
+                                                <option>Oro rosado</option>
+                                            </Field>
                                         </Label>
                                         <Label className="mt-4">
                                             <span>Detalle</span>
@@ -147,19 +128,25 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                                                 type="text"
                                                 id="detalle"
                                                 name="detalle"
-                                                placeholder="12 1/2"
+                                                 
                                             />
                                             {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>Asignar empleado</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="idEmpleado"
-                                                name="idEmpleado"
-                                                placeholder="12 1/2"
-                                                options={empleadosDropdown}
+                                            <span> Empleado </span>
+                                            <Field
+                                                list="dataListEmpleado"
+                                                name='documentoEmpleado'
+                                                id="documentoEmpleado"
+                                                className={STYLE_INPUT}
+                                                type="text"
+                                                as='input'
+                                                required={true}
                                             />
+                                            <datalist id="dataListEmpleado" >
+                                                {empleadosDropdown}
+                                            </datalist>
+                                            {touched.documentoEmpleado && errors.documentoEmpleado && <SpanError>{errors.documentoEmpleado}</SpanError>}
 
                                         </Label>
                                         <Label className="mt-4">
@@ -168,17 +155,13 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined , upd
                                                 type="text"
                                                 id="cantidad"
                                                 name="cantidad"
-                                                placeholder="1"
+                                                
                                             />
                                             {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                         </Label>
                                     </div>
                                 </div>
-
-
-
                             </ModalBody>
-
                             <ModalFooter>
                                 <div className="hidden sm:block">
                                     <Button layout="outline" onClick={isClose}>

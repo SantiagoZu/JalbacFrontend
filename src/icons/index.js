@@ -37,6 +37,7 @@ import { ReactComponent as User } from './user.svg'
 import { ReactComponent as Users } from './user-group.svg'
 import { ReactComponent as Clipboard } from './clipboard.svg'
 import { ReactComponent as DocumentGlass } from './document-glass.svg'
+import { ReactComponent as Inactivar } from './inactivar.svg'
 export {
   ButtonsIcon,
   CardsIcon,
@@ -77,4 +78,5 @@ export {
   Users,
   Clipboard,
   DocumentGlass,
+  Inactivar,
 }

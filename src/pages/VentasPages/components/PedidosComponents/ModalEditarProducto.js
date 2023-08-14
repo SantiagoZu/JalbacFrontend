@@ -1,107 +1,68 @@
 import React, { useState, useEffect } from 'react'
-import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import { Formik } from 'formik';
+import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
-import { initialValues, validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
+import { validateInputsEditarProducto } from './PedidosFormValidations/ProductosFormik';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
-import { useEstados } from '../../../../services/hooks/useEstados'
+import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 
-export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = undefined, idProducto = undefined }) => {
-    let updateValues
-  
-    if (product.idDetallePedido === undefined) {
-        updateValues = {
-            nombreAnillido: product.nombreAnillido || '',
-            tipo: product.tipo || '',
-            peso: product.peso || '',
-            tamanoAnillo: product.tamanoAnillo || '',
-            tamanoPiedra: product.tamanoPiedra || '',
-            material: product.material || '',
-            detalle: product.detalle || '',
-            cantidad: product.cantidad || '',
-            idEmpleado: product.idEmpleado || '',
+export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarTabla = undefined, idDetalleAEditar = undefined }) => {
+    let initialValuesDetalle    
+    const { updateDetallePedidos } = useDetallePedidos();
+    const { empleados, validacionDocumento } = useEmpleados()
+    const empleadosDropdown = [
+        ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
+    ]        
+    if (detalleAEditar.idDetallePedido === undefined) {
+        initialValuesDetalle = {
+            nombreAnillido: detalleAEditar.nombreAnillido || '',
+            tipo: detalleAEditar.tipo || '',
+            peso: detalleAEditar.peso || '',
+            tamanoAnillo: detalleAEditar.tamanoAnillo || '',
+            tamanoPiedra: detalleAEditar.tamanoPiedra || '',
+            material: detalleAEditar.material || '',
+            detalle: detalleAEditar.detalle || '',
+            cantidad: detalleAEditar.cantidad || '',
+            documentoEmpleado: detalleAEditar.documentoEmpleado || '',
         };
     }
     else {
-        updateValues = {
-            idDetallePedido: product.idDetallePedido || '',
-            idPedido: product.idPedido || '',
-            nombreAnillido: product.nombreAnillido || '',
-            tipo: product.tipo || '',
-            peso: product.peso || '',
-            tamanoAnillo: product.tamanoAnillo || '',
-            tamanoPiedra: product.tamanoPiedra || '',
-            material: product.material || '',
-            detalle: product.detalle || '',
-            cantidad: product.cantidad || '',
-            idEmpleado: product.idEmpleado || '',
-            idEstado: product.idEstado || '',
-            motivoDevolucion: product.motivoDevolucion || '',
+        initialValuesDetalle = {
+            idDetallePedido: detalleAEditar.idDetallePedido || '',
+            idPedido: detalleAEditar.idPedido || '',
+            documentoEmpleado: detalleAEditar.idEmpleado || '',
+            nombreAnillido: detalleAEditar.nombreAnillido || '',
+            servicio: detalleAEditar.servicio || '',
+            peso: detalleAEditar.peso || '',
+            tamanoAnillo: detalleAEditar.tamanoAnillo || '',
+            tamanoPiedra: detalleAEditar.tamanoPiedra || '',
+            material: detalleAEditar.material || '',
+            detalle: detalleAEditar.detalle || '',
+            cantidad: detalleAEditar.cantidad || '',
+            idEstado: detalleAEditar.idEstado || '',
+            motivoDevolucion: detalleAEditar.motivoDevolucion || '',
         };
-    }
-    const { updateDetallePedidos } = useDetallePedidos();
-
-    const { empleados } = useEmpleados()
-    const empleadosDropdown = [
-        { value: null, label: 'Elija el empleado' }
-        
-    ]
-   
-    for (const id in empleados) {
-        const empleado = {
-            value: parseInt(empleados[id].idEmpleado),
-            label: empleados[id].nombre
-        }
-           
-        empleadosDropdown.push(empleado)
-    }
-    const tiposDropDown = [
-        { value: null, label: 'Seleccione un tipo de anillo' },
-        { value: '3D', label: '3D' },
-        { value: '3D', label: '3D' },
-        { value: 'A mano', label: 'A mano' },
-        { value: 'Vaceado', label: 'Vaceado' },
-    ];
-    const materialDropDown = [
-        { value: null, label: 'Seleccione un material' },
-        { value: 'oroRosado', label: 'Oro rosado' },
-        { value: 'oroRosado', label: 'Oro rosado' },
-        { value: 'oro', label: 'Oro' },
-        { value: 'plata', label: 'Plata' },
-    ];
-    const { estados } = useEstados()
-    
-    const estadosDropdown = [
-        { value: '', label: 'Elija el estado' }
-        
-    ]
-    for (const id in estados) {
-        const estado = {
-            value: parseInt(estados[id].idEstado),
-            label: estados[id].nombre
-        }      
-        estadosDropdown.push(estado)
-    }
+    }    
     return (
         <>
             <Formik
-                initialValues={updateValues}
-                validate={values => validateInputsEditarProducto(values)}
+                initialValues={initialValuesDetalle}
+                validate={values => validateInputsEditarProducto(values, validacionDocumento)}
                 onSubmit={(values, { resetForm }) => {
-                    const updatedValues = {
+                    const valuesDetalle = {
                         ...values,
-                        idDetallePedido : product.idDetallePedido,
-                        idPedido : product.idPedido,
-                        idEstado : product.idEstado,
-                        motivoDevolucion : ''
+                        idDetallePedido: detalleAEditar.idDetallePedido,
+                        idPedido: detalleAEditar.idPedido,
+                        idEstado: detalleAEditar.idEstado,
+                        motivoDevolucion: ''
                     };
-                    if (product.idDetallePedido === undefined) { // uso este modal desde la vista Crear pedido
-                        const updatedValuesTable = {
-                            id : idProducto,
+                    if (detalleAEditar.idDetallePedido === undefined) { // uso este modal desde la vista Crear pedido
+                        const valuesDetalleTabla = {
+                            idDetalle: idDetalleAEditar,
                             nombreAnillido: values.nombreAnillido || '',
                             tipo: values.tipo || '',
                             peso: values.peso || '',
@@ -110,30 +71,31 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                             material: values.material || '',
                             detalle: values.detalle || '',
                             cantidad: values.cantidad || '',
-                            idEmpleado: values.idEmpleado || '',
-                            idEmpleado : values.idEmpleado || '',
-                            idEstado : 1,                       
-                            motivoDevolucion: '',                    
+                            documentoEmpleado: values.documentoEmpleado || '',
+                            idEstado: 1,
+                            motivoDevolucion: '',
                         }
-                        showAlertCorrect('El producto ha sido editado' , 'success', isClose)
-                        updateTable(updatedValuesTable)
-                      
+                        showAlertCorrect('El producto ha sido editado', 'success', isClose)
+                        recargarTabla(valuesDetalleTabla)
+                        isClose()
                     }
                     else { //uso la vista desde Editar pedido
-                        updateDetallePedidos(product.idDetallePedido, updatedValues).then(response => {
-                            resetForm();                            
+                        const empleadoDetalle = empleados.find(empleado => empleado.documento == values.documentoEmpleado)
+                        valuesDetalle.idEmpleado = empleadoDetalle.idEmpleado
+                        console.log(valuesDetalle)
+                        updateDetallePedidos(detalleAEditar.idDetallePedido, valuesDetalle).then(response => {
+                            resetForm();
                             showAlertCorrect('Producto editado correctamente', 'success', isClose)
-                           
+                            isClose()
                         }).catch(response => {
                             showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
-                           
+
                         })
                     }
 
-                    console.log(updatedValues)
                 }}
             >
-                {({ errors, handleSubmit, touched }) => (               
+                {({ errors, handleSubmit, touched }) => (
                     <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
                             <ModalHeader className='mb-3'>Editar producto</ModalHeader>
@@ -146,26 +108,30 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                                                 type="text"
                                                 id="nombreAnillido"
                                                 name="nombreAnillido"
-                                                placeholder="nombre ejemplo"
+                                              
                                             />
                                             {touched.nombreAnillido && errors.nombreAnillido && <SpanError>{errors.nombreAnillido}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>Tipo</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="tipo"
-                                                name="tipo"
-                                                options={tiposDropDown}
-                                            />
+                                            <span>Servicio</span>
+                                            <Field
+                                                as="select"
+                                                id='tipo'
+                                                name='tipo'
+                                                className={STYLE_INPUT.replace('form-input', 'form-select')}
+                                            >
+                                                <option hidden>Seleccionar...</option>
+                                                <option>3D</option>
+                                                <option>A mano</option>
+                                            </Field>
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>peso</span>
+                                            <span>Peso(gr)</span>
                                             <CustomInput
                                                 type="text"
                                                 id="peso"
                                                 name="peso"
-                                                placeholder="12gr"
+                                               
                                             />
                                             {touched.peso && errors.peso && <SpanError>{errors.peso}</SpanError>}
                                         </Label>
@@ -175,39 +141,42 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                                                 type="text"
                                                 id="tamanoAnillo"
                                                 name="tamanoAnillo"
-                                                placeholder="12 1/2"
+                                               
                                             />
                                             {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>Tamaño piedra</span>
+                                            <span>Tamaño piedra(mm)</span>
                                             <CustomInput
                                                 type="text"
                                                 id="tamanoPiedra"
                                                 name="tamanoPiedra"
-                                                placeholder="12 1/2"
+                                               
                                             />
                                             {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
                                         </Label>
                                         <Label className="mt-5">
-                                            <span>Material</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="material"
-                                                name="material"
-                                                options={materialDropDown}
-                                            />
+                                            <span>Material del anillo</span>
+                                            <Field
+                                                as="select"
+                                                id='material'
+                                                name='material'
+                                                className={STYLE_INPUT.replace('form-input', 'form-select')}
+                                            >
+                                                <option hidden>Seleccionar...</option>
+                                                <option>Oro</option>
+                                                <option>Plata</option>
+                                                <option>Oro rosado</option>
+                                            </Field>
                                         </Label>
                                     </div>
                                     <div className='flex-auto'>
-
                                         <Label className="mt-5">
-                                            <span>Detalle</span>
+                                            <span>Detalles</span>
                                             <CustomInput
                                                 type="text"
                                                 id="detalle"
-                                                name="detalle"
-                                                placeholder="12 1/2"
+                                                name="detalle"                                              
                                             />
                                             {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                         </Label>
@@ -216,23 +185,29 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                                             <CustomInput
                                                 type="text"
                                                 id="cantidad"
-                                                name="cantidad"
-                                                placeholder="2"
+                                                name="cantidad"                                             
                                             />
                                             {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                         </Label>
                                         <Label className="mt-5">
-                                            <span>Asignar empleado</span>
-                                            <CustomInput
-                                                type="select"
-                                                id="idEmpleado"
-                                                name="idEmpleado"
-                                                options={empleadosDropdown}
+                                            <span> Empleado </span>
+                                            <Field
+                                                list="dataListEmpleado"
+                                                name='documentoEmpleado'
+                                                id="documentoEmpleado"
+                                                className={STYLE_INPUT}
+                                                type="text"
+                                                as='input'
+                                                required={true}
                                             />
-                                        </Label>                                                                            
+                                            <datalist id="dataListEmpleado" >
+                                                {empleadosDropdown}
+                                            </datalist>
+                                            {touched.documentoEmpleado && errors.documentoEmpleado && <SpanError>{errors.documentoEmpleado}</SpanError>}
+                                        </Label>
                                     </div>
                                 </div>
-                            </ModalBody>                            
+                            </ModalBody>
                             <ModalFooter>
                                 <div className="hidden sm:block">
                                     <Button layout="outline" onClick={isClose}>
@@ -258,7 +233,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, product, updateTable = un
                         </Modal>
                     </form>
                 )}
-                 
+
             </Formik>
         </>
     );

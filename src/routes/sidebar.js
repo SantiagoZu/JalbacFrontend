@@ -69,6 +69,10 @@ const routes = [
         name: 'Historial pedidos',
       },
       {
+        path: '/app/hisDetalles',
+        name: 'Historial pedidos',
+      },
+      {
         path: '/app/devoluciones',
         name: 'Devoluciones',
       },

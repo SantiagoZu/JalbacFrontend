@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export function returnDate(fecha) {
+export function parsearFecha(fecha) {
   return moment(fecha).format('D-MM-YYYY')
 }
 

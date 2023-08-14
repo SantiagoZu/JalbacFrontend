@@ -1,51 +1,49 @@
-import React, { useState, useEffect } from 'react'
-import { HelperText, Label, Select, Textarea } from '@windmill/react-ui'
+import React from 'react'
+import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Formik, Field } from 'formik';
-import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
-import { useEstados } from '../../../../services/hooks/useEstados'
 import { usePedidos } from '../../../../services/hooks/usePedidos';
 
 export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
     const { detallePedidos, updateDetallePedidos } = useDetallePedidos();
     const { updatePedidos } = usePedidos()
-    const { estados } = useEstados()
-
-    let detallesAEditar = detallePedidos.filter(detallePedido => detallePedido.idPedido == pedido.idPedido)
-    console.log(detallesAEditar)
+    const detallesEditarEstado = detallePedidos.filter(detallePedido => detallePedido.idPedido == pedido.idPedido)
+    const estadosDropDown = [
+        <option hidden>Cambiar...</option>,
+        pedido.idEstado == 1 ? <option value='2'>En produccion</option> :
+            pedido.idEstado == 2 ? <option value='3'>Entregado</option> : null
+    ]
     return (
         <>
             <Formik
                 initialValues={{ estado: null }}
-                validate={(value) => {
-                    return value.estado == null ? {estado : 'Escoge el estado a cambiar'} : {}
-                }}
-                onSubmit={(value, { resetForm }) => {
-                    console.log(value.estado)
-                    const updatedValues = {
+                validate={(value) => value.estado == null ? { estado: 'Escoge el estado a cambiar' } : {}}
+                onSubmit={async (value, { resetForm }) => {
+                    const valuesPedido = {
                         idPedido: pedido.idPedido,
                         idCliente: pedido.idCliente,
                         idEstado: value.estado,
                         fechaPedido: pedido.fechaPedido,
-                        fechaEntrega: pedido.fechaEntrega
-                    };                    
-                    updatePedidos(pedido.idPedido, updatedValues).then((response) => {
-                        resetForm();                        
-                        showAlertCorrect('Estado editado correctamente', 'success', isClose)                        
+                        fechaEntrega: pedido.fechaEntrega,
+                        isActivo: pedido.isActivo
+                    };
+                    updatePedidos(pedido.idPedido, valuesPedido).then((response) => {
+                        resetForm();
+                        showAlertCorrect('Estado editado correctamente', 'success', isClose)
                     }).catch(response => {
-                        showAlertIncorrect('No se pudo editar el estado', 'error', isClose);                        
+                        showAlertIncorrect('No se pudo editar el estado', 'error', isClose);
                     })
-                    for (const detallePedido of detallesAEditar) {
-                        const updateValuesDetalle = {
+                    for (const detallePedido of detallesEditarEstado) {
+                        const valuesDetalle = {
                             idDetallePedido: detallePedido.idDetallePedido || '',
                             idPedido: detallePedido.idPedido || '',
                             idEmpleado: detallePedido.idEmpleado || '',
-                            idEstado: parseInt(value.estado) || '',
+                            idEstado: value.estado || '',
                             nombreAnillido: detallePedido.nombreAnillido || '',
-                            tipo: detallePedido.tipo || '',
+                            servicio: detallePedido.servicio || '',
                             peso: detallePedido.peso || '',
                             tamanoAnillo: detallePedido.tamanoAnillo || '',
                             tamanoPiedra: detallePedido.tamanoPiedra || '',
@@ -54,10 +52,11 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             cantidad: detallePedido.cantidad || '',
                             motivoDevolucion: null
                         }
-                        let responseDetalles = updateDetallePedidos(detallePedido.idDetallePedido, updateValuesDetalle)
-                        console.log(responseDetalles)
+                        updateDetallePedidos(detallePedido.idDetallePedido, valuesDetalle)
+
                     }
-                    console.log(updatedValues)
+
+                    isClose()
                 }}
             >
                 {({ errors, handleSubmit, touched }) => (
@@ -66,17 +65,14 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             <ModalHeader className='mb-3'>Editar estado del pedido</ModalHeader>
                             <ModalBody>
                                 <div className='flex gap-5'>
-                                    <Label className="mt-4">                                     
+                                    <Label className="mt-4">
                                         <Field
                                             as="select"
                                             id='estado'
                                             name='estado'
                                             className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select"
                                         >
-                                            <option hidden>Cambiar...</option>
-                                            {
-                                                pedido.idEstado == 1 ? <option value='2'>En produccion</option> : pedido.idEstado == 2 ? <option value='3'>Entregado</option> : null
-                                            }
+                                            {estadosDropDown}
                                         </Field>
                                         {touched.estado && errors.estado && <SpanError>{errors.estado}</SpanError>}
                                     </Label>

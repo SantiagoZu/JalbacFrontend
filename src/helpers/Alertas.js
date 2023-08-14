@@ -47,22 +47,17 @@ export const showCloseSesion = (message, icon, onDelete ,onClose) => {
     });
 }
 
-export const showAlertEstadoDevuelto = (message, icon, secondMessage, secondIcon) => {
-    Swal.fire({
-        title: message,
-        icon: icon,
+export const showAlertInactivarOActivarPedido =  (mensaje) => {
+    return new Promise((resolve) => {        
+        Swal.fire({
+        title: mensaje,
+        icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#7e3af2',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Devolver'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire(
-                'Devuelto',
-                secondMessage,
-                secondIcon,
-            )
-        }
-    });
+        confirmButtonText: '¡Sí!',
+        cancelButtonText: 'Cancelar',
+      }).then(response => resolve(response))
+    })
 }
 
