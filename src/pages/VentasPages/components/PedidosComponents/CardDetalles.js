@@ -10,9 +10,9 @@ import Swal from 'sweetalert2';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 
-export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) => {
+export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined }) => {
     const { updateDetallePedidos } = useDetallePedidos()
-    const { updatePedidos } = usePedidos()
+    const { updatePedidos } = usePedidos()    
     const DEVUELTO = 4
     const PRODUCCION = 2
     const ES_DEVUELTO = detallePedido.idEstado == DEVUELTO
@@ -23,7 +23,7 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
         idEmpleado: detallePedido.idEmpleado,
         idEstado: DEVUELTO,
         nombreAnillido: detallePedido.nombreAnillido,
-        tipo: detallePedido.tipo,
+        servicio: detallePedido.servicio,
         peso: detallePedido.peso,
         tamanoAnillo: detallePedido.tamanoAnillo,
         tamanoPiedra: detallePedido.tamanoPiedra,
@@ -44,7 +44,8 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
         showConfirmButton: true,
-        confirmButtonText: 'Confirmar'
+        confirmButtonText: 'Confirmar',
+        cancelButtonColor: '#d33'
     }
     async function alertEscribirMotivo() {
         await Swal.fire({
@@ -64,7 +65,7 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
         try {
             await updateDetallePedidos(detallePedido.idDetallePedido, detallePedidoValues)
             await updatePedidos(pedido.idPedido, pedidoValues)
-            updateCard(true)
+            recargarCarta(true)
             showAlertCorrect('Producto devuelto correctamente', 'success', () => null)
         } catch (error) {
             console.log(error)
@@ -80,7 +81,7 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
                 pedidoValues.idEstado = PRODUCCION
                 await updatePedidos(pedido.idPedido, pedidoValues)
             }
-            updateCard(true)
+            recargarCarta(true)
         } catch (error) {
             console.log(error)
         }
@@ -118,7 +119,7 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
                                 Tipo de servicio
                             </p>
                             <p>
-                                {detallePedido.tipo}
+                                {detallePedido.servicio}
                             </p>
                             <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
                                 Peso(gr)
@@ -172,7 +173,7 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
                                 Empleado
                             </p>
                             <p >
-                                {detallePedido.idEmpleadoNavigation.nombre}
+                                {detallePedido.idEmpleadoNavigation.nombre} {detallePedido.idEmpleadoNavigation.apellido}
                             </p>
                         </div>
                         <div className='flex flex-row space-x-4'>
@@ -184,21 +185,10 @@ export const CardDetalles = ({ detallePedido, pedido, updateCard = undefined }) 
                             </p>
                         </div>
                         {ES_DEVUELTO ? (
-                            <>
-                                <div className='flex flex-row space-x-4'>
-                                    <p className=" text-gray-700 dark:text-gray-300 font-bold text-center text-sm">
-                                        Motivo devolucion
-                                    </p>
-                                    <p className='text-center'>
-                                        {detallePedido.motivoDevolucion[detallePedido.motivoDevolucion.length - 1]}
-                                    </p>
-                                </div>
-
-                                <div className='absolute top-0 right-0'>
-                                    <Button icon={Devolver} onClick={() => devolverOMandarProduccion(false)}>
-                                    </Button>
-                                </div>
-                            </>
+                            <div className='absolute top-0 right-0'>
+                                <Button icon={Devolver} onClick={() => devolverOMandarProduccion(false)}>
+                                </Button>
+                            </div>
                         ) : null}
                         <div className='absolute top-0 right-0'>
                             {ES_PRODUCCION ? (

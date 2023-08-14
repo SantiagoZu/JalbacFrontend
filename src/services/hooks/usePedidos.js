@@ -24,7 +24,7 @@ export const usePedidos = () => {
     const getPedidosEmpleado = async (idUsuario) => {
         const response = await instance.get(`PorEmpleado/${idUsuario}`)
         const data = response.data.resultado;
-        data.sort((a, b) => a.idPedido - b.idPedido).reverse()        
+             
         setPedidosEmpleado(data)
         return pedidosEmpleado;
     }
@@ -45,6 +45,18 @@ export const usePedidos = () => {
         await instance.delete(`/${id}`);
     }
 
+    const toggleEstadoPedido = async (pedido, inactivarOActivar) => {
+        const valuesPedido = {
+            idPedido: pedido.idPedido,
+            idCliente: pedido.idCliente,
+            idEstado: pedido.idEstado,
+            fechaPedido: pedido.fechaPedido,
+            fechaEntrega: pedido.fechaEntrega,
+            isActivo : inactivarOActivar
+        };   
+        
+        return await updatePedidos(pedido.idPedido, valuesPedido)
+    }
     return {
         pedidosEmpleado,
         pedidos,
@@ -53,7 +65,8 @@ export const usePedidos = () => {
         getPedidos,
         postPedidos,
         updatePedidos,
-        deletePedidos
+        deletePedidos,
+        toggleEstadoPedido
     }
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
-import { returnDate } from '../../helpers/parseDate'
+import { parsearFecha } from '../../helpers/parseDate'
 import { Table, TableHeader, TableCell, TableBody, TableRow,
   TableFooter,
   TableContainer,
@@ -101,19 +101,19 @@ function HistorialEstadoPedidos() {
             </TableRow>) : (dataTable2.map((pedido, i) => (
               <TableRow key={i}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.idPedidoNavigation.fechaPedido)}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.idPedidoNavigation.fechaPedido)}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idClienteNavigation.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.idPedidoNavigation.fechaEntrega)}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.idPedidoNavigation.fechaEntrega)}</p>
                 </TableCell>
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idEstadoNavigation.nombre}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{returnDate(pedido.fecha)}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fecha)}</p>
                 </TableCell>
                 <TableCell >
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => history.push('/app/hisDetalles', { idPedidoHistorial: pedido.idPedido })}>

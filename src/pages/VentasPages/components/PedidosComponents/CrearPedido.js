@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
 import { SpanError } from '../../../../components/styles/styles'
-
-import {
-  Label,
-  Table,
-  TableHeader,
-  TableCell,
-  TableBody,
-  TableRow,
-  TableFooter,
-  TableContainer,
-  Button,
-  Pagination,
-} from '@windmill/react-ui'
+import {Label, Table, TableHeader, TableCell, TableBody,TableRow, TableFooter, TableContainer, Button, Pagination,} from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Field, Formik } from 'formik'
@@ -25,11 +13,11 @@ import { initialValues, validateInputs } from './PedidosFormValidations/PedidosF
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
-import InputDataList from '../../../../helpers/inputDataList';
+import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 function CrearPedido() {
   const history = useHistory()
-  const [productoAEditar, setProductoAEditar] = useState();
-  const [idProducto, setIdProducto] = useState()
+  const [detalleAEditar, setDetalleAEditar] = useState();
+  const [idDetalle, setIdDetalle] = useState()
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
 
@@ -40,52 +28,52 @@ function CrearPedido() {
     setModalIsOpenCrearProducto(false);
   }
 
-  function openModalEditarProducto(obj, id) {
+  function openModalEditarProducto(detalle, idDetalle) {
     setModalIsOpenEditarProducto(true);
-    setProductoAEditar(obj)
-    setIdProducto(id)
+    setDetalleAEditar(detalle)
+    setIdDetalle(idDetalle)
   }
   function closeModalEditarProducto() {
     setModalIsOpenEditarProducto(false);
   }
 
   const { postPedidos } = usePedidos()
-  const { clientes } = useClientes()
+  const { clientes, validacionDocumento } = useClientes()
   const { empleados } = useEmpleados();
   const clientesDropdown = [
-    ...clientes.map(cliente => cliente.estado ? (<option  value={cliente.idCliente}>{cliente.nombre} {cliente.apellido}</option>) : null)
+    ...clientes.map(cliente => cliente.estado ? (<option  value={cliente.documento}>{cliente.nombre} {cliente.apellido}</option>) : null)
   ]
- 
-  const [productos, setProductos] = useState([]);
 
-  const productos2 = productos.concat([])
+  const [detalles, setDetalles] = useState([]);
+
+  const detalles2 = detalles.concat([])
   const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
 
   const resultsPerPage = 5
-  const totalResults = productos2.length
+  const totalResults = detalles2.length
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
   useEffect(() => {
-    setDataTable2(productos2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
-  }, [productos, pageTable2]);
+    setDataTable2(detalles2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
+  }, [detalles, pageTable2]);
 
-  function getProduct(product) {
-    setProductos([...productos, product])
+  function getDetalle(detalle) {
+    setDetalles([...detalles, detalle])
   }
-  function updateTable(product) {
-    let updatedProducts = productos.map((detallePedido, index) => {
-      if (product.id == index) return product      
-      else return detallePedido      
+  function getUpdatedDetalle(detalle) {
+    let updatedDetalles = detalles.map((detallePedido, index) => {
+      if (detalle.idDetalle == index) return detalle     
+      return detallePedido      
     })
-    setProductos(updatedProducts)
+    setDetalles(updatedDetalles)
   }
 
-  async function deleteProduct(id) {
-    await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
-      if (response.isConfirmed) setProductos(productos.filter((detallePedido, index) => id !== index))      
+  function deteleDetalle(indexEditar) {
+     showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
+      if (response.isConfirmed) setDetalles(detalles.filter((detallePedido, index) => indexEditar !== index))      
     })
   }
 
@@ -94,20 +82,19 @@ function CrearPedido() {
       <PageTitle>Crear pedido</PageTitle>
       <Formik
         initialValues={initialValues}
-        validate={(values) => validateInputs(values)}
+        validate={(values) => validateInputs(values, validacionDocumento)}
         onSubmit={(values, { resetForm }) => {
-          const updatedValues = {
+          const valuesPedido = {
             ...values,
             idEstado: 1,
-            detallesPedido: productos
+            detallesPedido: detalles
           };
-          if (productos.length <= 0) {
+          if (detalles.length <= 0) {
             showAlertIncorrect('Tienes que agregar almenos un producto', 'error', () => null);
           }
           else {
-            postPedidos(updatedValues).then((response) => {
+            postPedidos(valuesPedido).then((response) => {
               resetForm();
-
               showAlertCorrect('Pedido creado correctamente', 'success', () => null)
               setTimeout(() => {
                 window.location.reload();
@@ -128,17 +115,16 @@ function CrearPedido() {
                 <span> Clientes </span>
                 <Field 
                   list="dataListCliente" 
-                  name='idCliente'                                
-                  id="idCliente" 
-                  className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select"
+                  name='documentoCliente'                                
+                  id="documentoCliente" 
+                  className={STYLE_INPUT}
                   type="text"
-                  as='input'
-                  required={true}
+                  as='input'                  
                 />
                 <datalist id="dataListCliente" >                  
                   {clientesDropdown}
                 </datalist>
-                {touched.idCliente && errors.idCliente && <SpanError>{errors.idCliente}</SpanError>}
+                {touched.documentoCliente && errors.documentoCliente && <SpanError>{errors.documentoCliente}</SpanError>}
               </Label>
 
 
@@ -165,7 +151,7 @@ function CrearPedido() {
                 <TableHeader>
                   <tr>
                     <TableCell>Nombre anillo</TableCell>
-                    <TableCell>Tipo</TableCell>
+                    <TableCell>Servicio</TableCell>
                     <TableCell>Peso</TableCell>
                     <TableCell>Tamaño anillo</TableCell>
                     <TableCell>Tamaño piedra</TableCell>
@@ -179,8 +165,8 @@ function CrearPedido() {
                 </TableHeader>
                 <TableBody className="w-12">
                   {dataTable2.length > 0 ?
-                    dataTable2.map((detallePedido, i) => (
-                      <TableRow key={i}>
+                    dataTable2.map((detallePedido, index) => (
+                      <TableRow key={index}>
                         <TableCell>
                           <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
                         </TableCell>
@@ -207,16 +193,16 @@ function CrearPedido() {
                         </TableCell>
                         <TableCell>
                           {empleados.map((empleado) => {
-                            return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {empleado.nombre}</p> : null
+                            return empleado.documento == detallePedido.documentoEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {empleado.nombre}</p> : null
                           })}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-4">
                             <Button layout="link" size="icon" aria-label="Edit" >
-                              <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido, i)} />
+                              <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido, index)} />
                             </Button>
 
-                            <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(i)} >
+                            <Button layout="link" size="icon" aria-label="Delete" onClick={() => deteleDetalle(index)} >
                               <TrashIcon className="w-5 h-5" aria-hidden="true" />
                             </Button>
                           </div>
@@ -254,10 +240,10 @@ function CrearPedido() {
 
       </Formik>
       {modalIsOpenCrearProducto && (
-        <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} updateTable={(product) => getProduct(product)} />
+        <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} recargarTabla={(detalle) => getDetalle(detalle)} />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={productoAEditar} updateTable={product => updateTable(product)} idProducto={idProducto} />
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} detalleAEditar={detalleAEditar} recargarTabla={detalle => getUpdatedDetalle(detalle)} idDetalleAEditar={idDetalle} />
       )}
 
 

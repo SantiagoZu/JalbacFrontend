@@ -5,18 +5,17 @@ import { Label, Table, TableHeader, TableCell, TableBody, TableRow, TableFooter,
 import { EditIcon, TrashIcon } from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import moment from 'moment'
-import { Formik } from 'formik'
+import { Formik, Field } from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
 import { useClientes } from '../../../../services/hooks/useClientes'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { ModalCrearProducto } from './ModalCrearProducto'
 import { ModalEditarProducto } from './ModalEditarProducto'
-import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import { validateInputs } from './PedidosFormValidations/PedidosFormik'
-import InputDataList from '../../../../helpers/inputDataList';
+import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 function EditarPedido() {
   const history = useHistory()
   const location = useLocation()
@@ -29,22 +28,21 @@ function EditarPedido() {
   function openModalCrearProducto() {
     setModalIsOpenCrearProducto(true);
   }
-
   function closeModalCrearProducto() {
     setModalIsOpenCrearProducto(false);
   }
-  function openModalEditarProducto(obj) {
+  function openModalEditarProducto(detalleAEditar) {
     setModalIsOpenEditarProducto(true);
-    setdetallePedidoAEditar(obj)
+    setdetallePedidoAEditar(detalleAEditar)
   }
 
   function closeModalEditarProducto() {
     setModalIsOpenEditarProducto(false);
   }
   const { detallePedidos, getDetallePedidos, deleteDetallePedidos } = useDetallePedidos()
-  const detallePedidosFiltered = detallePedidos.filter(detallePedido => idPedido == detallePedido.idPedido)
-  const detallePedidos2 = detallePedidosFiltered.concat([])
+  const detallesPedidoCorrespondiente = detallePedidos.filter(detallePedido => idPedido == detallePedido.idPedido)
 
+  const detallePedidos2 = detallesPedidoCorrespondiente.concat([])
   const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
 
@@ -59,57 +57,57 @@ function EditarPedido() {
   }, [detallePedidos, pageTable2]);
 
   const { updatePedidos } = usePedidos()
-  const { clientes } = useClientes()
-  const { empleados } = useEmpleados();
+  const { clientes, validacionDocumento } = useClientes()  
   const clientesDropdown = [
-    ...clientes.map(cliente => cliente.estado ? <option dataValue={cliente.idCliente}>{cliente.nombre} {cliente.apellido} </option> : null)
+    ...clientes.map(cliente => cliente.estado ? <option value={cliente.documento}>{cliente.nombre} {cliente.apellido} </option> : null)
   ]
   const initialValuesPedido = {
-    idCliente: pedido.idCliente || clientes[0].idCliente,
+    documentoCliente: pedido.idCliente || '',
     fechaEntrega: moment(pedido.fechaEntrega).format('YYYY-MM-DD') || '',
     isActivo: pedido.isActivo || ''
   }
 
+  async function deleteDetalle(idDetalle) {
+    try {
+      const respuesta = await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning')
+      if (respuesta.isConfirmed) {
+        await deleteDetallePedidos(idDetalle)
+        await getDetallePedidos()
+        showAlertCorrect('El detalle a sido eliminado', 'success')
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
   useEffect(() => {
     if (!modalIsOpenCrearProducto || !modalIsOpenEditarProducto) {
       getDetallePedidos()
     }
   }, [modalIsOpenCrearProducto, modalIsOpenEditarProducto])
-  async function deleteProduct(id) {
-    await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(async (response) => {
-      if (response.isConfirmed) {
-        await deleteDetallePedidos(id)
-
-        showAlertCorrect('Detalle eliminado correctamente', 'success', () => null)
-      }
-    })
-  }
   return (
     <>
       <PageTitle>Editar pedido</PageTitle>
       <Formik
         initialValues={initialValuesPedido}
-        validate={values => validateInputs(values)}
-        onSubmit={(values, { resetForm }) => {
-          const updatedValues = {
+        validate={values => validateInputs(values, validacionDocumento)}
+        onSubmit={values => {
+          const valuesPedido = {
             ...values,
             idPedido: idPedido,
             idEstado: pedido.idEstado,
-            fechaPedido: pedido.fechaPedido
+            fechaPedido: pedido.fechaPedido,
+            isActivo: pedido.isActivo
           };
-
-          updatePedidos(idPedido, updatedValues).then((response) => {
-            resetForm();
+          const clientePedidoCorrespondiente = clientes.find(cliente => cliente.documento == values.documentoCliente)
+          valuesPedido.idCliente = clientePedidoCorrespondiente.idCliente
+          updatePedidos(idPedido, valuesPedido).then((response) => {            
             showAlertCorrect('pedido editado correctamente', 'success', () => null)
             setTimeout(() => {
               history.push('/app/pedidos')
-            }, 2600);
-            return response
+            }, 2600);            
           }).catch(response => {
             showAlertIncorrect('No se pudo editar el pedido', 'error');
-
-          });
-          resetForm();
+          });          
         }}
       >
         {({ errors, handleSubmit, touched }) => (
@@ -117,11 +115,19 @@ function EditarPedido() {
             <div className='flex '>
               <Label className="m-5 flex-none  ">
                 <span> Clientes </span>
-                <InputDataList list="idCliente" className="block w-full pl-4 mt-1 mb-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-select" />
-                <datalist id="idCliente" >
+                <Field
+                  list="dataListCliente"
+                  name='documentoCliente'
+                  id="documentoCliente"
+                  className={STYLE_INPUT}
+                  type="text"
+                  as='input'
+                  required={true}
+                />
+                <datalist id="dataListCliente" >
                   {clientesDropdown}
                 </datalist>
-                {touched.idCliente && errors.idCliente && <SpanError>{errors.idCliente}</SpanError>}
+                {touched.documentoCliente && errors.documentoCliente && <SpanError>{errors.documentoCliente}</SpanError>}
               </Label>
               <Label className=" m-5 flex-none ">
                 <span>Fecha Entrega</span>
@@ -144,7 +150,7 @@ function EditarPedido() {
                 <TableHeader>
                   <tr >
                     <TableCell>Nombre anillo</TableCell>
-                    <TableCell>Tipo</TableCell>
+                    <TableCell>Servicio</TableCell>
                     <TableCell>Peso</TableCell>
                     <TableCell>Tamaño anillo</TableCell>
                     <TableCell>Tamaño piedra</TableCell>
@@ -162,7 +168,7 @@ function EditarPedido() {
                         <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
                       </TableCell>
                       <TableCell>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.servicio}</p>
                       </TableCell>
                       <TableCell>
                         <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
@@ -183,9 +189,7 @@ function EditarPedido() {
                         <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
                       </TableCell>
                       <TableCell>
-                        {empleados.map((empleado) => {
-                          return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}{' '}{empleado.apellido}</p> : null
-                        })}
+                        <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.idEmpleadoNavigation.nombre} {detallePedido.idEmpleadoNavigation.apellido}</p>
                       </TableCell>
 
                       <TableCell>
@@ -194,7 +198,7 @@ function EditarPedido() {
                             <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
                           </Button>
 
-                          <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteProduct(detallePedido.idDetallePedido)} >
+                          <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteDetalle(detallePedido.idDetallePedido)} >
                             <TrashIcon className="w-5 h-5" aria-hidden="true" />
                           </Button>
                         </div>
@@ -231,7 +235,7 @@ function EditarPedido() {
         <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedido} />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} product={detallePedidoAEditar} />
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} detalleAEditar={detallePedidoAEditar} />
       )}
 
     </>
