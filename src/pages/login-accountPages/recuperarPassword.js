@@ -65,12 +65,12 @@ function RecuperarPassword() {
                         type="text"
                         id="correo"
                         name="correo"
-                        placeholder="Introduzca su correo electrónico"
+                        placeholder="email@email.com"
                       />
                       {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
                       <i>Al siguiente correo se le enviara un link para restablecer su constraseña.</i>
-                    </Label>
 
+                    </Label>
                     <Button block tag={Link} className="mt-4" onClick={handleSubmit}>
                       Recuperar
                     </Button>

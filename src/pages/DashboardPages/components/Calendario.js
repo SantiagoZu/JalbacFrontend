@@ -36,7 +36,6 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
     useEffect(() => {
         setFechaInicio(fechaI);
         setFechaFin(fechaF);
-        console.log(fechaI,"mas", fechaF)
     }, [fechaF, fechaI, setFechaFin, setFechaInicio]);
 
 

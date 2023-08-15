@@ -38,6 +38,10 @@ import { ReactComponent as Users } from './user-group.svg'
 import { ReactComponent as Clipboard } from './clipboard.svg'
 import { ReactComponent as DocumentGlass } from './document-glass.svg'
 import { ReactComponent as Inactivar } from './inactivar.svg'
+import { ReactComponent as PlusCircle } from './plus-circle.svg'
+import { ReactComponent as Exclamation } from './exclamation.svg'
+
+
 export {
   ButtonsIcon,
   CardsIcon,
@@ -79,4 +83,6 @@ export {
   Clipboard,
   DocumentGlass,
   Inactivar,
+  PlusCircle,
+  Exclamation,
 }

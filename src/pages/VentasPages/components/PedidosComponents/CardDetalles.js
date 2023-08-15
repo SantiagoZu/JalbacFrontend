@@ -12,7 +12,8 @@ import { usePedidos } from '../../../../services/hooks/usePedidos'
 
 export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined }) => {
     const { updateDetallePedidos } = useDetallePedidos()
-    const { updatePedidos } = usePedidos()    
+    console.log(detallePedido)
+    const { updatePedidos } = usePedidos()
     const DEVUELTO = 4
     const PRODUCCION = 2
     const ES_DEVUELTO = detallePedido.idEstado == DEVUELTO
@@ -23,7 +24,7 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined 
         idEmpleado: detallePedido.idEmpleado,
         idEstado: DEVUELTO,
         nombreAnillido: detallePedido.nombreAnillido,
-        servicio: detallePedido.servicio,
+        tipo: detallePedido.servicio,
         peso: detallePedido.peso,
         tamanoAnillo: detallePedido.tamanoAnillo,
         tamanoPiedra: detallePedido.tamanoPiedra,
@@ -185,14 +186,15 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined 
                             </p>
                         </div>
                         {ES_DEVUELTO ? (
-                            <div className='absolute top-0 right-0'>
-                                <Button icon={Devolver} onClick={() => devolverOMandarProduccion(false)}>
+                            <div className='flex justify-end'>
+                                <Button className='w-full mx-2 mt-2 mb-1' icon={Devolver} onClick={() => devolverOMandarProduccion(false)}>
+                                    A producción
                                 </Button>
                             </div>
                         ) : null}
-                        <div className='absolute top-0 right-0'>
+                        <div className='flex justify-end'>
                             {ES_PRODUCCION ? (
-                                <Button icon={Devolver} onClick={() => devolverOMandarProduccion(true)}></Button>
+                                <Button className='w-full mx-2 mt-2 mb-1' icon={Devolver} onClick={() => devolverOMandarProduccion(true)}>Devolver</Button>
                             ) : null}
                         </div>
                     </div>

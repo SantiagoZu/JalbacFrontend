@@ -20,7 +20,7 @@ import {
   Badge
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons';
-import { SearchIcon } from '../../icons';
+import { SearchIcon, PlusCircle } from '../../icons';
 import { showAlertCorrect, showAlertDeleted, showAlertIncorrect } from '../../helpers/Alertas';
 import { useRoles } from '../../services/hooks/useRoles'
 
@@ -111,16 +111,13 @@ function Roles() {
 
       <div className="flex ml-auto mb-6">
       <ModalCrearRol isOpen={modalIsOpenCreate} isClose={closeModal} />
-        <Button onClick={openModalCreate}>
-          Registrar Rol
-          <span className="ml-2" aria-hidden="true">
-            +
-          </span>
+        <Button iconRight={PlusCircle} onClick={openModalCreate}>
+          Crear rol
         </Button>
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
-              <SearchIcon className="w-4 h-4" aria-hidden="true" />
+              <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
             </div>
             <Input
               className="pl-8 text-gray-700"

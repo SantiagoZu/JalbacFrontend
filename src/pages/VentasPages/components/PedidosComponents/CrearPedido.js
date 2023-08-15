@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PageTitle from '../../../../components/Typography/PageTitle'
 import { SpanError } from '../../../../components/styles/styles'
 import {Label, Table, TableHeader, TableCell, TableBody,TableRow, TableFooter, TableContainer, Button, Pagination,} from '@windmill/react-ui'
-import { EditIcon, TrashIcon } from '../../../../icons';
+import { EditIcon, TrashIcon, PlusCircle } from '../../../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Field, Formik } from 'formik'
 import { CustomInput } from '../../../../components/CustomInput'
@@ -139,11 +139,10 @@ function CrearPedido() {
                 />
                 {touched.fechaEntrega && errors.fechaEntrega && <SpanError>{errors.fechaEntrega}</SpanError>}
               </Label>
-              <Button className='flex-none  mt-5 mb-6 self-end  ' onClick={() => {
+              <Button iconRight={PlusCircle} className='flex-none  mt-5 mb-6 self-end  ' onClick={() => {
                 openModalCrearProducto()
               }}>
                 Agregar producto
-                <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
             </div>
             <TableContainer >
@@ -227,9 +226,8 @@ function CrearPedido() {
             </TableContainer>
 
             <div className="flex ml-auto mt-5 mb-6 space-x-5">
-              <Button onClick={handleSubmit}>
+              <Button iconRight={PlusCircle} onClick={handleSubmit}>
                 Crear pedido
-                <span className="mb-1 ml-2" aria-hidden="true">+</span>
               </Button>
               <Button layout="outline" onClick={() => history.push('/app/pedidos')}>
                 Regresar a pedidos

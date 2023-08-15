@@ -3,7 +3,7 @@ import PageTitle from '../../components/Typography/PageTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
 import { Input } from '@windmill/react-ui'
 import { Table, TableHeader, TableCell, TableBody, TableRow, TableFooter, TableContainer, Badge, Button, Pagination} from '@windmill/react-ui'
-import { EditIcon, TrashIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto, Inactivar } from '../../icons';
+import { EditIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto, Inactivar, PlusCircle } from '../../icons';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
 import { ModalDetallePedidoDevuelto } from './components/PedidosComponents/ModalDetallePedidoDevuelto'
 import { ModalEditarEstado } from './components/PedidosComponents/ModalEditarEstado'
@@ -112,14 +112,13 @@ function Pedidos() {
       <PageTitle>Pedidos</PageTitle>
 
       <div className="flex mb-6 gap-3 ml-auto ">
-        <Button onClick={() => history.push('/app/crearPedido')}>
+        <Button iconRight={PlusCircle} onClick={() => history.push('/app/crearPedido')}>
           Crear pedido
-          <span className="ml-1" aria-hidden="true">+</span>
         </Button>
         <div className="flex  ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
-              <SearchIcon className="w-4 h-4 text-white" aria-hidden="true" />
+              <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
             </div>
             <Input
               className="pl-8 text-gray-700"
@@ -134,13 +133,13 @@ function Pedidos() {
         <Table>
           <TableHeader>
             <tr >
-              <TableCell>Fecha Recibido</TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Fecha Entrega</TableCell>
-              <TableCell>Fase</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Cambiar estado</TableCell>
-              <TableCell>Acciones</TableCell>
+              <TableCell className="text-white">Fecha Recibido</TableCell>
+              <TableCell className="text-white">Cliente</TableCell>
+              <TableCell className="text-white">Fecha Entrega</TableCell>
+              <TableCell className="text-white">Fase</TableCell>
+              <TableCell className="text-white">Estado</TableCell>
+              <TableCell className="text-white">Cambiar estado</TableCell>
+              <TableCell className="text-white">Acciones</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
@@ -171,12 +170,12 @@ function Pedidos() {
                       <Badge className="text-xs text-gray-600 dark:text-gray-400" type={pedido.isActivo ? "success" : "danger"}>{pedido.isActivo ? 'Activo' : 'Inactivo'}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Button disabled={ES_ENTREGADO || ES_DEVUELTO ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
+                      <Button title="Hlla" disabled={ES_ENTREGADO || ES_DEVUELTO ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
                         <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
                       </Button>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
                         <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido)}>
                           <SearchIcon className="w-5 h-5 " aria-hidden="true" />
                         </Button>

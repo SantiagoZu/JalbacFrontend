@@ -15,7 +15,7 @@ function Charts3(fechaInicioServicio, fechaFinServicio) {
     });
 
     const serviciosUtilizados = serviciosFiltrados.reduce((acc, detalle) => {
-        const tipoServicio = detalle.tipo;
+        const tipoServicio = detalle.servicio;
         if (!acc[tipoServicio]) {
             acc[tipoServicio] = 1;
         } else {

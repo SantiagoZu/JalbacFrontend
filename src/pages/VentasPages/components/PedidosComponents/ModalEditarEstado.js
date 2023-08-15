@@ -21,7 +21,8 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
             <Formik
                 initialValues={{ estado: null }}
                 validate={(value) => value.estado == null ? { estado: 'Escoge el estado a cambiar' } : {}}
-                onSubmit={async (value, { resetForm }) => {
+                onSubmit={(value, { resetForm }) => {
+                    console.log(value.estado)
                     const valuesPedido = {
                         idPedido: pedido.idPedido,
                         idCliente: pedido.idCliente,
@@ -43,7 +44,7 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             idEmpleado: detallePedido.idEmpleado || '',
                             idEstado: value.estado || '',
                             nombreAnillido: detallePedido.nombreAnillido || '',
-                            servicio: detallePedido.servicio || '',
+                            tipo: detallePedido.tipo || '',
                             peso: detallePedido.peso || '',
                             tamanoAnillo: detallePedido.tamanoAnillo || '',
                             tamanoPiedra: detallePedido.tamanoPiedra || '',
@@ -53,6 +54,10 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             motivoDevolucion: null
                         }
                         updateDetallePedidos(detallePedido.idDetallePedido, valuesDetalle)
+                            .then(res => {
+                                return res
+                            })
+                            .catch(e => console.log(e))
 
                     }
 

@@ -15,8 +15,7 @@ import {
   Pagination,
   Badge,
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon } from '../../icons';
-import { SearchIcon } from '../../icons';
+import { EditIcon, TrashIcon, SearchIcon, PlusCircle } from '../../icons';
 import response from '../../utils/demo/dataEmpleados';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
 import { useEmpleados } from '../../services/hooks/useEmpleados';
@@ -139,11 +138,11 @@ function Empleados() {
       <PageTitle>Empleados</PageTitle>
 
       <div className="flex ml-auto mb-6">
-        <Button onClick={openModalCrear}>Crear empleado +</Button>
+        <Button iconRight={PlusCircle} onClick={openModalCrear}>Crear empleado</Button>
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
-              <SearchIcon className="w-4 h-4" aria-hidden="true" />
+              <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
             </div>
             <Input
               className="pl-8 text-gray-700"

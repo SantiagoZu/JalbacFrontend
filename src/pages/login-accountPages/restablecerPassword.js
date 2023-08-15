@@ -69,12 +69,12 @@ function RestablecerPassword() {
 
                     <Label>
                       <span>Contraseña nueva</span>
-                      <div className="mt-1">
+                      <div className="mt-1 w-full">
                         <CustomInput
                           type="text"
                           id="contrasena"
                           name="contrasena"
-                          placeholder="Introduzca su nueva contraseña"
+                          placeholder="Contraseña"
                         />
                         {touched.contrasena && errors.contrasena && <SpanError>{errors.contrasena}</SpanError>}
                       </div>
@@ -89,7 +89,7 @@ function RestablecerPassword() {
                           type="text"
                           id="confirmContrasena"
                           name="confirmContrasena"
-                          placeholder="Introduzca su nueva contraseña"
+                          placeholder="Contraseña"
                         />
                         {touched.confirmContrasena && errors.confirmContrasena && <SpanError>{errors.confirmContrasena}</SpanError>}
                       </div>
