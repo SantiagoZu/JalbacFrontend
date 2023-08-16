@@ -40,13 +40,17 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
                 };
                 updateClientes(object.idCliente, updatedValues).then(response => {
                     resetForm();
+                    isClose();
                     showAlertCorrect('Cliente editado correctamente', 'success', isClose)
-                    // setTimeout(() => {
-                    //     window.location.reload();
-                    // }, 1000);
+
                 }).catch(response => {
-                    showAlertIncorrect('No se pudo editar el cliente', 'error', isClose);
-                })
+                    if (response.response.data.errorMessages[0] !== null) {
+                        isClose()
+                        showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+                    } else {
+                        showAlertIncorrect('Hubo un error en la edición del cliente', 'error');
+                    }
+                });
             }}>
             {({ errors, handleSubmit, touched }) => (
                 <form onSubmit={handleSubmit}>

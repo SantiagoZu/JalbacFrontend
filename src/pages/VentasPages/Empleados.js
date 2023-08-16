@@ -38,7 +38,7 @@ function Empleados() {
   // pagination change control
   function onPageChangeTable2(p) {
     setPageTable2(p)
-  } 
+  }
 
   const searchFilter = (data, searchValue) => {
     if (!searchValue) {
@@ -46,7 +46,6 @@ function Empleados() {
     }
 
     const searchTerm = searchValue.toLowerCase();
-
     return data.filter((empleado) => (
       empleado.nombre.toLowerCase().includes(searchTerm) ||
       empleado.apellido.toLowerCase().includes(searchTerm) ||
@@ -64,8 +63,8 @@ function Empleados() {
     // cargarEmpleados();
   }, [empleados, pageTable2, search]);
 
-  
-  
+
+
 
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({});
 
@@ -108,12 +107,13 @@ function Empleados() {
           .then(response => {
             showAlertCorrect('Empleado eliminado correctamente.', 'success');
             setEliminadoExistoso(true)
-            
+
           })
           .catch(response => {
             console.log(response)
             if (response.response.data?.errorMessages[0] !== null) {
               showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+              closeModal()
             } else {
               showAlertIncorrect('Error al eliminar el empleado', 'error');
             }
@@ -204,7 +204,7 @@ function Empleados() {
               </TableRow>
 
             )))}
-            
+
           </TableBody>
 
         </Table>
@@ -224,7 +224,7 @@ function Empleados() {
       )}
 
       {modalIsOpenCrear && (
-        <ModalCrearEmpleado isOpen={modalIsOpenCrear} isClose={closeModalCrear}/>
+        <ModalCrearEmpleado isOpen={modalIsOpenCrear} isClose={closeModalCrear} />
       )}
     </>
   )
