@@ -6,7 +6,7 @@ import { Field, Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { validateEditInputs } from './RolFormValidations/RolesFormik';
-import { usePermisos } from '../../../../services/hooks/UsePermisos';
+import { usePermisos } from '../../../../services/hooks/usePermisos';
 import { useRoles } from '../../../../services/hooks/useRoles';
 import { Switch } from "antd";
 

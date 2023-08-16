@@ -8,7 +8,7 @@ import { CustomInput2 } from '../../../../components/CustomInput2';
 import { SpanError } from '../../../../components/styles/styles';
 import { initialValues, validateInputs } from './RolFormValidations/RolesFormik';
 
-import { usePermisos } from "../../../../services/hooks/UsePermisos";
+import { usePermisos } from "../../../../services/hooks/usePermisos";
 import { useRoles } from '../../../../services/hooks/useRoles';
 
 import { Switch } from "antd";

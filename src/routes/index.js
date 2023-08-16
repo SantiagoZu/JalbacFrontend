@@ -1,6 +1,6 @@
 import { lazy } from 'react'
 import Cookies from 'js-cookie'
-import { usePermisos } from '../services/hooks/UsePermisos'
+import { usePermisos } from '../services/hooks/usePermisos'
 
 // use lazy for better code splitting, a.k.a. load faster
 const Dashboard = lazy(() => import('../pages/DashboardPages/Dashboard'))

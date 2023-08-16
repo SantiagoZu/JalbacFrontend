@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PageTitle from '../../components/Typography/PageTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
 import { Input } from '@windmill/react-ui'
-import { Table, TableHeader, TableCell, TableBody, TableRow, TableFooter, TableContainer, Badge, Button, Pagination} from '@windmill/react-ui'
+import { Table, TableHeader, TableCell, TableBody, TableRow, TableFooter, TableContainer, Badge, Button, Pagination } from '@windmill/react-ui'
 import { EditIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto, Inactivar, PlusCircle } from '../../icons';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
 import { ModalDetallePedidoDevuelto } from './components/PedidosComponents/ModalDetallePedidoDevuelto'
@@ -11,8 +11,8 @@ import { parsearFecha } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
-import Swal from 'sweetalert2'
-import { showAlertCorrect , showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
+import { showAlertCorrect, showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
+
 
 function Pedidos() {
   const RECIBIDO = 1
@@ -28,7 +28,7 @@ function Pedidos() {
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
   const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
-
+  
   const [idPedido, setIdPedido] = useState({})
   const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
@@ -57,25 +57,35 @@ function Pedidos() {
     setModalIsOpenEditarEstado(false);
   }
 
+  let pedidos2 = ES_ADMINISTRADOR ? pedidos.concat([]) : pedidosEmpleado.concat([])
+ 
   
-  const pedidos2 = ES_ADMINISTRADOR ? pedidos.concat([]) : pedidosEmpleado.concat([])
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
 
   const resultsPerPage = 5
   const totalResults = pedidos2.length
-
+ 
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
-  useEffect(() => {
-    const filteredData = searchFilter(pedidos2, search);
-    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
-  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search]);
+  const [inactivar , setInactivar] = useState(false)
+  function toggleDatatableIsActivo() {
+    setInactivar(inactivar => !inactivar)
+  }
 
+  useEffect(() => {
+    let filteredData = searchFilter(pedidos, search)
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
+    .filter(pedido => pedido.isActivo == !inactivar)
+    );
+  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, inactivar]);
+ 
   const searchFilter = (data, searchValue) => {
-    if (!searchValue) return data;
+    if (!searchValue) {
+      return data
+    }
     const searchTerm = searchValue.toLowerCase();
 
     return data.filter((pedido) => (
@@ -97,16 +107,19 @@ function Pedidos() {
   }, [modalIsOpenDetallePedido, modalIsOpenEditarEstado, modalIsOpenDetallePedidoDevuelto])
   async function inactivarOActivarPedido(pedido, inactivarOActivar) {
     try {
-      const mensaje = inactivarOActivar ? '¿Estas seguro que deseas activar este pedido?' : '¿Estas seguro que deseas inactivar este pedido?' 
-      const respuesta = await showAlertInactivarOActivarPedido(mensaje)            
-      if(respuesta.isConfirmed) {
+      const mensaje = inactivarOActivar ? '¿Estas seguro que deseas activar este pedido?' : '¿Estas seguro que deseas inactivar este pedido?'
+      const respuesta = await showAlertInactivarOActivarPedido(mensaje)
+      if (respuesta.isConfirmed) {
         await toggleEstadoPedido(pedido, inactivarOActivar)
-        await getPedidos()        
-      }      
+        await getPedidos()
+      }
     } catch (e) {
       console.log(e)
     }
   }
+  
+  
+  
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -143,7 +156,7 @@ function Pedidos() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.length === 0 ? (              
+            {dataTable2.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
               </TableRow>)
@@ -152,7 +165,7 @@ function Pedidos() {
                 const ES_EN_PRODUCCION = pedido.idEstado == EN_PRODUCCION;
                 const ES_ENTREGADO = pedido.idEstado == ENTREGADO;
                 const ES_DEVUELTO = pedido.idEstado == DEVUELTO;
-                return (
+                return  ( 
                   <TableRow key={pedido.idPedido}>
                     <TableCell>
                       <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fechaPedido)}</p>
@@ -191,7 +204,7 @@ function Pedidos() {
                         ) : null
                         }
                         {!ES_RECIBIDO ? (
-                          <Button layout="link" size="icon" aria-label="Edit" onClick={() => inactivarOActivarPedido(pedido , pedido.isActivo ? false : true)} >
+                          <Button layout="link" size="icon" aria-label="Edit" onClick={() => inactivarOActivarPedido(pedido, pedido.isActivo ? false : true)} >
                             <Inactivar className="w-5 h-5 text-red-700" aria-hidden="true" />
                           </Button>
                         ) : null
@@ -199,7 +212,7 @@ function Pedidos() {
                       </div>
                     </TableCell>
                   </TableRow>
-                )
+                ) 
               }
 
               ))}
@@ -216,6 +229,12 @@ function Pedidos() {
             />
           )}
         </TableFooter>
+        <div className="flex mb-6 gap-3 m-5 ">
+          <Button iconRight={PlusCircle} onClick={toggleDatatableIsActivo} >
+            {inactivar ? 'Activos' : 'Inactivos'}
+          </Button>
+         
+        </div>
       </TableContainer>
       {modalIsOpenDetallePedido && (
         <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} />
