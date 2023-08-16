@@ -61,6 +61,7 @@ export const usePedidos = () => {
         pedidosEmpleado,
         pedidos,
         idUsuario,
+        setPedidos,
         getPedidosEmpleado,
         getPedidos,
         postPedidos,
