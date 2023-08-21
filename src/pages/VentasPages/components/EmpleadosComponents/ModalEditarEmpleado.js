@@ -41,7 +41,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     nombre: valores.nombre,
                     correo: valores.correo,
                     apellido: valores.apellido,
-                    cargo: valores.cargo
+                    cargo: valores.cargo,
                 };
                 console.log(empleadoEditado)
                 editarEmpleado(empleado.idEmpleado, empleadoEditado)
@@ -53,6 +53,7 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     })
                     .catch(response => {
                         if (response.response.data.errorMessages[0] !== null) {
+                            isClose()
                             showAlertIncorrect(response.response.data.errorMessages[0], 'error');
                         } else {
                             showAlertIncorrect('Hubo un error en la edición del empleado', 'error');
