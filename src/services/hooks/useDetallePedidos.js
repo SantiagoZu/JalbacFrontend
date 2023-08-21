@@ -39,6 +39,5 @@ export const useDetallePedidos = () => {
         postDetallePedidos,
         updateDetallePedidos,
         deleteDetallePedidos,
-        setDetallePedidos
     }
 }

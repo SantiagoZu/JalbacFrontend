@@ -11,15 +11,14 @@ import { parsearFecha } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
-import { showAlertCorrect, showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
-
+import { showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
 
 function Pedidos() {
   const RECIBIDO = 1
   const EN_PRODUCCION = 2
   const ENTREGADO = 3
   const DEVUELTO = 4
-  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, toggleEstadoPedido } = usePedidos();
+  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, toggleEstadoPedido , setPedidos } = usePedidos();
   const { empleados } = useEmpleados()
   const { getDetallePedidos } = useDetallePedidos()
   const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
@@ -28,8 +27,8 @@ function Pedidos() {
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
   const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
-  
   const [idPedido, setIdPedido] = useState({})
+
   const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
   function openModalDetallePedido(pedido) {
@@ -58,43 +57,54 @@ function Pedidos() {
   }
 
   let pedidos2 = ES_ADMINISTRADOR ? pedidos.concat([]) : pedidosEmpleado.concat([])
- 
-  
+
+
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
 
   const resultsPerPage = 5
-  const totalResults = pedidos2.length
- 
+  const [totalResults, setTotalResults] = useState(pedidos2.length)
+
+
   function onPageChangeTable2(p) {
     setPageTable2(p)
+   
   }
-  const [inactivar , setInactivar] = useState(false)
+  const [inactivar, setInactivar] = useState(false)
   function toggleDatatableIsActivo() {
     setInactivar(inactivar => !inactivar)
   }
+  function togglePedido() {
 
-  useEffect(() => {
-    let filteredData = searchFilter(pedidos, search)
-    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
-    .filter(pedido => pedido.isActivo == !inactivar)
-    );
-  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, inactivar]);
  
+  }
+  useEffect(() => {
+    console.log(pedidos)
+    let filteredData = searchFilter(pedidos, search)
+    filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar)
+    setTotalResults(filteredData.length)
+    
+    setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
+    );
+    
+  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, inactivar]);
+  console.log(totalResults)
   const searchFilter = (data, searchValue) => {
     if (!searchValue) {
       return data
     }
     const searchTerm = searchValue.toLowerCase();
 
-    return data.filter((pedido) => (
-      pedido.fechaPedido.toLowerCase().includes(searchTerm) ||
-      pedido.idClienteNavigation.nombre.toLowerCase().includes(searchTerm) ||
-      pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||
-      pedido.isActivo.toString().toLowerCase().includes(searchTerm) ||
-      pedido.idEstadoNavigation.nombre.toLowerCase().includes(searchTerm)
-    ));
+    return data.filter((pedido) => {
+      
+      return (
+        pedido.fechaPedido.toLowerCase().includes(searchTerm) ||
+        pedido.idClienteNavigation.nombre.toLowerCase().includes(searchTerm) ||
+        pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||         
+        pedido.idEstadoNavigation.nombre.toLowerCase().includes(searchTerm)
+      )
+    });
   };
   const searcher = (e) => {
     setSearch(e.target.value)
@@ -117,9 +127,6 @@ function Pedidos() {
       console.log(e)
     }
   }
-  
-  
-  
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -165,7 +172,7 @@ function Pedidos() {
                 const ES_EN_PRODUCCION = pedido.idEstado == EN_PRODUCCION;
                 const ES_ENTREGADO = pedido.idEstado == ENTREGADO;
                 const ES_DEVUELTO = pedido.idEstado == DEVUELTO;
-                return  ( 
+                return (
                   <TableRow key={pedido.idPedido}>
                     <TableCell>
                       <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fechaPedido)}</p>
@@ -212,7 +219,7 @@ function Pedidos() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ) 
+                )
               }
 
               ))}
@@ -233,7 +240,7 @@ function Pedidos() {
           <Button iconRight={PlusCircle} onClick={toggleDatatableIsActivo} >
             {inactivar ? 'Activos' : 'Inactivos'}
           </Button>
-         
+
         </div>
       </TableContainer>
       {modalIsOpenDetallePedido && (
