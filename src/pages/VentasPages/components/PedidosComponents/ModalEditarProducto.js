@@ -10,7 +10,7 @@ import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 
-export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarTabla = undefined, idDetalleAEditar = undefined }) => {
+export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarTabla = undefined, idDetalleAEditar = undefined, empleadoEncargado = undefined }) => {
     let initialValuesDetalle    
     const { updateDetallePedidos } = useDetallePedidos();
     const { empleados, validacionDocumento } = useEmpleados()
@@ -31,10 +31,11 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
         };
     }
     else {
+        
         initialValuesDetalle = {
             idDetallePedido: detalleAEditar.idDetallePedido || '',
             idPedido: detalleAEditar.idPedido || '',
-            documentoEmpleado: detalleAEditar.idEmpleado || '',
+            documentoEmpleado:  empleadoEncargado.documento || '',
             nombreAnillido: detalleAEditar.nombreAnillido || '',
             servicio: detalleAEditar.servicio || '',
             peso: detalleAEditar.peso || '',

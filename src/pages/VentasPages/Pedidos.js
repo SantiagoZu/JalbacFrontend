@@ -12,7 +12,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
 import { showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
-
+import { useClientes } from '../../services/hooks/useClientes'
 function Pedidos() {
   const RECIBIDO = 1
   const EN_PRODUCCION = 2
@@ -22,12 +22,14 @@ function Pedidos() {
   const { empleados } = useEmpleados()
   const { getDetallePedidos } = useDetallePedidos()
   const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
+  const {clientes} = useClientes()
   const ES_ADMINISTRADOR = empleadoLogged != undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() == 'administrador' : null
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
   const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
   const [idPedido, setIdPedido] = useState({})
+   
 
   const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
@@ -172,6 +174,7 @@ function Pedidos() {
                 const ES_EN_PRODUCCION = pedido.idEstado == EN_PRODUCCION;
                 const ES_ENTREGADO = pedido.idEstado == ENTREGADO;
                 const ES_DEVUELTO = pedido.idEstado == DEVUELTO;
+                const clientePedido = clientes.find(cliente => cliente.idCliente == pedido.idCliente)
                 return (
                   <TableRow key={pedido.idPedido}>
                     <TableCell>
@@ -205,7 +208,7 @@ function Pedidos() {
                           ) : null}
                         </Button>
                         {ES_RECIBIDO ? (
-                          <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido })} >
+                          <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido , clientePedido : clientePedido })} >
                             <EditIcon className="w-5 h-5" aria-hidden="true" />
                           </Button>
                         ) : null
