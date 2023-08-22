@@ -163,12 +163,14 @@ function Roles() {
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
       {modalIsOpenEdit && (

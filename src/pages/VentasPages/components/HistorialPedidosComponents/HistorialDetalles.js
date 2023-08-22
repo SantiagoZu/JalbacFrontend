@@ -43,15 +43,16 @@ function HistorialDetalles() {
         setDetalleData(detalle)
     }
 
+    function closeModal() {
+        setModalIsOpen(false)
+    }
     
 
     useEffect(() => {
         setDataTable2(detallePedidos2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
     }, [detallePedidos, pageTable2]);
 
-    function closeModal() {
-        setModalIsOpen(false)
-    }
+    
     return (
         <>
             <PageTitle>
@@ -133,7 +134,7 @@ function HistorialDetalles() {
                 </Button>
             </div>
 
-            <ModalHistorialDetalles isOpen={modalIsOpen} isCLose={closeModal} detalle={detalleData}/>
+            <ModalHistorialDetalles isOpen={modalIsOpen} isClose={closeModal} detalle={detalleData}/>
         </>
     )
 }
