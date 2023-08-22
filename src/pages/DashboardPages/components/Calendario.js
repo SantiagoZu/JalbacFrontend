@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { showAlertIncorrect } from '../../../helpers/Alertas';
 import moment from 'moment';
 
 function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
@@ -6,11 +7,13 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
     const [fechaI, setFechaI] = useState(fechaInicio);
     const [fechaF, setFechaF] = useState(fechaFin);
 
-
     const handleFechaInicioChange = (event) => {
         const nuevaFechaI = event.target.value;
         if (validarFecha(nuevaFechaI, fechaF)) {
             setFechaI(nuevaFechaI);
+        } else {
+            event.target.value = fechaI;
+            showAlertIncorrect('La fecha inicio no puede ser mayor a la fecha fin.', 'error')
         }
     };
 
@@ -18,6 +21,19 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
         const nuevaFechaF = event.target.value;
         if (validarFecha(fechaI, nuevaFechaF)) {
             setFechaF(nuevaFechaF);
+        } else {
+            event.target.value = fechaF;
+            showAlertIncorrect('La fecha fin no puede ser menor a la fecha inicio.', 'error')
+        }
+    };
+
+    const ajustarFechaFin = (inicio, fin) => {
+        const fechaInicio = moment(inicio);
+        const fechaFin = moment(fin);
+
+        if (fechaInicio.year() < fechaFin.year()) {
+            const ultimoDia = fechaInicio.clone().endOf('year');
+            setFechaF(ultimoDia.format('YYYY-MM-DD'));
         }
     };
 
@@ -27,6 +43,7 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
 
     useEffect(() => {
         setFechaI(fechaInicio);
+        ajustarFechaFin(fechaInicio, fechaF);
     }, [fechaInicio]);
 
     useEffect(() => {
@@ -38,7 +55,6 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
         setFechaFin(fechaF);
         console.log(fechaI,"mas", fechaF)
     }, [fechaF, fechaI, setFechaFin, setFechaInicio]);
-
 
     return (
         <>
