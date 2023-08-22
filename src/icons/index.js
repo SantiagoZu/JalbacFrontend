@@ -40,6 +40,7 @@ import { ReactComponent as DocumentGlass } from './document-glass.svg'
 import { ReactComponent as Inactivar } from './inactivar.svg'
 import { ReactComponent as PlusCircle } from './plus-circle.svg'
 import { ReactComponent as Exclamation } from './exclamation.svg'
+import { ReactComponent as Activar } from './activar.svg'
 
 
 export {
@@ -85,4 +86,5 @@ export {
   Inactivar,
   PlusCircle,
   Exclamation,
+  Activar
 }

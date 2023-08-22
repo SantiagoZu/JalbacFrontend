@@ -17,6 +17,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
     const empleadosDropdown = [
         ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
     ]        
+    console.log(detalleAEditar)
     if (detalleAEditar.idDetallePedido === undefined) {
         initialValuesDetalle = {
             nombreAnillido: detalleAEditar.nombreAnillido || '',
@@ -37,7 +38,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
             idPedido: detalleAEditar.idPedido || '',
             documentoEmpleado:  empleadoEncargado.documento || '',
             nombreAnillido: detalleAEditar.nombreAnillido || '',
-            servicio: detalleAEditar.servicio || '',
+            servicio: detalleAEditar.servicio ,
             peso: detalleAEditar.peso || '',
             tamanoAnillo: detalleAEditar.tamanoAnillo || '',
             tamanoPiedra: detalleAEditar.tamanoPiedra || '',
@@ -117,8 +118,8 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                             <span>Servicio</span>
                                             <Field
                                                 as="select"
-                                                id='tipo'
-                                                name='tipo'
+                                                id='servicio'
+                                                name='servicio'
                                                 className={STYLE_INPUT.replace('form-input', 'form-select')}
                                             >
                                                 <option hidden>Seleccionar...</option>

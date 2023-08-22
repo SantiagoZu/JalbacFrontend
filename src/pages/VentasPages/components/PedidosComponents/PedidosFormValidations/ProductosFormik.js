@@ -1,6 +1,7 @@
 import { expresionesProducto as regex } from '../../../../../helpers/validacionesRegex';
 
 export const initialValuesAgregarProducto = {
+  material : '',
   nombreAnillido: '',
   peso: '',
   tipo: '',
@@ -10,14 +11,13 @@ export const initialValuesAgregarProducto = {
   cantidad: '',
   idEstado: 1,
   idPedido: 1,
-  idEmpleado: null,
-  material: '',
+  documentoEmpleado: '',
   motivoDevolucion: '',
 
 
 };
 
-const validationScheme = {
+export const validationScheme = {
   nombreAnillido: regex.nombreAnillido,
   peso: regex.peso,
   tamanoAnillo: regex.tamanoAnillo,
@@ -29,8 +29,8 @@ const validationScheme = {
 
 export const validateInputsAgregarProducto = async (values, validacionDocumento) => {
   let errores = {};
-  if (values.documentoEmpleado === null) {
-    errores.documentoEmpleado = 'Tienes que seleccionar un cliente'
+  if (!values.documentoEmpleado ) {
+    errores.documentoEmpleado = 'Tienes que seleccionar un empleado'
   } else {
     try {
       const existEmpleado = await validacionDocumento(values.documentoEmpleado)
@@ -44,6 +44,9 @@ export const validateInputsAgregarProducto = async (values, validacionDocumento)
   } else if (!validationScheme.nombreAnillido.test(values.nombreAnillido)) {
     errores.nombreAnillido = 'El nombre no puede tener caracteres especiales'
   }
+  if (!values.tipo) {
+    errores.tipo = 'El campo servicio es obligatorio'
+  } 
   if (!values.peso) {
     errores.peso = 'El campo Peso es oblígatorio'
   } else if (!validationScheme.peso.test(values.peso)) {
@@ -82,7 +85,7 @@ export const validateInputsEditarProducto = async (values, validacionDocumento) 
     }
   }
   if (!values.nombreAnillido) {
-    errores.nombreAnillido = 'El campo nombreAnillido es oblígatorio'
+    errores.nombreAnillido = 'El campo nombre del anillo es oblígatorio'
   } else if (!validationScheme.nombreAnillido.test(values.nombreAnillido)) {
     errores.nombreAnillido = 'El nombre no puede tener caracteres especiales'
   }

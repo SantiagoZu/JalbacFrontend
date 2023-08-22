@@ -22,7 +22,6 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                 initialValues={{ estado: null }}
                 validate={(value) => value.estado == null ? { estado: 'Escoge el estado a cambiar' } : {}}
                 onSubmit={(value, { resetForm }) => {
-                    console.log(value.estado)
                     const valuesPedido = {
                         idPedido: pedido.idPedido,
                         idCliente: pedido.idCliente,
@@ -34,11 +33,8 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                     updatePedidos(pedido.idPedido, valuesPedido).then((response) => {
                         resetForm();
                         showAlertCorrect('Estado editado correctamente', 'success', isClose)
-                    }).catch(response => {
-                        showAlertIncorrect('No se pudo editar el estado', 'error', isClose);
-                    })
-                    for (const detallePedido of detallesEditarEstado) {
-                        const valuesDetalle = {
+                        for (const detallePedido of detallesEditarEstado) {
+                            const valuesDetalle = {
                             idDetallePedido: detallePedido.idDetallePedido || '',
                             idPedido: detallePedido.idPedido || '',
                             idEmpleado: detallePedido.idEmpleado || '',
@@ -52,22 +48,18 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                             detalle: detallePedido.detalle || '',
                             cantidad: detallePedido.cantidad || '',
                             motivoDevolucion: null
+                            }
+                            updateDetallePedidos(detallePedido.idDetallePedido, valuesDetalle)
                         }
-                        updateDetallePedidos(detallePedido.idDetallePedido, valuesDetalle)
-                            .then(res => {
-                                return res
-                            })
-                            .catch(e => console.log(e))
+                        isClose()
+                    })
 
-                    }
-
-                    isClose()
                 }}
             >
                 {({ errors, handleSubmit, touched }) => (
                     <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
-                            <ModalHeader className='mb-3'>Editar estado del pedido</ModalHeader>
+                            <ModalHeader className='mb-3'>Cambiar fase del pedido</ModalHeader>
                             <ModalBody>
                                 <div className='flex gap-5'>
                                     <Label className="mt-4">
@@ -90,7 +82,7 @@ export const ModalEditarEstado = ({ isOpen, isClose, pedido }) => {
                                     </Button>
                                 </div>
                                 <div className="hidden sm:block">
-                                    <Button onClick={handleSubmit}>Editar estado</Button>
+                                    <Button onClick={handleSubmit}>Cambiar fase</Button>
                                 </div>
 
                                 <div className="block w-full sm:hidden">
