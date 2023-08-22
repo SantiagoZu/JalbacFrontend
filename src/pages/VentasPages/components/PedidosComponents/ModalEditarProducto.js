@@ -10,13 +10,14 @@ import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 
-export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarTabla = undefined, idDetalleAEditar = undefined }) => {
+export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarTabla = undefined, idDetalleAEditar = undefined, empleadoEncargado = undefined }) => {
     let initialValuesDetalle    
     const { updateDetallePedidos } = useDetallePedidos();
     const { empleados, validacionDocumento } = useEmpleados()
     const empleadosDropdown = [
         ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
     ]        
+    console.log(detalleAEditar)
     if (detalleAEditar.idDetallePedido === undefined) {
         initialValuesDetalle = {
             nombreAnillido: detalleAEditar.nombreAnillido || '',
@@ -31,12 +32,13 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
         };
     }
     else {
+        
         initialValuesDetalle = {
             idDetallePedido: detalleAEditar.idDetallePedido || '',
             idPedido: detalleAEditar.idPedido || '',
-            documentoEmpleado: detalleAEditar.idEmpleado || '',
+            documentoEmpleado:  empleadoEncargado.documento || '',
             nombreAnillido: detalleAEditar.nombreAnillido || '',
-            servicio: detalleAEditar.servicio || '',
+            servicio: detalleAEditar.servicio ,
             peso: detalleAEditar.peso || '',
             tamanoAnillo: detalleAEditar.tamanoAnillo || '',
             tamanoPiedra: detalleAEditar.tamanoPiedra || '',
@@ -116,8 +118,8 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                             <span>Servicio</span>
                                             <Field
                                                 as="select"
-                                                id='tipo'
-                                                name='tipo'
+                                                id='servicio'
+                                                name='servicio'
                                                 className={STYLE_INPUT.replace('form-input', 'form-select')}
                                             >
                                                 <option hidden>Seleccionar...</option>

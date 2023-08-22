@@ -14,6 +14,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
     const { empleados, validacionDocumento } = useEmpleados()
     const empleadosDropdown = [
         ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
+
     ]
     let postDetallePedidoArray = []
 
@@ -77,6 +78,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 <option>3D</option>
                                                 <option>A mano</option>
                                             </Field>
+                                            {touched.tipo && errors.tipo && <SpanError>{errors.tipo}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
                                             <span>peso(gr)</span>

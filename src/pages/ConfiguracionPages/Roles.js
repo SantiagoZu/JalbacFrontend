@@ -86,7 +86,7 @@ function Roles() {
   //Eliminar
   function eliminarRoles(idRol) {
     showAlertDeleted(
-      '¿Estás seguro que deseas eliminar el empleado?',
+      '¿Estás seguro que deseas eliminar este rol?',
       'warning',
       'Eliminado correctamente',
       'success'

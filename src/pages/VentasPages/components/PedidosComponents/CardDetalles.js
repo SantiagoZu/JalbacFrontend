@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { usePedidos } from '../../../../services/hooks/usePedidos'
 
-export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined }) => {
+export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined, isActivo }) => {
     const { updateDetallePedidos } = useDetallePedidos()
     console.log(detallePedido)
     const { updatePedidos } = usePedidos()
@@ -193,7 +193,7 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined 
                             </div>
                         ) : null}
                         <div className='flex justify-end'>
-                            {ES_PRODUCCION ? (
+                            {ES_PRODUCCION && isActivo ? (
                                 <Button className='w-full mx-2 mt-2 mb-1' icon={Devolver} onClick={() => devolverOMandarProduccion(true)}>Devolver</Button>
                             ) : null}
                         </div>

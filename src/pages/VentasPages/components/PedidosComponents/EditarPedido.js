@@ -16,24 +16,29 @@ import { useLocation } from 'react-router-dom/cjs/react-router-dom.min'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import { validateInputs } from './PedidosFormValidations/PedidosFormik'
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
+import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 function EditarPedido() {
   const history = useHistory()
   const location = useLocation()
   const idPedido = location.state.idPedido
   const pedido = location.state.pedido
+  const clientePedido = location.state.clientePedido 
   const [detallePedidoAEditar, setdetallePedidoAEditar] = useState();
+  const [empleadoEncargado, setEmpleadoEncargado] = useState();
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
-
+  const {empleados} = useEmpleados()
+  console.log(clientePedido)
   function openModalCrearProducto() {
     setModalIsOpenCrearProducto(true);
   }
   function closeModalCrearProducto() {
     setModalIsOpenCrearProducto(false);
   }
-  function openModalEditarProducto(detalleAEditar) {
+  function openModalEditarProducto(detalleAEditar , empleado) {
     setModalIsOpenEditarProducto(true);
     setdetallePedidoAEditar(detalleAEditar)
+    setEmpleadoEncargado(empleado)
   }
 
   function closeModalEditarProducto() {
@@ -62,18 +67,18 @@ function EditarPedido() {
     ...clientes.map(cliente => cliente.estado ? <option value={cliente.documento}>{cliente.nombre} {cliente.apellido} </option> : null)
   ]
   const initialValuesPedido = {
-    documentoCliente: pedido.idCliente || '',
+    documentoCliente:  clientePedido.documento,
     fechaEntrega: moment(pedido.fechaEntrega).format('YYYY-MM-DD') || '',
     isActivo: pedido.isActivo || ''
   }
-
+  console.log(clientePedido)
   async function deleteDetalle(idDetalle) {
     try {
       const respuesta = await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning')
       if (respuesta.isConfirmed) {
         await deleteDetallePedidos(idDetalle)
         await getDetallePedidos()
-        showAlertCorrect('El detalle a sido eliminado', 'success')
+        showAlertCorrect('El productoo ha sido eliminado', 'success')
       }
     } catch (e) {
       console.log(e)
@@ -98,8 +103,8 @@ function EditarPedido() {
             fechaPedido: pedido.fechaPedido,
             isActivo: pedido.isActivo
           };
-          const clientePedidoCorrespondiente = clientes.find(cliente => cliente.documento == values.documentoCliente)
-          valuesPedido.idCliente = clientePedidoCorrespondiente.idCliente
+          const clienteSeleccionado = clientes.find(cliente => cliente.documento == values.documentoCliente)
+          valuesPedido.idCliente = clienteSeleccionado.idCliente
           updatePedidos(idPedido, valuesPedido).then((response) => {            
             showAlertCorrect('pedido editado correctamente', 'success', () => null)
             setTimeout(() => {
@@ -162,7 +167,10 @@ function EditarPedido() {
                   </tr>
                 </TableHeader>
                 <TableBody className="w-12">
-                  {dataTable2.map(detallePedido => (
+                  {dataTable2.map(detallePedido => {
+                    const empleadoEncargado = empleados.find(empleado => empleado.idEmpleado == detallePedido.idEmpleado)
+                    console.log(empleadoEncargado)
+                    return (
                     <TableRow key={detallePedido.idDetallePedido}>
                       <TableCell>
                         <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
@@ -195,7 +203,7 @@ function EditarPedido() {
                       <TableCell>
                         <div className="flex items-center space-x-4">
                           <Button layout="link" size="icon" aria-label="Edit" >
-                            <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido)} />
+                            <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido, empleadoEncargado)} />
                           </Button>
 
                           <Button layout="link" size="icon" aria-label="Delete" onClick={() => deleteDetalle(detallePedido.idDetallePedido)} >
@@ -204,7 +212,7 @@ function EditarPedido() {
                         </div>
                       </TableCell>
                     </TableRow>
-                  )
+                  )}
                   )}
                 </TableBody>
               </Table>
@@ -235,7 +243,7 @@ function EditarPedido() {
         <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} idPedido={idPedido} />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} detalleAEditar={detallePedidoAEditar} />
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} detalleAEditar={detallePedidoAEditar} empleadoEncargado={empleadoEncargado} />
       )}
 
     </>

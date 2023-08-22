@@ -3,7 +3,7 @@ import PageTitle from '../../components/Typography/PageTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
 import { Input } from '@windmill/react-ui'
 import { Table, TableHeader, TableCell, TableBody, TableRow, TableFooter, TableContainer, Badge, Button, Pagination } from '@windmill/react-ui'
-import { EditIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto, Inactivar, PlusCircle } from '../../icons';
+import { EditIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto, Inactivar, PlusCircle, Activar } from '../../icons';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
 import { ModalDetallePedidoDevuelto } from './components/PedidosComponents/ModalDetallePedidoDevuelto'
 import { ModalEditarEstado } from './components/PedidosComponents/ModalEditarEstado'
@@ -11,30 +11,32 @@ import { parsearFecha } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
-import { showAlertCorrect, showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
-
-
+import { showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
+import { useClientes } from '../../services/hooks/useClientes'
 function Pedidos() {
   const RECIBIDO = 1
   const EN_PRODUCCION = 2
   const ENTREGADO = 3
   const DEVUELTO = 4
-  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, toggleEstadoPedido } = usePedidos();
+  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, toggleEstadoPedido , setPedidos } = usePedidos();
   const { empleados } = useEmpleados()
   const { getDetallePedidos } = useDetallePedidos()
   const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
+  const {clientes} = useClientes()
   const ES_ADMINISTRADOR = empleadoLogged != undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() == 'administrador' : null
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
   const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
   const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
-
   const [idPedido, setIdPedido] = useState({})
+  const [isPedidoActivo, setIsPedidoActivo] = useState(true)
+
   const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
-  function openModalDetallePedido(pedido) {
+  function openModalDetallePedido(pedido, activo) {
     setModalIsOpenDetallePedido(true);
     setIdPedido(pedido)
+    setIsPedidoActivo(activo)
   }
 
   function closeModalDetallePedido() {
@@ -65,38 +67,48 @@ function Pedidos() {
   const [dataTable2, setDataTable2] = useState([])
 
   const resultsPerPage = 5
-  const totalResults = pedidos2.length
+  const [totalResults, setTotalResults] = useState(pedidos2.length)
+
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
+   
   }
   const [inactivar, setInactivar] = useState(false)
-
   function toggleDatatableIsActivo() {
     setInactivar(inactivar => !inactivar)
     setPageTable2(1)
   }
+  function togglePedido() {
 
+ 
+  }
   useEffect(() => {
+    console.log(pedidos)
     let filteredData = searchFilter(pedidos, search)
+    filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar)
+    setTotalResults(filteredData.length)
+    
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
-      .filter(pedido => pedido.isActivo == !inactivar)
     );
+    
   }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, inactivar]);
-
+  console.log(totalResults)
   const searchFilter = (data, searchValue) => {
     if (!searchValue) {
       return data
     }
     const searchTerm = searchValue.toLowerCase();
 
-    return data.filter((pedido) => (
-      pedido.fechaPedido.toLowerCase().includes(searchTerm) ||
-      pedido.idClienteNavigation.nombre.toLowerCase().includes(searchTerm) ||
-      pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||
-      pedido.isActivo.toString().toLowerCase().includes(searchTerm) ||
-      pedido.idEstadoNavigation.nombre.toLowerCase().includes(searchTerm)
-    ));
+    return data.filter((pedido) => {
+      
+      return (
+        pedido.fechaPedido.toLowerCase().includes(searchTerm) ||
+        pedido.idClienteNavigation.nombre.toLowerCase().includes(searchTerm) ||
+        pedido.fechaEntrega.toLowerCase().includes(searchTerm) ||         
+        pedido.idEstadoNavigation.nombre.toLowerCase().includes(searchTerm)
+      )
+    });
   };
   const searcher = (e) => {
     setSearch(e.target.value)
@@ -119,9 +131,6 @@ function Pedidos() {
       console.log(e)
     }
   }
-
-
-
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -153,7 +162,7 @@ function Pedidos() {
               <TableCell className="text-white">Fecha Entrega</TableCell>
               <TableCell className="text-white">Fase</TableCell>
               <TableCell className="text-white">Estado</TableCell>
-              <TableCell className="text-white">Cambiar estado</TableCell>
+              <TableCell className="text-white">Cambiar fase</TableCell>
               <TableCell className="text-white">Acciones</TableCell>
             </tr>
           </TableHeader>
@@ -167,6 +176,8 @@ function Pedidos() {
                 const ES_EN_PRODUCCION = pedido.idEstado == EN_PRODUCCION;
                 const ES_ENTREGADO = pedido.idEstado == ENTREGADO;
                 const ES_DEVUELTO = pedido.idEstado == DEVUELTO;
+                const ES_ACTIVO = pedido.isActivo
+                const clientePedido = clientes.find(cliente => cliente.idCliente == pedido.idCliente)
                 return (
                   <TableRow key={pedido.idPedido}>
                     <TableCell>
@@ -184,24 +195,32 @@ function Pedidos() {
                     <TableCell>
                       <Badge className="text-xs text-gray-600 dark:text-gray-400" type={pedido.isActivo ? "success" : "danger"}>{pedido.isActivo ? 'Activo' : 'Inactivo'}</Badge>
                     </TableCell>
-                    <TableCell>
-                      <Button title="Hlla" disabled={ES_ENTREGADO || ES_DEVUELTO ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
+                    <TableCell title={!ES_ACTIVO ? "No puedes cambiar la fase de un pedido que esta inactivo" :  ES_RECIBIDO ? "Pasar el pedido a producción" : ES_EN_PRODUCCION ? "Pasar el pedido a entregado" : ES_ENTREGADO ? "El pedido esta entregado" : ES_DEVUELTO ? "No puedes cambiar la fase de un pedido que esta devuelto" : null}>
+                      <Button  disabled={ES_ENTREGADO || ES_DEVUELTO || !ES_ACTIVO ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => openModalEditarEstado(pedido)}>
                         <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
                       </Button>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido)}>
+                        <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido, pedido.isActivo)}>
                           <SearchIcon className="w-5 h-5 " aria-hidden="true" />
                         </Button>
                         <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModalDetallePedidoDevuelto(pedido)} >
-                          {ES_DEVUELTO ? (
+                          {ES_DEVUELTO && ES_ACTIVO ? (
                             <AdvertenciaPedidoDevuelto className='text-yellow-500 w-5 h-5' aria-hidden="true" />
                           ) : null}
                         </Button>
+                        {ES_RECIBIDO ? (
+                          <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido , clientePedido : clientePedido })} >
+                            <EditIcon className="w-5 h-5" aria-hidden="true" />
+                          </Button>
+                        ) : null
+                        }
                         {!ES_RECIBIDO ? (
                           <Button layout="link" size="icon" aria-label="Edit" onClick={() => inactivarOActivarPedido(pedido, pedido.isActivo ? false : true)} >
-                            <Inactivar className="w-5 h-5 text-red-700" aria-hidden="true" />
+                            {ES_ACTIVO ? <Inactivar className="w-5 h-5 text-red-700" aria-hidden="true" /> 
+                              : <Activar className="w-5 h-5 text-green-500"/>
+                            }
                           </Button>
                         ) : null
                         }
@@ -232,14 +251,16 @@ function Pedidos() {
           )}
         </TableFooter>
         <div className="flex mb-6 gap-3 m-5 ">
-          <Button iconRight={PlusCircle} onClick={toggleDatatableIsActivo} >
+
+          <p className='text-white'> Filtrar pedidos por:</p>
+          <Button className="bg-cyan-500"  onClick={toggleDatatableIsActivo}  >
             {inactivar ? 'Activos' : 'Inactivos'}
           </Button>
 
         </div>
       </TableContainer>
       {modalIsOpenDetallePedido && (
-        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} />
+        <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} isActivo={isPedidoActivo}/>
       )}
       {modalIsOpenDetallePedidoDevuelto && (
         <ModalDetallePedidoDevuelto isOpen={modalIsOpenDetallePedidoDevuelto} isClose={closeModalDetallePedidoDevuelto} pedido={idPedido} />

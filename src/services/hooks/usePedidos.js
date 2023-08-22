@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { FetchData } from "../GenericAxios";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
+
 
 export const usePedidos = () => {
     const [pedidos, setPedidos] = useState([]);
     const [pedidosEmpleado, setPedidosEmpleado] = useState([]);
     const instance = FetchData('Pedido')
+    
     let cookie = Cookies.get("CookieJalbac");
     const unencryptToken = jwtDecode(cookie);
     const idUsuario = unencryptToken.unique_name;
@@ -14,6 +16,7 @@ export const usePedidos = () => {
         getPedidos();
         getPedidosEmpleado(idUsuario)        
     }, []);
+  
     const getPedidos = async () => {
         const response = await instance.get()
         const data = response.data.resultado;
