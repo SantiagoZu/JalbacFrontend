@@ -100,7 +100,6 @@ function HistorialEstadoPedidos() {
               <TableCell>Fecha recibido</TableCell>
               <TableCell>Cliente</TableCell>
               <TableCell>Fecha entrega</TableCell>
-              <TableCell>Estado</TableCell>
               <TableCell>Detalles producto</TableCell>
               <TableCell>Historial estados</TableCell>
             </tr>
@@ -119,9 +118,7 @@ function HistorialEstadoPedidos() {
                 <TableCell>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.idPedidoNavigation.fechaEntrega)}</p>
                 </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idPedidoNavigation.idEstadoNavigation.nombre}</p>
-                </TableCell>
+                
                 <TableCell >
                   <Button layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => history.push('/app/mostrarDetalles', { idPedido: pedido.idPedido })}>
                     <SearchIcon className="w-5 h-5 ml-6" aria-hidden="true" />

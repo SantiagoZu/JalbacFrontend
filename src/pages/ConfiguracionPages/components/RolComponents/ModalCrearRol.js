@@ -31,7 +31,6 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
       setSelect((prevS) => prevS.filter((id) => id.idPermiso !== permisoId));
     }
   };
-  console.log(select)
 
 
   return (

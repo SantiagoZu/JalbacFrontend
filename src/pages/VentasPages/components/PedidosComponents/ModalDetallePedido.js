@@ -18,7 +18,7 @@ export const ModalDetallePedido = ({ isOpen, isClose, pedido, isActivo }) => {
                             detallePedidos.map((detallePedido, i) => pedido.idPedido == detallePedido.idPedido && detallePedido.idEstado != 4 ? (
                                 <CardDetalles isActivo={isActivo} detallePedido={detallePedido} pedido={pedido} recargarCarta={val => recargarCarta(val)} />
                             ) : null
-                            ) : <h1>No hay detalles debido a que los detalles se encuentran devueltos</h1>
+                            ) : <div className='mb-5 col-span-2'><h1>No hay detalles debido a que los detalles se encuentran devueltos</h1></div>
                         }
                     </div>
                 </div>

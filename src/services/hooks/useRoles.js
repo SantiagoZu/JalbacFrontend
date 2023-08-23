@@ -40,6 +40,7 @@ export const useRoles = () => {
         postRoles,
         editarRol,
         eliminarRol,
-        validacionRol
+        validacionRol,
+        cargarRoles
     }
 }

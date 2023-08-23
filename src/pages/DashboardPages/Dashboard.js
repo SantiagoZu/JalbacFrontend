@@ -108,7 +108,7 @@ function Dashboard() {
         <div className='mt-3'>
           <Calendario setFechaInicio={setFechaInicioServicio} setFechaFin={setFechaFinServicio}
             fechaInicio={fechaInicioServicio} fechaFin={fechaFinServicio}></Calendario>
-          <ChartCard title="Servicio mas solicitado">
+          <ChartCard title="Servicio más solicitado">
             <Doughnut {...Chart3(fechaInicioServicio, fechaFinServicio).servicios} />
             <ChartLegend legends={doughnutLegends} />
           </ChartCard>

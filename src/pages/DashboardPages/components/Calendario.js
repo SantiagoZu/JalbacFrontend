@@ -34,6 +34,7 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
         if (fechaInicio.year() < fechaFin.year()) {
             const ultimoDia = fechaInicio.clone().endOf('year');
             setFechaF(ultimoDia.format('YYYY-MM-DD'));
+            console.log(ultimoDia)
         }
     };
 
@@ -43,12 +44,9 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
 
     useEffect(() => {
         setFechaI(fechaInicio);
-        ajustarFechaFin(fechaInicio, fechaF);
-    }, [fechaInicio]);
-
-    useEffect(() => {
         setFechaF(fechaFin);
-    }, [fechaFin]);
+        ajustarFechaFin(fechaInicio, fechaFin);
+    }, [fechaInicio, fechaFin]);
 
     useEffect(() => {
         setFechaInicio(fechaI);
@@ -60,12 +58,12 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
             <div className="flex justify-left mb-3">
                 <div>
                     <label className='font-medium dark:text-gray-300'>Fecha Inicio</label>
-                    <input className='block w-full pr-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaInicio} defaultValue={fechaInicio} onChange={handleFechaInicioChange} max={fechaActual}/>
+                    <input className='block w-full pr-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaInicio} defaultValue={fechaInicio} onChange={handleFechaInicioChange} max={fechaActual} />
                 </div>
 
                 <div>
-                    <label className='font-medium dark:text-gray-300'>Fecha Fin</label>
-                    <input className='block w-full pr-4 ml-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaFin} defaultValue={fechaFin} onChange={handleFechaFinChange} max={fechaActual}/>
+                    <label className='font-medium dark:text-gray-300 ml-5'>Fecha Fin</label>
+                    <input className='block w-full pr-4 ml-4 mt-1 mb-1 text-sm text-red dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input' type="date" id={fechaFin} defaultValue={fechaFin} onChange={handleFechaFinChange} max={fechaActual} />
                 </div>
             </div>
         </>

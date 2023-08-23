@@ -43,13 +43,11 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
                     apellido: valores.apellido,
                     cargo: valores.cargo,
                 };
-                console.log(empleadoEditado)
                 editarEmpleado(empleado.idEmpleado, empleadoEditado)
                     .then(response => {
                         resetForm();
-                        isClose()
+                        isClose();
                         showAlertCorrect('Empleado editado correctamente', 'success', isClose);
-                        
                     })
                     .catch(response => {
                         if (response.response.data.errorMessages[0] !== null) {

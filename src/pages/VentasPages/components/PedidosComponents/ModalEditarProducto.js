@@ -11,13 +11,13 @@ import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 
 export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarTabla = undefined, idDetalleAEditar = undefined, empleadoEncargado = undefined }) => {
-    let initialValuesDetalle    
+    let initialValuesDetalle
     const { updateDetallePedidos } = useDetallePedidos();
     const { empleados, validacionDocumento } = useEmpleados()
+
     const empleadosDropdown = [
         ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
-    ]        
-    console.log(detalleAEditar)
+    ]
     if (detalleAEditar.idDetallePedido === undefined) {
         initialValuesDetalle = {
             nombreAnillido: detalleAEditar.nombreAnillido || '',
@@ -32,13 +32,13 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
         };
     }
     else {
-        
+
         initialValuesDetalle = {
             idDetallePedido: detalleAEditar.idDetallePedido || '',
             idPedido: detalleAEditar.idPedido || '',
-            documentoEmpleado:  empleadoEncargado.documento || '',
+            documentoEmpleado: empleadoEncargado.documento || '',
             nombreAnillido: detalleAEditar.nombreAnillido || '',
-            servicio: detalleAEditar.servicio ,
+            servicio: detalleAEditar.servicio,
             peso: detalleAEditar.peso || '',
             tamanoAnillo: detalleAEditar.tamanoAnillo || '',
             tamanoPiedra: detalleAEditar.tamanoPiedra || '',
@@ -48,7 +48,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
             idEstado: detalleAEditar.idEstado || '',
             motivoDevolucion: detalleAEditar.motivoDevolucion || '',
         };
-    }    
+    }
     return (
         <>
             <Formik
@@ -84,7 +84,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                     else { //uso la vista desde Editar pedido
                         const empleadoDetalle = empleados.find(empleado => empleado.documento == values.documentoEmpleado)
                         valuesDetalle.idEmpleado = empleadoDetalle.idEmpleado
-                        console.log(valuesDetalle)
+
                         updateDetallePedidos(detalleAEditar.idDetallePedido, valuesDetalle).then(response => {
                             resetForm();
                             showAlertCorrect('Producto editado correctamente', 'success', isClose)
@@ -110,7 +110,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                                 type="text"
                                                 id="nombreAnillido"
                                                 name="nombreAnillido"
-                                              
+
                                             />
                                             {touched.nombreAnillido && errors.nombreAnillido && <SpanError>{errors.nombreAnillido}</SpanError>}
                                         </Label>
@@ -133,7 +133,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                                 type="text"
                                                 id="peso"
                                                 name="peso"
-                                               
+
                                             />
                                             {touched.peso && errors.peso && <SpanError>{errors.peso}</SpanError>}
                                         </Label>
@@ -143,7 +143,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                                 type="text"
                                                 id="tamanoAnillo"
                                                 name="tamanoAnillo"
-                                               
+
                                             />
                                             {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
                                         </Label>
@@ -153,11 +153,14 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                                 type="text"
                                                 id="tamanoPiedra"
                                                 name="tamanoPiedra"
-                                               
+
                                             />
                                             {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
                                         </Label>
-                                        <Label className="mt-5">
+
+                                    </div>
+                                    <div className='flex-auto'>
+                                        <Label className="mt-4">
                                             <span>Material del anillo</span>
                                             <Field
                                                 as="select"
@@ -171,27 +174,25 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                                 <option>Oro rosado</option>
                                             </Field>
                                         </Label>
-                                    </div>
-                                    <div className='flex-auto'>
-                                        <Label className="mt-5">
+                                        <Label className="mt-4">
                                             <span>Detalles</span>
                                             <CustomInput
                                                 type="text"
                                                 id="detalle"
-                                                name="detalle"                                              
+                                                name="detalle"
                                             />
                                             {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                         </Label>
-                                        <Label className="mt-5">
+                                        <Label className="mt-4">
                                             <span>Cantidad</span>
                                             <CustomInput
                                                 type="text"
                                                 id="cantidad"
-                                                name="cantidad"                                             
+                                                name="cantidad"
                                             />
                                             {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                         </Label>
-                                        <Label className="mt-5">
+                                        <Label className="mt-4">
                                             <span> Empleado </span>
                                             <Field
                                                 list="dataListEmpleado"

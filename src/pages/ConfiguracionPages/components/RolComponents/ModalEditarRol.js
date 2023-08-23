@@ -38,7 +38,6 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
       setSelectedPermisos((prevS) => prevS.filter((id) => id.idPermiso !== permisoId));
     }
   };
-  console.log(selectedPermisos)
 
   const initialValues = {
     rol: rol.nombre || '',
@@ -59,11 +58,9 @@ export const ModalEditarRol = ({ isOpen, isClose, rol }) => {
         }
 
         editarRol(rol.idRol, rolCompleto).then(response => {
-          showAlertCorrect("Rol editado correctamente", "success", isClose)
           resetForm();
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          isClose()
+          showAlertCorrect("Rol editado correctamente", "success", isClose)
         }).catch(response => {
           showAlertIncorrect("No se pudo editar el rol", "error", isClose)
         })

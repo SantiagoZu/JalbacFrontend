@@ -35,7 +35,7 @@ function Empleados() {
   const [dataTable2, setDataTable2] = useState([])
   // pagination setup
   const resultsPerPage = 5
-  const totalResults = empleados2.length
+  const [totalResults, setTotalResults] = useState(empleados2.length)
 
   // pagination change control
   function onPageChangeTable2(p) {
@@ -56,14 +56,21 @@ function Empleados() {
       empleado.idUsuarioNavigation.correo.toLowerCase().includes(searchTerm)
     ));
   };
+  const [inactivar, setInactivar] = useState(false)
+  function toggleDatatableIsActivo() {
+    setInactivar(inactivar => !inactivar)
+    setPageTable2(1)
+  }
 
   // on page change, load new sliced data
   // here you would make another server request for new data
   useEffect(() => {
-    const filteredData = searchFilter(empleados2, search);
+    let filteredData = searchFilter(empleados2, search);
+    filteredData = filteredData.filter(empleado => empleado.estado == !inactivar)
+    setTotalResults(filteredData.length)
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
     // cargarEmpleados();
-  }, [empleados, pageTable2, search]);
+  }, [empleados, pageTable2, search, inactivar]);
 
 
 
@@ -130,11 +137,11 @@ function Empleados() {
       setTimeout(() => {
         setLoading(false)
       }, 500);
-      cargarEmpleados()
+      cargarEmpleados() 
     }
     if (eliminadoExistoso) {
       setLoading(false)
-      cargarEmpleados()
+      cargarEmpleados() 
       setEliminadoExistoso(false)
     }
   }, [modalIsOpen, modalIsOpenCrear, eliminadoExistoso])
@@ -176,9 +183,13 @@ function Empleados() {
             {loading ? (
               <TableRow>
                 <TableCell colSpan={10} className='text-center'>
-                  <Skeleton active paragraph={{ rows: 5 }} />
+                  <Skeleton active paragraph={{ rows: 2 }}
+                    style={{width: '100%'}}
+                  />
                 </TableCell>
+                
               </TableRow>
+              
             ) :
               (dataTable2.length === 0 ? (<TableRow>
                 <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
@@ -231,7 +242,14 @@ function Empleados() {
             />
           )}
         </TableFooter>
+        
       </TableContainer>
+      <div className="flex mb-6 gap-3 -mt-4">
+          <p className='text-white self-center'> Filtrar pedidos por:</p>
+          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
+            {inactivar ? 'Activos' : 'Inactivos'}
+          </Button>
+        </div>
       {modalIsOpen && (
         <ModalEditarEmpleado isOpen={modalIsOpen} isClose={closeModal} empleado={empleadoSeleccionado} />
       )}
