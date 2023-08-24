@@ -18,11 +18,10 @@ function Pedidos() {
   const EN_PRODUCCION = 2
   const ENTREGADO = 3
   const DEVUELTO = 4
-  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, toggleEstadoPedido, setPedidos ,updateFase} = usePedidos();
+  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, toggleEstadoPedido, setPedidos, updateFase } = usePedidos();
   const { empleados } = useEmpleados()
   const { detallePedidos, getDetallePedidos } = useDetallePedidos()
   const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
-  const { clientes } = useClientes()
   const { clientes } = useClientes()
   const ES_ADMINISTRADOR = empleadoLogged != undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() == 'administrador' : null
   const history = useHistory();
@@ -82,7 +81,7 @@ function Pedidos() {
   }
   function togglePedido() {
 
- 
+
   }
   useEffect(() => {
     let filteredData = searchFilter(pedidos, search)
@@ -132,9 +131,9 @@ function Pedidos() {
     }
   }
 
-  async function cambiarFase(pedido, detallesAEditar , fase) {
+  async function cambiarFase(pedido, detallesAEditar, fase) {
     try {
-      const faseMensaje = fase ==  EN_PRODUCCION ? 'producción' : 'entregado'
+      const faseMensaje = fase == EN_PRODUCCION ? 'producción' : 'entregado'
       const mensaje = `¿Deseas pasar este pedido a ${faseMensaje}?`
       const respuesta = await showAlertInactivarOActivarPedido(mensaje)
       if (respuesta.isConfirmed) {
@@ -195,7 +194,7 @@ function Pedidos() {
                 const ES_ACTIVO = pedido.isActivo
                 const clientePedido = clientes.find(cliente => cliente.idCliente == pedido.idCliente)
                 const detallesAEditar = detallePedidos.filter(detalle => detalle.idPedido == pedido.idPedido)
-                const FASE = ES_RECIBIDO ? EN_PRODUCCION : ENTREGADO 
+                const FASE = ES_RECIBIDO ? EN_PRODUCCION : ENTREGADO
                 return (
                   <TableRow key={pedido.idPedido}>
                     <TableCell>
@@ -214,8 +213,8 @@ function Pedidos() {
                       <Badge className="text-xs text-gray-600 dark:text-gray-400" type={pedido.isActivo ? "success" : "danger"}>{pedido.isActivo ? 'Activo' : 'Inactivo'}</Badge>
                     </TableCell>
                     <TableCell title={!ES_ACTIVO ? "No puedes cambiar la fase de un pedido que esta inactivo" : ES_RECIBIDO ? "Pasar el pedido a producción" : ES_EN_PRODUCCION ? "Pasar el pedido a entregado" : ES_ENTREGADO ? "El pedido esta entregado" : ES_DEVUELTO ? "No puedes cambiar la fase de un pedido que esta devuelto" : null}>
-                      <Button disabled={ES_ENTREGADO || ES_DEVUELTO || !ES_ACTIVO ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => cambiarFase(pedido, detallesAEditar, FASE )}>
-                         <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
+                      <Button disabled={ES_ENTREGADO || ES_DEVUELTO || !ES_ACTIVO ? true : false} layout="link" className='ml-6 mr-6 pr-5' size="icon" aria-label="Edit" onClick={() => cambiarFase(pedido, detallesAEditar, FASE)}>
+                        <Arrow className="w-5 h-5 ml-6" aria-hidden="true" />
                       </Button>
                     </TableCell>
                     <TableCell>
@@ -264,13 +263,6 @@ function Pedidos() {
             />
           )}
         </TableFooter>
-        <div className="flex mb-6 gap-3 m-5 ">
-
-          <p className='text-white'> Filtrar pedidos por:</p>
-          <Button className="bg-cyan-500"  onClick={toggleDatatableIsActivo}  >
-            {inactivar ? 'Activos' : 'Inactivos'}
-          </Button>
-
       </TableContainer>
       <div className="flex mb-6 gap-3 -mt-4">
         <p className='text-white self-center'> Filtrar pedidos por:</p>

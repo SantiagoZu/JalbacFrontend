@@ -90,9 +90,9 @@ export const usePedidos = () => {
                     cantidad: detallePedido.cantidad || '',
                     motivoDevolucion: null
                 }
-                updateDetallePedidos(detallePedido.idDetallePedido, valuesDetalle)
+                await updateDetallePedidos(detallePedido.idDetallePedido, valuesDetalle)
             }
-            return await updatePedidos(pedido.idPedido, valuesPedido)
+            await updatePedidos(pedido.idPedido, valuesPedido)
         } catch (error) {
             console.log(error)
         }
