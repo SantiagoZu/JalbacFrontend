@@ -95,11 +95,16 @@ function RestablecerPassword() {
                       </div>
                     </Label>
 
+                    <div className='flex flex-row gap-2 h-16 max-sm:flex-col'>
+                      <Button block tag={Link} className="mt-4" onClick={handleSubmit}>
+                        Restablecer
+                      </Button>
+                      <Button layout="outline" className="mt-4" onClick={() => history.push('/app/login')}>
+                        Regresar al login
+                      </Button>
+                    </div>
 
-                    <Button block tag={Link} className="mt-4" onClick={handleSubmit}>
-                      Restablecer
-                    </Button>
-                  </div>
+                  </div>  
                 </form>
               </main>
             </div>

@@ -23,16 +23,16 @@ export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
                                 <div>
                                     <CardDetalles key={detallePedido.idDetallePedido} detallePedido={detallePedido} pedido={pedido} recargarCarta={val => recargarCarta(val)} />
                                     <Card className='mb-3 shadow-md w-auto '>
-                                       <CardBody className="h-full dark:bg-gray-700 bg-gray-100 flex flex-col justify-center">
-                                            <p className='text-center'>Motivos de devolucion</p>
+                                        <CardBody className="h-full dark:bg-gray-700 bg-gray-100 flex flex-col justify-center">
+                                            <p className='text-center font-bold text-white'>Motivos de devolucion</p>
                                             <ListaMotivosDevolucion motivosDevolucion={detallePedido.motivoDevolucion} />
-                                        </CardBody> 
+                                        </CardBody>
                                     </Card>
                                 </div>
 
                             </>
                         ) : null
-                        ) : <div>No hay productos devueltos</div>
+                        ) : <div className='col-span-2 mb-5'>No hay productos devueltos</div>
                         }
                     </div>
                 </div>
@@ -44,15 +44,15 @@ export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
 const ListaMotivosDevolucion = ({ motivosDevolucion }) => {
     const motivosSinNulos = motivosDevolucion.filter(motivo => motivo != null)
     let numeroMotivos = motivosSinNulos.length + 1
-    const cardMotivosDevolucion = motivosSinNulos.map((motivo, i) => 
-    { 
+    const cardMotivosDevolucion = motivosSinNulos.map((motivo, i) => {
         numeroMotivos--
         return (
-        <div className="m-4 relative">  
-            <p className='text-center'>{motivo}</p>
-            <p className='absolute text-yellow-500 w-5 top-0 right-0 mt-1 mr-1' >{numeroMotivos}</p>
-        </div>
-    )}
+            <div className="m-2 relative">
+                <p className='text-center'>{motivo}</p>
+                <p className='absolute text-yellow-500 w-5 top-0 right-0 -mr-3' >{numeroMotivos}</p>
+            </div>
+        )
+    }
     ).reverse()
     return (
         <>

@@ -12,7 +12,7 @@ import { usePedidos } from '../../../../services/hooks/usePedidos'
 
 export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined, isActivo }) => {
     const { updateDetallePedidos } = useDetallePedidos()
-    console.log(detallePedido)
+    
     const { updatePedidos } = usePedidos()
     const DEVUELTO = 4
     const PRODUCCION = 2

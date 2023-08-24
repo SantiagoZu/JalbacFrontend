@@ -37,9 +37,8 @@ function Clientes() {
   const [dataTable2, setDataTable2] = useState([])
   const [search, setSearch] = useState("")
 
-
   const resultsPerPage = 5
-  const totalResults = clientes2.length
+  const [totalResults, setTotalResults] = useState(clientes2.length)
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
@@ -59,11 +58,18 @@ function Clientes() {
       cliente.telefono.toLowerCase().includes(searchTerm)
     ));
   };
+  const [inactivar, setInactivar] = useState(false)
+  function toggleDatatableIsActivo() {
+    setInactivar(inactivar => !inactivar)
+    setPageTable2(1)
+  }
 
   useEffect(() => {
-    const filteredData = searchFilter(clientes2, search);
+    let filteredData = searchFilter(clientes2, search);
+    filteredData = filteredData.filter(cliente => cliente.estado == !inactivar)
+    setTotalResults(filteredData.length)
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [clientes, pageTable2, search])
+  }, [clientes, pageTable2, search, inactivar])
 
   useEffect(() => {
     setData();
@@ -206,10 +212,17 @@ function Clientes() {
             />
           )}
         </TableFooter>
+
         {modalIsOpenEdit && (
           <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} object={dataCliente} />
         )}
       </TableContainer>
+      <div className="flex mb-6 gap-3 -mt-4">
+        <p className='text-white self-center'> Filtrar pedidos por:</p>
+        <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
+          {inactivar ? 'Activos' : 'Inactivos'}
+        </Button>
+      </div>
 
 
     </>

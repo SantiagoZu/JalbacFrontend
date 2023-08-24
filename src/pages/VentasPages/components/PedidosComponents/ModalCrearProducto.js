@@ -24,7 +24,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                 initialValues={initialValuesAgregarProducto}
                 validate={(values) => validateInputsAgregarProducto(values, validacionDocumento)}
                 onSubmit={(values, { resetForm }) => {
-                    console.log(values)
+
                     const valuesDetalle = {
                         ...values,
                         idPedido: idPedido,
@@ -63,6 +63,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="nombreAnillido"
                                                 name="nombreAnillido"
+                                                placeholder='Emmanuel'
                                             />
                                             {touched.nombreAnillido && errors.nombreAnillido && <SpanError>{errors.nombreAnillido}</SpanError>}
                                         </Label>
@@ -86,6 +87,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="peso"
                                                 name="peso"
+                                                placeholder='7'
                                             />
                                             {touched.peso && errors.peso && <SpanError>{errors.peso}</SpanError>}
                                         </Label>
@@ -95,6 +97,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="tamanoAnillo"
                                                 name="tamanoAnillo"
+                                                placeholder='6'
 
                                             />
                                             {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
@@ -105,6 +108,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="tamanoPiedra"
                                                 name="tamanoPiedra"
+                                                placeholder='1.5'
                                             />
                                             {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
                                         </Label>
@@ -130,7 +134,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="detalle"
                                                 name="detalle"
-
+                                                placeholder='Las piedras son de color azul'
                                             />
                                             {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                         </Label>
@@ -143,7 +147,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 className={STYLE_INPUT}
                                                 type="text"
                                                 as='input'
-                                                required={true}
+                                                placeholder='Santiago'
                                             />
                                             <datalist id="dataListEmpleado" >
                                                 {empleadosDropdown}
@@ -157,7 +161,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 type="text"
                                                 id="cantidad"
                                                 name="cantidad"
-
+                                                placeholder='1'
                                             />
                                             {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                         </Label>
@@ -171,7 +175,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                     </Button>
                                 </div>
                                 <div className="hidden sm:block">
-                                    <Button onClick={handleSubmit}>Agregar producto</Button>
+                                    <Button onClick={handleSubmit}>Agregar</Button>
                                 </div>
 
                                 <div className="block w-full sm:hidden">

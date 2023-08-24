@@ -26,14 +26,14 @@ import { useRoles } from '../../services/hooks/useRoles'
 
 function Roles() {
 
-  const {roles, eliminarRol} = useRoles();
+  const { roles, eliminarRol, cargarRoles } = useRoles();
   const roles2 = roles.concat([])
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
-
+  const [eliminadoExistoso, setEliminadoExistoso] = useState(false)
   const resultsPerPage = 5
-  const totalResults = roles2.length
+  const [totalResults, setTotalResults] = useState(roles2.length)
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
@@ -50,12 +50,19 @@ function Roles() {
       roles.nombre.toLowerCase().includes(searchTerm)
     ));
   };
+  const [inactivar, setInactivar] = useState(false)
+  function toggleDatatableIsActivo() {
+    setInactivar(inactivar => !inactivar)
+    setPageTable2(1)
+  }
 
   useEffect(() => {
-    const filteredData = searchFilter(roles2, search);
+    let filteredData = searchFilter(roles2, search);
+    filteredData = filteredData.filter(rol => rol.estado == !inactivar)
+    setTotalResults(filteredData.length)
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [roles, pageTable2, search])
-  
+  }, [roles, pageTable2, search, inactivar])
+
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   const [rolSeleccionado, setRolSeleccionado] = useState([]);
@@ -90,19 +97,32 @@ function Roles() {
       'warning',
       'Eliminado correctamente',
       'success'
-    ).then(result =>{
+    ).then(result => {
       if (result.isConfirmed) {
-        eliminarRol(idRol).then(response=>{
+        eliminarRol(idRol).then(response => {
           showAlertCorrect('Rol eliminado correctamente.', 'success');
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
-        }).catch(response =>{
+          setEliminadoExistoso(true)
+        }).catch(response => {
           showAlertIncorrect('Error al eliminar el rol', 'error');
+          closeModal()
         })
       }
     })
   }
+
+  useEffect(() => {
+    if (!modalIsOpenCreate || !modalIsOpenEdit) {
+      // setTimeout(() => {
+      //   setLoading(false)
+      // }, 500);
+      cargarRoles()
+    }
+    if (eliminadoExistoso) {
+      cargarRoles()
+      setEliminadoExistoso(false)
+    }
+  }, [modalIsOpenCreate, modalIsOpenEdit, eliminadoExistoso])
+
 
 
   return (
@@ -110,7 +130,7 @@ function Roles() {
       <PageTitle>Roles</PageTitle>
 
       <div className="flex ml-auto mb-6">
-      <ModalCrearRol isOpen={modalIsOpenCreate} isClose={closeModal} />
+        <ModalCrearRol isOpen={modalIsOpenCreate} isClose={closeModal} />
         <Button iconRight={PlusCircle} onClick={openModalCreate}>
           Crear rol
         </Button>
@@ -153,7 +173,7 @@ function Roles() {
                     <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalEdit(rol)}>
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={() =>eliminarRoles(rol.idRol)}>
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarRoles(rol.idRol)}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>
@@ -163,14 +183,23 @@ function Roles() {
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
+        
       </TableContainer>
+      <div className="flex mb-6 gap-3 -mt-4">
+          <p className='text-white self-center'> Filtrar pedidos por:</p>
+          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
+            {inactivar ? 'Activos' : 'Inactivos'}
+          </Button>
+        </div>
       {modalIsOpenEdit && (
         <ModalEditarRol isOpen={modalIsOpenEdit} isClose={closeModalEdit} rol={rolSeleccionado} />
       )}

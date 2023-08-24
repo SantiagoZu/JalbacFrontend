@@ -23,6 +23,7 @@ function Pedidos() {
   const { detallePedidos, getDetallePedidos } = useDetallePedidos()
   const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
   const { clientes } = useClientes()
+  const { clientes } = useClientes()
   const ES_ADMINISTRADOR = empleadoLogged != undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() == 'administrador' : null
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
@@ -77,13 +78,13 @@ function Pedidos() {
   const [inactivar, setInactivar] = useState(false)
   function toggleDatatableIsActivo() {
     setInactivar(inactivar => !inactivar)
+    setPageTable2(1)
   }
   function togglePedido() {
 
-
+ 
   }
   useEffect(() => {
-    console.log(pedidos)
     let filteredData = searchFilter(pedidos, search)
     filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar)
     setTotalResults(filteredData.length)
@@ -92,7 +93,7 @@ function Pedidos() {
     );
 
   }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, inactivar]);
-  console.log(totalResults)
+
   const searchFilter = (data, searchValue) => {
     if (!searchValue) {
       return data
@@ -120,7 +121,7 @@ function Pedidos() {
   }, [modalIsOpenDetallePedido, modalIsOpenEditarEstado, modalIsOpenDetallePedidoDevuelto])
   async function inactivarOActivarPedido(pedido, inactivarOActivar) {
     try {
-      const mensaje = inactivarOActivar ? '¿Estas seguro que deseas activar este pedido?' : '¿Estas seguro que deseas inactivar este pedido?'
+      const mensaje = inactivarOActivar ? '¿Estás seguro que deseas activar este pedido?' : '¿Estás seguro que deseas inactivar este pedido?'
       const respuesta = await showAlertInactivarOActivarPedido(mensaje)
       if (respuesta.isConfirmed) {
         await toggleEstadoPedido(pedido, inactivarOActivar)
@@ -222,11 +223,7 @@ function Pedidos() {
                         <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido, pedido.isActivo)}>
                           <SearchIcon className="w-5 h-5 " aria-hidden="true" />
                         </Button>
-                        <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModalDetallePedidoDevuelto(pedido)} >
-                          {ES_DEVUELTO && ES_ACTIVO ? (
-                            <AdvertenciaPedidoDevuelto className='text-yellow-500 w-5 h-5' aria-hidden="true" />
-                          ) : null}
-                        </Button>
+
                         {ES_RECIBIDO ? (
                           <Button layout="link" size="icon" aria-label="Edit" onClick={() => history.push('/app/editarPedido', { idPedido: pedido.idPedido, pedido: pedido, clientePedido: clientePedido })} >
                             <EditIcon className="w-5 h-5" aria-hidden="true" />
@@ -241,6 +238,12 @@ function Pedidos() {
                           </Button>
                         ) : null
                         }
+                        {ES_DEVUELTO && ES_ACTIVO ? (
+                          <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModalDetallePedidoDevuelto(pedido)} >
+                            <AdvertenciaPedidoDevuelto className='text-yellow-500 w-5 h-5' aria-hidden="true" />
+                          </Button>
+                        ) : null}
+
                       </div>
                     </TableCell>
                   </TableRow>
@@ -264,12 +267,17 @@ function Pedidos() {
         <div className="flex mb-6 gap-3 m-5 ">
 
           <p className='text-white'> Filtrar pedidos por:</p>
-          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
+          <Button className="bg-cyan-500"  onClick={toggleDatatableIsActivo}  >
             {inactivar ? 'Activos' : 'Inactivos'}
           </Button>
 
-        </div>
       </TableContainer>
+      <div className="flex mb-6 gap-3 -mt-4">
+        <p className='text-white self-center'> Filtrar pedidos por:</p>
+        <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
+          {inactivar ? 'Activos' : 'Inactivos'}
+        </Button>
+      </div>
       {modalIsOpenDetallePedido && (
         <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} isActivo={isPedidoActivo} />
       )}

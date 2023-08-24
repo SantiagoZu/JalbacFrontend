@@ -14,18 +14,20 @@ import {
   Button,
   Pagination,
   Badge,
+  Transition,
 } from '@windmill/react-ui'
 import { EditIcon, TrashIcon, SearchIcon, PlusCircle } from '../../icons';
 import response from '../../utils/demo/dataEmpleados';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
 import { useEmpleados } from '../../services/hooks/useEmpleados';
+import { Skeleton } from 'antd';
 
 const response2 = response.concat([])
 
 
 function Empleados() {
 
-  const { empleados, eliminarEmpleado, cargarEmpleados } = useEmpleados()
+  const { empleados, eliminarEmpleado, cargarEmpleados, loading, setLoading } = useEmpleados()
   const empleados2 = empleados.concat([])
   const [eliminadoExistoso, setEliminadoExistoso] = useState(false)
   const [pageTable2, setPageTable2] = useState(1)
@@ -33,7 +35,7 @@ function Empleados() {
   const [dataTable2, setDataTable2] = useState([])
   // pagination setup
   const resultsPerPage = 5
-  const totalResults = empleados2.length
+  const [totalResults, setTotalResults] = useState(empleados2.length)
 
   // pagination change control
   function onPageChangeTable2(p) {
@@ -54,14 +56,21 @@ function Empleados() {
       empleado.idUsuarioNavigation.correo.toLowerCase().includes(searchTerm)
     ));
   };
+  const [inactivar, setInactivar] = useState(false)
+  function toggleDatatableIsActivo() {
+    setInactivar(inactivar => !inactivar)
+    setPageTable2(1)
+  }
 
   // on page change, load new sliced data
   // here you would make another server request for new data
   useEffect(() => {
-    const filteredData = searchFilter(empleados2, search);
+    let filteredData = searchFilter(empleados2, search);
+    filteredData = filteredData.filter(empleado => empleado.estado == !inactivar)
+    setTotalResults(filteredData.length)
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
     // cargarEmpleados();
-  }, [empleados, pageTable2, search]);
+  }, [empleados, pageTable2, search, inactivar]);
 
 
 
@@ -125,10 +134,14 @@ function Empleados() {
 
   useEffect(() => {
     if (!modalIsOpen || !modalIsOpenCrear) {
-      cargarEmpleados()
+      setTimeout(() => {
+        setLoading(false)
+      }, 500);
+      cargarEmpleados() 
     }
     if (eliminadoExistoso) {
-      cargarEmpleados()
+      setLoading(false)
+      cargarEmpleados() 
       setEliminadoExistoso(false)
     }
   }, [modalIsOpen, modalIsOpenCrear, eliminadoExistoso])
@@ -167,43 +180,54 @@ function Empleados() {
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.length === 0 ? (<TableRow>
-              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
-            </TableRow>) : (dataTable2.map((empleado) => (
-              <TableRow key={empleado.idEmpleado}>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.cargo}</p>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={10} className='text-center'>
+                  <Skeleton active paragraph={{ rows: 2 }}
+                    style={{width: '100%'}}
+                  />
                 </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.idRolNavigation.nombre}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400" id="nombre" name="nombre">{empleado.nombre} {empleado.apellido}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.documento}</p>
-                </TableCell>
-                <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.correo}</p>
-                </TableCell>
-
-                <TableCell>
-                  <Badge className="text-xs text-gray-600 dark:text-gray-400" type={empleado.estado ? "success" : "danger"}>{empleado.estado ? 'Activo' : 'Inactivo'}</Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModal(empleado)}>
-                      <EditIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarEmpleados(empleado.idEmpleado)}>
-                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-                  </div>
-                </TableCell>
+                
               </TableRow>
+              
+            ) :
+              (dataTable2.length === 0 ? (<TableRow>
+                <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+              </TableRow>) : (dataTable2.map((empleado) => (
+                <TableRow key={empleado.idEmpleado}>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.cargo}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.idRolNavigation.nombre}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400" id="nombre" name="nombre">{empleado.nombre} {empleado.apellido}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.documento}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.correo}</p>
+                  </TableCell>
 
-            )))}
+                  <TableCell>
+                    <Badge className="text-xs text-gray-600 dark:text-gray-400" type={empleado.estado ? "success" : "danger"}>{empleado.estado ? 'Activo' : 'Inactivo'}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-4">
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModal(empleado)}>
+                        <EditIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+
+                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarEmpleados(empleado.idEmpleado)}>
+                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+
+              ))))}
 
           </TableBody>
 
@@ -218,14 +242,20 @@ function Empleados() {
             />
           )}
         </TableFooter>
+        
       </TableContainer>
+      <div className="flex mb-6 gap-3 -mt-4">
+          <p className='text-white self-center'> Filtrar pedidos por:</p>
+          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
+            {inactivar ? 'Activos' : 'Inactivos'}
+          </Button>
+        </div>
       {modalIsOpen && (
         <ModalEditarEmpleado isOpen={modalIsOpen} isClose={closeModal} empleado={empleadoSeleccionado} />
       )}
 
-      {modalIsOpenCrear && (
-        <ModalCrearEmpleado isOpen={modalIsOpenCrear} isClose={closeModalCrear} />
-      )}
+      <ModalCrearEmpleado isOpen={modalIsOpenCrear} isClose={closeModalCrear} />
+
     </>
   )
 }

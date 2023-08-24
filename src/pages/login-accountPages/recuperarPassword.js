@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import ImageLight from '../../assets/img/login-office.jpeg'
-import { Label, Input, Button } from '@windmill/react-ui'
+import { Label, Button } from '@windmill/react-ui'
 import { Formik } from 'formik'
 import { CustomInput } from '../../components/CustomInput'
 import { SpanError } from '../../components/styles/styles'

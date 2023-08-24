@@ -29,7 +29,9 @@ function Dashboard() {
   const [fechaFinServicio, setFechaFinServicio] = useState('');
 
   const { empleados } = useEmpleados();
+  const empleadosFiltrados = empleados.filter(e => e.estado === true)
   const { clientes } = useClientes();
+  const clientesFiltrados = clientes.filter(c => c.estado === true)
   const { pedidos } = usePedidos();
   const { detallePedidos } = useDetallePedidos();
 
@@ -63,7 +65,7 @@ function Dashboard() {
 
       {/* <!-- Cards --> */}
       <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-        <InfoCard title="Clientes" value={clientes.length}>
+        <InfoCard title="Clientes" value={clientesFiltrados.length}>
           <RoundIcon
             icon={CartIcon}
             iconColorClass="text-blue-500 dark:text-blue-100"
@@ -72,7 +74,7 @@ function Dashboard() {
           />
         </InfoCard>
 
-        <InfoCard title="Empleados" value={empleados.length}>
+        <InfoCard title="Empleados" value={empleadosFiltrados.length}>
           <RoundIcon
             icon={PeopleIcon}
             iconColorClass="text-teal-500 dark:text-teal-100"
@@ -106,7 +108,7 @@ function Dashboard() {
         <div className='mt-3'>
           <Calendario setFechaInicio={setFechaInicioServicio} setFechaFin={setFechaFinServicio}
             fechaInicio={fechaInicioServicio} fechaFin={fechaFinServicio}></Calendario>
-          <ChartCard title="Servicio mas solicitado">
+          <ChartCard title="Servicio más solicitado">
             <Doughnut {...Chart3(fechaInicioServicio, fechaFinServicio).servicios} />
             <ChartLegend legends={doughnutLegends} />
           </ChartCard>

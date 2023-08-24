@@ -21,7 +21,6 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
     };
 
     const estados = [
-        { value: '', label: 'Seleccione un estado' },
         { value: true, label: 'Activo' },
         { value: false, label: 'Inactivo' }
     ];

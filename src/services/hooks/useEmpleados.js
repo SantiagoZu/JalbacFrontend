@@ -4,12 +4,17 @@ import { FetchData } from "../GenericAxios";
 export const useEmpleados = () => {
     const [empleados, setEmpleados] = useState([]);
     const [empleado, setEmpleado] = useState({});
+    const [loading, setLoading] = useState(true)
+
     // const [empleadoEditado, setEmpleadoEditado] = useState({});
     const instance = FetchData('Empleado')
 
     //llamado a la api de empleados
     useEffect(() => {
-        cargarEmpleados();
+        cargarEmpleados();      
+        setTimeout(() => {
+            setLoading(false)
+        }, 5000);
         // editarEmpleado();
     }, []);
 
@@ -42,17 +47,19 @@ export const useEmpleados = () => {
     const validacionDocumento = async (documento) => {
         const response = await instance.post(`/${documento}`);
         return response.data;
-        
+
     };
 
     return {
         empleados,
         empleado,
+        loading,
         cargarEmpleado,
         editarEmpleado,
         cargarEmpleados,
         eliminarEmpleado,
         crearEmpleado,
         validacionDocumento,
+        setLoading
     }
 }

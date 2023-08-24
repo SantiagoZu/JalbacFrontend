@@ -155,6 +155,17 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                             <div className="hidden sm:block">
                                 <Button type="button" onClick={handleSubmit}>Enviar</Button>
                             </div>
+
+                            <div className="block w-full sm:hidden">
+                                <Button block size="large" layout="outline" onClick={isClose}>
+                                    Cancel
+                                </Button>
+                            </div>
+                            <div className="block w-full sm:hidden">
+                                <Button block size="large" layout="outline" type="button" onClick={isClose}>
+                                    Enviar
+                                </Button>
+                            </div>
                         </ModalFooter>
                     </Modal>
                 </form>
