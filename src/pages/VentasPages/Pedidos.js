@@ -13,6 +13,7 @@ import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
 import { showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
 import { useClientes } from '../../services/hooks/useClientes'
+import STYLE_INPUT from '../../helpers/styleInputDatalist'
 function Pedidos() {
   const RECIBIDO = 1
   const EN_PRODUCCION = 2
@@ -77,22 +78,18 @@ function Pedidos() {
   const [inactivar, setInactivar] = useState(false)
   function toggleDatatableIsActivo() {
     setInactivar(inactivar => !inactivar)
-    setPageTable2(1)
   }
-  function togglePedido() {
-
-
-  }
+  
+  const [filtrar, setFiltrar] = useState('')
   useEffect(() => {
     let filteredData = searchFilter(pedidos, search)
-    filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar)
+    filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar && pedido.idEstadoNavigation.nombre.toLowerCase().includes(filtrar.toLowerCase()) && pedido.idEstado != ENTREGADO)
     setTotalResults(filteredData.length)
 
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
     );
 
-  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, inactivar]);
-
+  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, filtrar, inactivar])
   const searchFilter = (data, searchValue) => {
     if (!searchValue) {
       return data
@@ -109,6 +106,7 @@ function Pedidos() {
       )
     });
   };
+
   const searcher = (e) => {
     setSearch(e.target.value)
   }
@@ -144,26 +142,42 @@ function Pedidos() {
       console.log(e)
     }
   }
-
-
+  
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
 
-      <div className="flex mb-6 gap-3 ml-auto ">
+      <div className="flex mb-6 gap-5 ml-auto  w-full">
+        <div className="flex gap-3 flex-1">
+          <p className='text-white self-center'> Filtrar pedidos por:</p>
+          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
+            {inactivar ? 'Activos' : 'Inactivos'}
+          </Button>
+          <div className=' flex justify-start gap-3'>
+            <p className='text-white self-center'>Fase </p>
+            <select className={STYLE_INPUT.replace('form-input', 'form-select') } onChange={(value) => setFiltrar(value.target.value)}>
+              <option value="">Todos</option>
+              <option value="recibido">Recibido</option>
+              <option value="en producción">En producción</option>
+              <option value="devuelto">Devuelto</option>
+            </select>
+          </div>
+          
+        </div>
         <Button iconRight={PlusCircle} onClick={() => history.push('/app/crearPedido')}>
           Crear pedido
         </Button>
-        <div className="flex  ml-5">
+        <div >
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
-            <div className="absolute inset-y-0 flex items-center pl-2">
+            <div className="absolute inset-y-0 flex items-center content-center pl-2">
               <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
             </div>
             <Input
-              className="pl-8 text-gray-700"
+              className={STYLE_INPUT.replace('pl-4','pl-8')}
               placeholder="Buscar pedido"
               value={search}
               onChange={searcher}
+              
             />
           </div>
         </div>
@@ -195,7 +209,7 @@ function Pedidos() {
                 const clientePedido = clientes.find(cliente => cliente.idCliente == pedido.idCliente)
                 const detallesAEditar = detallePedidos.filter(detalle => detalle.idPedido == pedido.idPedido)
                 const FASE = ES_RECIBIDO ? EN_PRODUCCION : ENTREGADO
-                return (
+                return  (
                   <TableRow key={pedido.idPedido}>
                     <TableCell>
                       <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fechaPedido)}</p>
@@ -229,11 +243,10 @@ function Pedidos() {
                           </Button>
                         ) : null
                         }
-                        {!ES_RECIBIDO ? (
+                        {!ES_RECIBIDO && ES_ACTIVO ? (
                           <Button layout="link" size="icon" aria-label="Edit" onClick={() => inactivarOActivarPedido(pedido, pedido.isActivo ? false : true)} >
-                            {ES_ACTIVO ? <Inactivar className="w-5 h-5 text-red-700" aria-hidden="true" />
-                              : <Activar className="w-5 h-5 text-green-500" />
-                            }
+                            
+                            <Inactivar className="w-5 h-5 text-red-700" aria-hidden="true" />
                           </Button>
                         ) : null
                         }
@@ -246,7 +259,7 @@ function Pedidos() {
                       </div>
                     </TableCell>
                   </TableRow>
-                )
+                )  
               }
 
               ))}
@@ -260,16 +273,12 @@ function Pedidos() {
               resultsPerPage={resultsPerPage}
               onChange={onPageChangeTable2}
               label="Table navigation"
+              key={totalResults}
             />
           )}
         </TableFooter>
       </TableContainer>
-      <div className="flex mb-6 gap-3 -mt-4">
-        <p className='text-white self-center'> Filtrar pedidos por:</p>
-        <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
-          {inactivar ? 'Activos' : 'Inactivos'}
-        </Button>
-      </div>
+      
       {modalIsOpenDetallePedido && (
         <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} isActivo={isPedidoActivo} />
       )}
