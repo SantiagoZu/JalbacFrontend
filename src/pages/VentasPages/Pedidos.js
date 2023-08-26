@@ -75,6 +75,7 @@ function Pedidos() {
     setPageTable2(p)
 
   }
+  
   const [inactivar, setInactivar] = useState(false)
   function toggleDatatableIsActivo() {
     setInactivar(inactivar => !inactivar)
@@ -116,6 +117,7 @@ function Pedidos() {
       getPedidos()
     }
   }, [modalIsOpenDetallePedido, modalIsOpenEditarEstado, modalIsOpenDetallePedidoDevuelto])
+  
   async function inactivarOActivarPedido(pedido, inactivarOActivar) {
     try {
       const mensaje = inactivarOActivar ? '¿Estás seguro que deseas activar este pedido?' : '¿Estás seguro que deseas inactivar este pedido?'
@@ -142,7 +144,6 @@ function Pedidos() {
       console.log(e)
     }
   }
-  
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
