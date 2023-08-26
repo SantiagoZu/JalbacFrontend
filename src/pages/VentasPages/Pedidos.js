@@ -3,23 +3,23 @@ import PageTitle from '../../components/Typography/PageTitle'
 import { usePedidos } from '../../services/hooks/usePedidos'
 import { Input } from '@windmill/react-ui'
 import { Table, TableHeader, TableCell, TableBody, TableRow, TableFooter, TableContainer, Badge, Button, Pagination } from '@windmill/react-ui'
-import { EditIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto, Inactivar, PlusCircle, Activar } from '../../icons';
+import {Exclamation, EditIcon, SearchIcon, Arrow, AdvertenciaPedidoDevuelto, Inactivar, PlusCircle, } from '../../icons';
 import { ModalDetallePedido } from './components/PedidosComponents/ModalDetallePedido';
 import { ModalDetallePedidoDevuelto } from './components/PedidosComponents/ModalDetallePedidoDevuelto'
-import { ModalEditarEstado } from './components/PedidosComponents/ModalEditarEstado'
 import { parsearFecha } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
-import { showAlertInactivarOActivarPedido } from '../../helpers/Alertas'
+import { alertEscribirMotivoInactivacion, showAlertCorrect, alertInactivar } from '../../helpers/Alertas'
 import { useClientes } from '../../services/hooks/useClientes'
 import STYLE_INPUT from '../../helpers/styleInputDatalist'
+
 function Pedidos() {
   const RECIBIDO = 1
   const EN_PRODUCCION = 2
   const ENTREGADO = 3
   const DEVUELTO = 4
-  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, toggleEstadoPedido, setPedidos, updateFase } = usePedidos();
+  const { pedidos, getPedidos, pedidosEmpleado, idUsuario, updateFase, disablePedido} = usePedidos();
   const { empleados } = useEmpleados()
   const { detallePedidos, getDetallePedidos } = useDetallePedidos()
   const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
@@ -27,12 +27,10 @@ function Pedidos() {
   const ES_ADMINISTRADOR = empleadoLogged != undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() == 'administrador' : null
   const history = useHistory();
   const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
-  const [modalIsOpenEditarEstado, setModalIsOpenEditarEstado] = useState(false)
   const [modalIsOpenDetallePedidoDevuelto, setModalIsOpenDetallePedidoDevuelto] = useState(false)
   const [idPedido, setIdPedido] = useState({})
   const [isPedidoActivo, setIsPedidoActivo] = useState(true)
 
-  const [pedidoEditarEstado, setPedidoEditarEstado] = useState({})
 
   function openModalDetallePedido(pedido, activo) {
     setModalIsOpenDetallePedido(true);
@@ -51,17 +49,8 @@ function Pedidos() {
   function closeModalDetallePedidoDevuelto() {
     setModalIsOpenDetallePedidoDevuelto(false);
   }
-  function openModalEditarEstado(pedido) {
-    setModalIsOpenEditarEstado(true);
-    setPedidoEditarEstado(pedido)
-  }
-
-  function closeModalEditarEstado() {
-    setModalIsOpenEditarEstado(false);
-  }
 
   let pedidos2 = ES_ADMINISTRADOR ? pedidos.concat([]) : pedidosEmpleado.concat([])
-
 
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
@@ -73,7 +62,6 @@ function Pedidos() {
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
-
   }
   
   const [inactivar, setInactivar] = useState(false)
@@ -112,19 +100,24 @@ function Pedidos() {
     setSearch(e.target.value)
   }
   useEffect(() => {
-    if (!modalIsOpenDetallePedido || !modalIsOpenEditarEstado || !modalIsOpenDetallePedidoDevuelto) {
+    if (!modalIsOpenDetallePedido || !modalIsOpenDetallePedidoDevuelto) {
       getDetallePedidos()
       getPedidos()
     }
-  }, [modalIsOpenDetallePedido, modalIsOpenEditarEstado, modalIsOpenDetallePedidoDevuelto])
+  }, [modalIsOpenDetallePedido,  modalIsOpenDetallePedidoDevuelto])
   
-  async function inactivarOActivarPedido(pedido, inactivarOActivar) {
+  async function inactivarPedido(pedido ) {
     try {
-      const mensaje = inactivarOActivar ? '¿Estás seguro que deseas activar este pedido?' : '¿Estás seguro que deseas inactivar este pedido?'
-      const respuesta = await showAlertInactivarOActivarPedido(mensaje)
+      const mensaje = '¿Estás seguro que deseas inactivar este pedido?' 
+      const respuesta = await alertInactivar(mensaje)
       if (respuesta.isConfirmed) {
-        await toggleEstadoPedido(pedido, inactivarOActivar)
-        await getPedidos()
+        const responseMotivo = await alertEscribirMotivoInactivacion() 
+        if(responseMotivo.isConfirmed) {
+
+          await disablePedido(pedido, responseMotivo.value)
+          await getPedidos()
+          showAlertCorrect('El pedido se inactivó correctamente' , "success", () => null)
+        } 
       }
     } catch (e) {
       console.log(e)
@@ -135,7 +128,7 @@ function Pedidos() {
     try {
       const faseMensaje = fase == EN_PRODUCCION ? 'producción' : 'entregado'
       const mensaje = `¿Deseas pasar este pedido a ${faseMensaje}?`
-      const respuesta = await showAlertInactivarOActivarPedido(mensaje)
+      const respuesta = await alertInactivar(mensaje)
       if (respuesta.isConfirmed) {
         await updateFase(pedido, detallesAEditar, fase)
         await getPedidos()
@@ -144,6 +137,7 @@ function Pedidos() {
       console.log(e)
     }
   }
+
   return (
     <>
       <PageTitle>Pedidos</PageTitle>
@@ -245,18 +239,24 @@ function Pedidos() {
                         ) : null
                         }
                         {!ES_RECIBIDO && ES_ACTIVO ? (
-                          <Button layout="link" size="icon" aria-label="Edit" onClick={() => inactivarOActivarPedido(pedido, pedido.isActivo ? false : true)} >
+                          <Button layout="link" size="icon" aria-label="Edit" onClick={() => inactivarPedido(pedido, pedido.isActivo ? false : true)} >
                             
                             <Inactivar className="w-5 h-5 text-red-700" aria-hidden="true" />
                           </Button>
                         ) : null
                         }
+
                         {ES_DEVUELTO && ES_ACTIVO ? (
                           <Button layout="link" size="icon" aria-label="Delete" onClick={() => openModalDetallePedidoDevuelto(pedido)} >
                             <AdvertenciaPedidoDevuelto className='text-yellow-500 w-5 h-5' aria-hidden="true" />
                           </Button>
                         ) : null}
 
+                        {!ES_ACTIVO ? (
+                          <Button title={pedido.motivoInactivacion} layout="link" size="icon" aria-label="Delete"  >
+                            <Exclamation className='text-yellow-500 w-5 h-5' aria-hidden="true" />
+                          </Button>
+                        ) : null}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -283,11 +283,9 @@ function Pedidos() {
       {modalIsOpenDetallePedido && (
         <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} isActivo={isPedidoActivo} />
       )}
+      
       {modalIsOpenDetallePedidoDevuelto && (
         <ModalDetallePedidoDevuelto isOpen={modalIsOpenDetallePedidoDevuelto} isClose={closeModalDetallePedidoDevuelto} pedido={idPedido} />
-      )}
-      {modalIsOpenEditarEstado && (
-        <ModalEditarEstado isOpen={modalIsOpenEditarEstado} isClose={closeModalEditarEstado} pedido={pedidoEditarEstado} />
       )}
 
     </>

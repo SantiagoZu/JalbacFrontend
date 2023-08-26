@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { FetchData } from "../GenericAxios";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
@@ -50,19 +50,6 @@ export const usePedidos = () => {
         await instance.delete(`/${id}`);
     }
 
-    const toggleEstadoPedido = async (pedido, inactivarOActivar) => {
-        const valuesPedido = {
-            idPedido: pedido.idPedido,
-            idCliente: pedido.idCliente,
-            idEstado: pedido.idEstado,
-            fechaPedido: pedido.fechaPedido,
-            fechaEntrega: pedido.fechaEntrega,
-            isActivo: inactivarOActivar
-        };
-
-        return await updatePedidos(pedido.idPedido, valuesPedido)
-    }
-
     const updateFase = async (pedido, detallesAEditar, estado) => {
         try {
             const valuesPedido = {
@@ -71,7 +58,8 @@ export const usePedidos = () => {
                 idEstado: estado,
                 fechaPedido: pedido.fechaPedido,
                 fechaEntrega: pedido.fechaEntrega,
-                isActivo: pedido.isActivo
+                isActivo: pedido.isActivo,
+                motivoInactivacion: pedido.motivoInactivacion
             };
 
             for (const detallePedido of detallesAEditar) {
@@ -90,13 +78,33 @@ export const usePedidos = () => {
                     cantidad: detallePedido.cantidad || '',
                     motivoDevolucion: null
                 }
+
                 await updateDetallePedidos(detallePedido.idDetallePedido, valuesDetalle)
             }
+
             await updatePedidos(pedido.idPedido, valuesPedido)
+
         } catch (error) {
             console.log(error)
         }
     }
+
+    
+    const disablePedido = async (pedido, motivoInactivacion) => {
+        const valuesPedido = {
+            idPedido: pedido.idPedido,
+            idCliente: pedido.idCliente,
+            idEstado: pedido.idEstado,
+            fechaPedido: pedido.fechaPedido,
+            fechaEntrega: pedido.fechaEntrega,
+            isActivo : false,
+            motivoInactivacion : motivoInactivacion
+        };
+
+        return await updatePedidos(pedido.idPedido, valuesPedido)
+    }
+
+
     return {
         pedidosEmpleado,
         pedidos,
@@ -107,36 +115,7 @@ export const usePedidos = () => {
         postPedidos,
         updatePedidos,
         deletePedidos,
-        toggleEstadoPedido,
-        updateFase 
+        updateFase,
+        disablePedido 
     }
 }
-
-/*
-
-    const pedidosEmpleado = [
-        {
-            idPedido : 3, params...
-        },
-        {
-            idPedido : 2, params...
-        },
-        {
-            idPedido : 1, params...
-        },
-        {...},...
-    ]
-    the function must return: 
-        const pedidosEmpleado = [
-        {
-            idPedido : 1, params...
-        },
-        {
-            idPedido : 2, params...
-        },
-        {
-            idPedido : 3, params...
-        },
-        {...},...
-    ]
-*/

@@ -47,7 +47,7 @@ export const showCloseSesion = (message, icon, onDelete ,onClose) => {
     });
 }
 
-export const showAlertInactivarOActivarPedido =  (mensaje) => {
+export const alertInactivar =  (mensaje) => {
     return new Promise((resolve) => {        
         Swal.fire({
         title: mensaje,
@@ -61,3 +61,27 @@ export const showAlertInactivarOActivarPedido =  (mensaje) => {
     })
 }
 
+
+function validarMotivoInactivacion(texto) {
+    if (!texto) return Swal.showValidationMessage('Tienes que escribir un motivo de inactivación')
+    if (!(/^[a-zA-ZÀ-ÿ0-9\s\,\"]{5,100}$/.test(texto))) Swal.showValidationMessage('El motivo de inactivación no debe tener caracteres especiales y debe tener minimo 5 caracteres')
+}
+export function alertEscribirMotivoInactivacion(inactivar) {
+    return new Promise((resolve) => {
+
+        Swal.fire({
+            input: 'textarea',
+            html: `<h1>Escribe el motivo de inactivación</h1>`,
+            inputAttributes: { 'style': 'resize : none' },
+            preConfirm: texto => validarMotivoInactivacion(texto),
+            showCancelButton: true,
+            confirmButtonColor: '#7e3af2',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí!',
+            cancelButtonText: 'Cancelar',
+        }).then(response => {
+            resolve(response)
+        })
+    
+    })
+}
