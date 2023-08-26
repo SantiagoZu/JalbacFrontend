@@ -81,6 +81,7 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
             if (detallesDevueltos.length == 0) {
                 pedidoValues.idEstado = PRODUCCION
                 await updatePedidos(pedido.idPedido, pedidoValues)
+                
             }
             recargarCarta(true)
         } catch (error) {

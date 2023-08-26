@@ -70,6 +70,16 @@ function SidebarContent() {
         url: "/app/historial",
       });
     }
+
+    if (item.nombrePermiso === "Pedidos entregados") {
+      newPermisos.push({
+        idPermiso: item.idPermiso,
+        nombre: item.nombrePermiso,
+        icono: "Clipboard",
+        url: "/app/pedidosEntregados",
+      });
+    }
+
   });
 
   return (

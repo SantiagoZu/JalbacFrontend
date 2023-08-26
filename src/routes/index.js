@@ -14,6 +14,7 @@ const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
 
 const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
 const HistorialDetalles = lazy(() => import('../pages/VentasPages/components/HistorialPedidosComponents/HistorialDetalles'))
+const PedidosEntregado = lazy(() => import('../pages/VentasPages/components/PedidosComponents/pedidosEntregados'))
 
 
 export const Routes = () => {
@@ -66,7 +67,7 @@ export const Routes = () => {
         }, {
           path: '/editarPedido',
           component: EditarPedido,
-        });
+        },);
       }
       if (item.nombrePermiso === "Historial pedidos") {
         routes.push({
@@ -78,7 +79,14 @@ export const Routes = () => {
             component: HistorialDetalles
           });
       }
-      
+
+      if (item.nombrePermiso === "Pedidos entregados") {
+        routes.push({
+          path: '/pedidosEntregados',
+          component: PedidosEntregado,
+        },
+        );
+      }
     });
   }
 
@@ -86,38 +94,3 @@ export const Routes = () => {
     routes
   }
 }
-
-// const routes = [
-//   {
-//     path: '/dashboard', // the url
-//     component: Dashboard, // view rendered
-//   },
-//   {
-//     path: '/roles',
-//     component: Roles,
-//   },
-//   {
-//     path: '/empleados',
-//     component: Empleados,
-//   },
-//   {
-//     path: '/clientes',
-//     component: Clientes,
-//   },
-//   {
-//     path: '/pedidos',
-//     component: Pedidos,
-//   },
-//   {
-//     path: '/devoluciones',
-//     component: Devoluciones,
-//   },
-//   {
-//     path: '/historial',
-//     component: Historial,
-//   },
-//   {
-//     path: '/backup',
-//     component: Backup,
-//   },
-// ]
