@@ -9,8 +9,6 @@ import { Routes } from '../routes'
 
 const Blank = lazy(() => import('../pages/Blank'))
 
-
-
 function Layout() {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
   let location = useLocation()

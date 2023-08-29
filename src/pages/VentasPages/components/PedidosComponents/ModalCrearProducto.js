@@ -58,7 +58,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                 <div className='flex gap-5'>
                                     <div className='flex-auto'>
                                         <Label className="mt-4">
-                                            <span>Nombre</span>
+                                            <span>Nombre (opcional)</span>
                                             <CustomInput
                                                 type="text"
                                                 id="nombreAnillido"
