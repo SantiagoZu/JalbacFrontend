@@ -117,8 +117,8 @@ function EditarPedido() {
       >
         {({ errors, handleSubmit, touched }) => (
           <form onSubmit={handleSubmit}>
-            <div className='flex'>
-              <Label className="my-5 mr-5 flex-none">
+            <div className='flex flex-wrap'>
+              <Label className="my-5 mr-5 flex-none ">
                 <span> Clientes </span>
                 <Field
                   list="dataListCliente"

@@ -66,6 +66,7 @@ function HistorialEstadoPedidos() {
   function openModal(pedido) {
     setPedidoSeleccionado(pedido)
     setModalIsOpen(true)
+    console.log('open')
   }
 
   function closeModal() {

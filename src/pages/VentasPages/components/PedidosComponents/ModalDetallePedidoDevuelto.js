@@ -8,7 +8,9 @@ export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
     const DEVUELTO = 4
     const { detallePedidos, getDetallePedidos } = useDetallePedidos()
     const HAY_DEVUELTOS = detallePedidos.filter((detallePedido, i) => pedido.idPedido == detallePedido.idPedido && detallePedido.idEstado == DEVUELTO).length != 0
-
+    if (HAY_DEVUELTOS !== null && !HAY_DEVUELTOS) {
+    //   isClose() 
+    }
     function recargarCarta(val) {
         if (val) getDetallePedidos()
     }
@@ -20,7 +22,7 @@ export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
                     <div className='grid grid-cols-2 gap-2'>
                         {HAY_DEVUELTOS ? detallePedidos.map(detallePedido => pedido.idPedido == detallePedido.idPedido && detallePedido.idEstado == DEVUELTO ? (
                             <>
-                                <div>
+                                <div key={detallePedido.idDetallePedido}>
                                     <CardDetalles key={detallePedido.idDetallePedido} detallePedido={detallePedido} pedido={pedido} recargarCarta={val => recargarCarta(val)} />
                                     <Card className='mb-3 shadow-md w-auto '>
                                         <CardBody className="h-full dark:bg-gray-700 bg-gray-100 flex flex-col justify-center">
@@ -47,7 +49,7 @@ const ListaMotivosDevolucion = ({ motivosDevolucion }) => {
     const cardMotivosDevolucion = motivosSinNulos.map((motivo, i) => {
         numeroMotivos--
         return (
-            <div className="m-2 relative">
+            <div className="m-2 relative" key={i}>
                 <p className='text-center'>{motivo}</p>
                 <p className='absolute text-yellow-500 w-5 top-0 right-0 -mr-4' >{numeroMotivos}</p>
             </div>

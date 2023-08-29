@@ -59,7 +59,7 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
     }
     function validateMotivoDevolucion(texto) {
         if (!texto) return Swal.showValidationMessage('Tienes que escribir un motivo de devolución')
-        if (!(/^[a-zA-ZÀ-ÿ0-9\s\,\"]{5,100}$/.test(texto))) Swal.showValidationMessage('El motivo de devolución no debe tener caracteres especiales')
+        if (!(/^[a-zA-ZÀ-ÿ0-9\s\,\"]{5,100}$/.test(texto))) Swal.showValidationMessage('El motivo de devolución no debe tener caracteres especiales y debe contener minimo 5 caracteres')
     }
     async function updateMotivoDevolucion(motivo) {
         detallePedidoValues.motivoDevolucion = motivo
@@ -81,6 +81,7 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
             if (detallesDevueltos.length == 0) {
                 pedidoValues.idEstado = PRODUCCION
                 await updatePedidos(pedido.idPedido, pedidoValues)
+                
             }
             recargarCarta(true)
         } catch (error) {
