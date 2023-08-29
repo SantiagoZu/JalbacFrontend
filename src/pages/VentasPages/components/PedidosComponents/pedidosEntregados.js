@@ -95,12 +95,11 @@ function PedidosEntregados() {
           <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
             {inactivar ? 'Activos' : 'Inactivos'}
           </Button>
-          
         </div>
         
         <div className='flex-2'>
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
-            <div className="absolute inset-y-0 flex items-center content-center pl-2">
+            <div className="absolute inset-y-0 flex items-center pl-2">
               <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
             </div>
             <Input

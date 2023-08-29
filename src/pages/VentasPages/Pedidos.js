@@ -142,8 +142,8 @@ function Pedidos() {
     <>
       <PageTitle>Pedidos</PageTitle>
 
-      <div className="flex mb-6 gap-5 ml-auto  w-full">
-        <div className="flex gap-3 flex-1">
+      <div className="flex ml-auto mb-6 w-full">
+        <div className="flex gap-3 flex-1 justify-start">
           <p className='text-white self-center'> Filtrar pedidos por:</p>
           <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
             {inactivar ? 'Activos' : 'Inactivos'}
@@ -159,7 +159,7 @@ function Pedidos() {
           </div>
           
         </div>
-        <Button iconRight={PlusCircle} onClick={() => history.push('/app/crearPedido')}>
+        <Button iconRight={PlusCircle} onClick={() => history.push('/app/crearPedido')} className='mr-6'>
           Crear pedido
         </Button>
         <div >

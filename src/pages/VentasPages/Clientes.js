@@ -137,12 +137,19 @@ function Clientes() {
     <>
       <PageTitle>Clientes</PageTitle>
 
-      <div className="flex ml-auto mb-6">
+      <div className="flex ml-auto mb-6 w-full">
+        <div className="flex gap-3 flex-1 justify-start">
+          <p className='text-white self-center'> Filtrar pedidos por:</p>
+          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
+            {inactivar ? 'Activos' : 'Inactivos'}
+          </Button>
+        </div>
+
         <ModalCrearCliente isOpen={modalIsOpenCreate} isClose={closeModal} />
-        <Button iconRight={PlusCircle} onClick={openModalCreate}>
+        <Button iconRight={PlusCircle} onClick={openModalCreate} className='mr-6'>
           Crear cliente
         </Button>
-        <div className="flex justify-center flex-1 ml-5">
+        <div className="flex-2">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
               <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
@@ -218,12 +225,6 @@ function Clientes() {
           <ModalEditarCliente isOpen={modalIsOpenEdit} isClose={closeModalEdit} object={dataCliente} />
         )}
       </TableContainer>
-      <div className="flex mb-6 gap-3 -mt-4">
-        <p className='text-white self-center'> Filtrar pedidos por:</p>
-        <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
-          {inactivar ? 'Activos' : 'Inactivos'}
-        </Button>
-      </div>
 
 
     </>

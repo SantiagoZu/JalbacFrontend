@@ -137,7 +137,6 @@ export const ModalCrearEmpleado = ({ isOpen, isClose }) => {
                                     {({ field }) => (
                                         <Select {...field} className="mt-1">
                                             <option hidden>Seleccionar...</option>
-                                            <option value="Vaceador">Vaceador</option>
                                             <option value="Diseñador 3D">Diseñador 3D</option>
                                             <option value="A mano">A mano</option>
                                         </Select>

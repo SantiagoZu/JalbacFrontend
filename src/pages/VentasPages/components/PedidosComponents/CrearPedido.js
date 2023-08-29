@@ -206,7 +206,7 @@ function CrearPedido() {
                   </TableCell>
                   <TableCell>
                     {empleados.map((empleado) => {
-                      return empleado.documento == detallePedido.documentoEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {empleado.nombre}</p> : null
+                      return empleado.documento == detallePedido.documentoEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre} {empleado.apellido}</p> : null
                     })}
                   </TableCell>
                   <TableCell>
