@@ -102,10 +102,16 @@ function Roles() {
         eliminarRol(idRol).then(response => {
           showAlertCorrect('Rol eliminado correctamente.', 'success');
           setEliminadoExistoso(true)
-        }).catch(response => {
-          showAlertIncorrect('Error al eliminar el rol', 'error');
-          closeModal()
         })
+        .catch(response => {
+          if (response.response.data?.errorMessages[0] !== null) {
+            showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+            closeModal()
+          } else {
+            showAlertIncorrect('Error al eliminar el rol', 'error');
+          }
+
+        });
       }
     })
   }
@@ -189,6 +195,7 @@ function Roles() {
               resultsPerPage={resultsPerPage}
               onChange={onPageChangeTable2}
               label="Table navigation"
+              key={totalResults}
             />
           )}
         </TableFooter>

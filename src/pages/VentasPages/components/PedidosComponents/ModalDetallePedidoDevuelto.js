@@ -49,7 +49,7 @@ const ListaMotivosDevolucion = ({ motivosDevolucion }) => {
         return (
             <div className="m-2 relative">
                 <p className='text-center'>{motivo}</p>
-                <p className='absolute text-yellow-500 w-5 top-0 right-0 -mr-3' >{numeroMotivos}</p>
+                <p className='absolute text-yellow-500 w-5 top-0 right-0 -mr-4' >{numeroMotivos}</p>
             </div>
         )
     }

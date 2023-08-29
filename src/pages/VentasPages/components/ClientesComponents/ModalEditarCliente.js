@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Label, Select } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
-import { Formik } from 'formik';
+import { Formik, Field } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
 import { SpanError } from '../../../../components/styles/styles';
 import { validateInputs } from './ClientesFormValidations/ClientesFormik';
@@ -17,25 +17,21 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
         apellido: object.apellido || '',
         documento: object.documento || '',
         telefono: object.telefono || '',
-        estado: object.estado ? true : false
+        estado: object.estado ? 'true' : 'false'
     };
 
-    const estados = [
-        { value: true, label: 'Activo' },
-        { value: false, label: 'Inactivo' }
-    ];
+    
 
     return (
         <Formik
             initialValues={initialValues}
             validate={(values) => validateInputs(values)}
             onSubmit={(values, { resetForm }) => {
-                const convertedValue = values.estado === 'true';
 
                 const updatedValues = {
                     ...values,
                     documento: values.documento.toString(),
-                    estado: convertedValue,
+                    estado: JSON.parse(values.estado),
                 };
                 updateClientes(object.idCliente, updatedValues).then(response => {
                     resetForm();
@@ -106,12 +102,15 @@ export const ModalEditarCliente = ({ isOpen, isClose, object }) => {
                             </Label>
                             <Label className="mt-4">
                                 <span>Estado</span>
-                                <CustomInput
-                                    type="select"
-                                    id="estado"
-                                    name="estado"
-                                    options={estados}
-                                />
+                                <Field name="estado" id="estado">
+                                {({ field }) => (
+                                    <Select {...field} className="mt-1">
+                                        <option value="true">Activo</option>
+                                        <option value="false">Inactivo</option>
+                                    </Select>
+                                )}
+                                </Field>
+                                
                             </Label>
                         </ModalBody>
                         <ModalFooter>

@@ -266,7 +266,7 @@ function Pedidos() {
       </TableContainer>
       <div className="flex mb-6 gap-3 -mt-4">
         <p className='text-white self-center'> Filtrar pedidos por:</p>
-        <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
+        <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo} >
           {inactivar ? 'Activos' : 'Inactivos'}
         </Button>
       </div>

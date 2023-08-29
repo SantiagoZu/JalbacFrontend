@@ -209,6 +209,7 @@ function Clientes() {
               resultsPerPage={resultsPerPage}
               onChange={onPageChangeTable2}
               label="Table navigation"
+              key={totalResults}
             />
           )}
         </TableFooter>
