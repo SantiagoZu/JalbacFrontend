@@ -15,11 +15,11 @@ export const expresionesRol = {
 
 
 export const expresionesProducto = {
-    nombreAnillido: /^[A-Za-z0-9 ]+$/, // no caracteres especiales
+    nombreAnillido: /^[a-zA-ZÀ-ÿ0-9\s]+$/, // no caracteres especiales
     peso: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos decimal
     tamanoAnillo: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos
     tamanoPiedra: /^\d+(\.\d{1,12})?$/,     ///^.{4,12}$/ de 4 a 12 digitos
-    detalle: /^[A-Za-z0-9 ]{0,100}$/,
+    detalle: /^[a-zA-ZÀ-ÿ0-9\s]{0,100}$/,
     cantidad: /^\d+(\.\d{1,12})?$/,
     motivoDevolucion: /^[A-Za-z0-9]{0,100}$/,     // solo acepta de 0 a 200 caracteres
 

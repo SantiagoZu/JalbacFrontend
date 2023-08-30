@@ -111,6 +111,7 @@ function Clientes() {
       if (result.isConfirmed) {
         deleteClientes(idCliente)
           .then(response => {
+            getClientes()
             showAlertCorrect('Cliente eliminado correctamente.', 'success');
           })
           .catch(response => {
@@ -120,7 +121,6 @@ function Clientes() {
             } else {
               showAlertIncorrect('Error al eliminar el cliente', 'error');
             }
-
           });
       }
     });

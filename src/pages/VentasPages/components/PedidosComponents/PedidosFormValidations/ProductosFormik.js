@@ -61,7 +61,7 @@ export const validateInputsAgregarProducto = async (values, validacionDocumento)
   if (!values.detalle) {
     errores.detalle = 'El campo Detalle es oblígatorio'
   } else if (!validationScheme.detalle.test(values.detalle)) {
-    errores.detalle = 'El texto no puede ser contener mas de 100 caractere'
+    errores.detalle = 'El texto no puede contener más de 100 caracteres'
   }
   if (!values.cantidad) {
     errores.cantidad = 'El campo Cantidad  es obligatorio'

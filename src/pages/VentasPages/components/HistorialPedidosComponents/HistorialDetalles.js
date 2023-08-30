@@ -64,7 +64,7 @@ function HistorialDetalles() {
                     <TableHeader>
                         <tr >
                             <TableCell>Nombre anillo</TableCell>
-                            <TableCell>Tipo</TableCell>
+                            <TableCell>Servicio</TableCell>
                             <TableCell>Peso</TableCell>
                             <TableCell>Tamaño anillo</TableCell>
                             <TableCell>Tamaño piedra</TableCell>
@@ -82,7 +82,7 @@ function HistorialDetalles() {
                                     <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tipo}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.servicio}</p>
                                 </TableCell>
                                 <TableCell>
                                     <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
