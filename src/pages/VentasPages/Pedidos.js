@@ -10,9 +10,10 @@ import { parsearFecha } from '../../helpers/parseDate'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
-import { alertEscribirMotivoInactivacion, showAlertCorrect, alertInactivar } from '../../helpers/Alertas'
+import { alertEscribirMotivoInactivacion, showAlertCorrect, alertInactivar , showMotivoInactivacion} from '../../helpers/Alertas'
 import { useClientes } from '../../services/hooks/useClientes'
 import STYLE_INPUT from '../../helpers/styleInputDatalist'
+
 
 function Pedidos() {
   const RECIBIDO = 1
@@ -69,10 +70,10 @@ function Pedidos() {
     setInactivar(inactivar => !inactivar)
   }
   
-  const [filtrar, setFiltrar] = useState('')
+  const [filtrar, setFiltrar] = useState('en producción')
   useEffect(() => {
     let filteredData = searchFilter(pedidos, search)
-    filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar && pedido.idEstadoNavigation.nombre.toLowerCase().includes(filtrar.toLowerCase()) && pedido.idEstado != ENTREGADO)
+    filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar &&  pedido.idEstadoNavigation.nombre.toLowerCase().includes(filtrar.toLowerCase())  && pedido.idEstado != ENTREGADO)
     setTotalResults(filteredData.length)
 
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
@@ -150,11 +151,13 @@ function Pedidos() {
           </Button>
           <div className=' flex justify-start gap-3'>
             <p className='text-white self-center'>Fase </p>
-            <select className={STYLE_INPUT.replace('form-input', 'form-select') } onChange={(value) => setFiltrar(value.target.value)}>
-              <option value="">Todos</option>
-              <option value="recibido">Recibido</option>
+            <select  className={STYLE_INPUT.replace('form-input', 'form-select') } onChange={(value) => setFiltrar(value.target.value)}>
+
+
               <option value="en producción">En producción</option>
+              <option value="recibido">Recibido</option>
               <option value="devuelto">Devuelto</option>
+              <option value="">Todos</option>
             </select>
           </div>
           
@@ -253,10 +256,11 @@ function Pedidos() {
                         ) : null}
 
                         {!ES_ACTIVO ? (
-                          <Button title={pedido.motivoInactivacion} layout="link" size="icon" aria-label="Delete"  >
+                          <Button  title='Mostrar motivo de inactivación' onClick={() => showMotivoInactivacion(pedido.motivoInactivacion)} layout="link" size="icon" aria-label="Delete"  >
                             <Exclamation className='text-yellow-500 w-5 h-5' aria-hidden="true" />
                           </Button>
                         ) : null}
+
                       </div>
                     </TableCell>
                   </TableRow>

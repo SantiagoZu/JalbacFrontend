@@ -74,7 +74,7 @@ function EditarPedido() {
 
   async function deleteDetalle(idDetalle) {
     try {
-      const respuesta = await showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning')
+      const respuesta = await showAlertDeleted('¿Estás seguro que deseas eliminar este producto?', 'warning')
       if (respuesta.isConfirmed) {
         await deleteDetallePedidos(idDetalle)
         await getDetallePedidos()
@@ -106,7 +106,7 @@ function EditarPedido() {
           const clienteSeleccionado = clientes.find(cliente => cliente.documento == values.documentoCliente)
           valuesPedido.idCliente = clienteSeleccionado.idCliente
           updatePedidos(idPedido, valuesPedido).then((response) => {
-            showAlertCorrect('pedido editado correctamente', 'success', () => null)
+            showAlertCorrect('Pedido editado correctamente', 'success', () => null)
             setTimeout(() => {
               history.push('/app/pedidos')
             }, 2600);
