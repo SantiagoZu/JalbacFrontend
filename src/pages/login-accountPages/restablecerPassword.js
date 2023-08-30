@@ -71,7 +71,7 @@ function RestablecerPassword() {
                       <span>Contraseña nueva</span>
                       <div className="mt-1 w-full">
                         <CustomInput
-                          type="text"
+                          type="password"
                           id="contrasena"
                           name="contrasena"
                           placeholder="Contraseña"
@@ -86,7 +86,7 @@ function RestablecerPassword() {
                       <span>Confirmar nueva contraseña</span>
                       <div className="mt-1">
                         <CustomInput
-                          type="text"
+                          type="password"
                           id="confirmContrasena"
                           name="confirmContrasena"
                           placeholder="Contraseña"

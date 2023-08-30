@@ -29,7 +29,7 @@ export const validateInputs = async (values, validacionDocumento, validacionCorr
     if (!values.documento) {
         errores.documento = 'El campo Documento es oblígatorio'
     } else if (!validationScheme.documento.test(values.documento)) {
-        errores.documento = 'El documento debe tener mínimo 4 a 10 caracteres'
+        errores.documento = 'El documento debe tener mínimo 6 a 15 caracteres'
     } else {
         const isDocumentoRepetido = await validacionDocumento(values.documento);
         if (isDocumentoRepetido.isExistoso) {
@@ -85,7 +85,7 @@ export const validateEditInputs = (values) => {
     if (!values.documento) {
         errores.documento = 'El campo Documento es oblígatorio'
     } else if (!validationScheme.documento.test(values.documento)) {
-        errores.documento = 'El documento debe tener mínimo 4 a 10 caracteres'
+        errores.documento = 'El documento debe tener mínimo 6 a 15 caracteres'
     }
 
     if (!values.apellido) {

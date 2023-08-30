@@ -9,10 +9,11 @@ import { SpanError } from '../../components/styles/styles'
 import { initialValues, validateInputs } from "./Components/RecuperarPasswordValidations/RecuperarFormik";
 import { useUsuarios } from '../../services/hooks/useUsuarios'
 import { showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 
 function RecuperarPassword() {
   const { enviarCorreo } = useUsuarios();
-
+  const history = useHistory()
   return (
     <Formik
       initialValues={initialValues}
@@ -31,11 +32,11 @@ function RecuperarPassword() {
             window.location.reload();
           }, 1000);
         }).catch(response => {
-          // if (response.response.data.errorMessages[0] !== null) {
-          //   showAlertIncorrect(response.response.data.errorMessages[0], 'error');
-          // }else{  
-          //   showAlertIncorrect('Error al enviar el correo', 'error');
-          // }
+          if (response.response.data.errorMessages[0] !== null) {
+            showAlertIncorrect(response.response.data.errorMessages[0], 'error');
+          }else{  
+            showAlertIncorrect('Error al enviar el correo', 'error');
+          }
         })
       }}
     >
@@ -69,10 +70,15 @@ function RecuperarPassword() {
                       />
                       {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
                       <i>Al siguiente correo se le enviara un link para restablecer su constraseña.</i>
-
                     </Label>
-                    <Button block tag={Link} className="mt-4" onClick={handleSubmit}>
-                      Recuperar
+                    <div className='flex gap-3'>
+                      <Button block tag={Link} className="mt-4" onClick={handleSubmit}>
+                        Recuperar
+                      </Button>
+
+                    </div>
+                    <Button layout="outline" className="mt-4 w-full" onClick={() => history.push('/login')}>
+                      Regresar
                     </Button>
                   </div>
                 </form>

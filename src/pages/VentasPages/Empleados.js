@@ -136,11 +136,11 @@ function Empleados() {
       setTimeout(() => {
         setLoading(false)
       }, 500);
-      cargarEmpleados() 
+      cargarEmpleados()
     }
     if (eliminadoExistoso) {
       setLoading(false)
-      cargarEmpleados() 
+      cargarEmpleados()
       setEliminadoExistoso(false)
     }
   }, [modalIsOpen, modalIsOpenCrear, eliminadoExistoso])
@@ -149,12 +149,18 @@ function Empleados() {
     <>
       <PageTitle>Empleados</PageTitle>
 
-      <div className="flex ml-auto mb-6">
-        <Button iconRight={PlusCircle} onClick={openModalCrear}>Crear empleado</Button>
-        <div className="flex justify-center flex-1 ml-5">
+      <div className="flex ml-auto mb-6 w-full">
+        <div className="flex gap-3 flex-1 justify-start">
+          <p className='text-white self-center'> Filtrar pedidos por:</p>
+          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
+            {inactivar ? 'Activos' : 'Inactivos'}
+          </Button>
+        </div>
+        <Button iconRight={PlusCircle} onClick={openModalCrear} className='mr-6'>Crear empleado</Button>
+        <div className="flex-2">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
-              <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
+              <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true"/>
             </div>
             <Input
               className="pl-8 text-gray-700"
@@ -179,54 +185,44 @@ function Empleados() {
             </tr>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={10} className='text-center'>
-                  <Skeleton active paragraph={{ rows: 2 }}
-                    style={{width: '100%'}}
-                  />
+
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((empleado) => (
+              <TableRow key={empleado.idEmpleado}>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.cargo}</p>
                 </TableCell>
-                
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.idRolNavigation.nombre}</p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400" id="nombre" name="nombre">{empleado.nombre} {empleado.apellido}</p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.documento}</p>
+                </TableCell>
+                <TableCell>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.correo}</p>
+                </TableCell>
+
+                <TableCell>
+                  <Badge className="text-xs text-gray-600 dark:text-gray-400" type={empleado.estado ? "success" : "danger"}>{empleado.estado ? 'Activo' : 'Inactivo'}</Badge>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-4">
+                    <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModal(empleado)}>
+                      <EditIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarEmpleados(empleado.idEmpleado)}>
+                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                    </Button>
+                  </div>
+                </TableCell>
               </TableRow>
-              
-            ) :
-              (dataTable2.length === 0 ? (<TableRow>
-                <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
-              </TableRow>) : (dataTable2.map((empleado) => (
-                <TableRow key={empleado.idEmpleado}>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.cargo}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.idRolNavigation.nombre}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400" id="nombre" name="nombre">{empleado.nombre} {empleado.apellido}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.documento}</p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.idUsuarioNavigation.correo}</p>
-                  </TableCell>
 
-                  <TableCell>
-                    <Badge className="text-xs text-gray-600 dark:text-gray-400" type={empleado.estado ? "success" : "danger"}>{empleado.estado ? 'Activo' : 'Inactivo'}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-4">
-                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModal(empleado)}>
-                        <EditIcon className="w-5 h-5" aria-hidden="true" />
-                      </Button>
-
-                      <Button layout="link" size="icon" aria-label="Delete" onClick={() => eliminarEmpleados(empleado.idEmpleado)}>
-                        <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-
-              ))))}
+            )))}
 
           </TableBody>
 
@@ -242,14 +238,9 @@ function Empleados() {
             />
           )}
         </TableFooter>
-        
+
       </TableContainer>
-      <div className="flex mb-6 gap-3 -mt-4">
-          <p className='text-white self-center'> Filtrar pedidos por:</p>
-          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
-            {inactivar ? 'Activos' : 'Inactivos'}
-          </Button>
-        </div>
+
       {modalIsOpen && (
         <ModalEditarEmpleado isOpen={modalIsOpen} isClose={closeModal} empleado={empleadoSeleccionado} />
       )}

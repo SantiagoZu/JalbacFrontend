@@ -26,7 +26,6 @@ export const ModalEditarEmpleado = ({ isOpen, isClose, empleado }) => {
     const { validacionCorreo } = useUsuarios();
     const { roles } = useRoles();
     
-    console.log(initialValues)
     return (
         <Formik
             initialValues={initialValues}
