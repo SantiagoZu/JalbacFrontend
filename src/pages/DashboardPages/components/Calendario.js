@@ -27,17 +27,6 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
         }
     };
 
-    const ajustarFechaFin = (inicio, fin) => {
-        const fechaInicio = moment(inicio);
-        const fechaFin = moment(fin);
-
-        if (fechaInicio.year() < fechaFin.year()) {
-            const ultimoDia = fechaInicio.clone().endOf('year');
-            setFechaF(ultimoDia.format('YYYY-MM-DD'));
-            console.log(ultimoDia)
-        }
-    };
-
     const validarFecha = (inicio, fin) => {
         return moment(inicio).isSameOrBefore(fin);
     };
@@ -45,7 +34,6 @@ function Calendario({ fechaInicio, fechaFin, setFechaInicio, setFechaFin }) {
     useEffect(() => {
         setFechaI(fechaInicio);
         setFechaF(fechaFin);
-        ajustarFechaFin(fechaInicio, fechaFin);
     }, [fechaInicio, fechaFin]);
 
     useEffect(() => {

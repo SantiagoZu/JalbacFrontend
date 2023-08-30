@@ -1,4 +1,19 @@
 import { usePedidos } from './../../services/hooks/usePedidos';
+import moment from 'moment';
+
+const colorYear = {
+  2020: '#fbbf24',
+  2021: '#a3e635',
+  2022: '#fde68a',
+  2023: '#a5f3fc',
+  2024: '#f472b6',
+  2025: '#ffe4e6',
+  2026: '#94a3b8',
+/*   2027: 'rgba(255, 159, 64, 0.2)',
+  2028: 'rgba(255, 205, 86, 0.2)',
+  2029: 'rgba(255, 159, 64, 0.2)',
+  2030: 'rgba(255, 205, 86, 0.2)', */
+};
 
 function Charts(fechaInicioPedidos, fechaFinPedidos) {
   const { pedidos } = usePedidos()
@@ -7,42 +22,37 @@ function Charts(fechaInicioPedidos, fechaFinPedidos) {
 
   const pedidosFiltrados = pedidos.filter(pedido => {
     if (fechaInicioPedidosFiltrar !== '') {
-      const fechaPedido = new Date(pedido.fechaPedido);
-      return fechaPedido >= new Date(fechaInicioPedidosFiltrar) &&
-        (!fechaFinPedidos || fechaPedido <= new Date(fechaFinPedidos));
+      const fechaPedido = moment(pedido.fechaPedido);
+      return fechaPedido.isSameOrAfter(moment(fechaInicioPedidosFiltrar)) &&
+        (!fechaFinPedidos || fechaPedido.isSameOrBefore(moment(fechaFinPedidos)));
     }
-    return (!fechaFinPedidos || new Date(pedido.fechaPedido) <= new Date(fechaFinPedidos));
+    return (!fechaFinPedidos || moment(pedido.fechaPedido).isSameOrBefore(moment(fechaFinPedidos)));
   });
 
-
   const cantidadPedidosPorMes = pedidosFiltrados.reduce((acc, pedido) => {
-    const fechaPedido = new Date(pedido.fechaPedido);
-    const mes = fechaPedido.getMonth();
-    if (!acc[mes]) {
-      acc[mes] = 1;
-    } else {
-      acc[mes]++;
+    const fechaPedido = moment(pedido.fechaPedido);
+    const mes = fechaPedido.month();
+    const year = fechaPedido.year();
+    if (!acc[year]) {
+      acc[year] = Array.from({ length: 12 }, () => 0);
     }
+    acc[year][mes]++;
     return acc;
-  }, []);
+  }, {});
+
+  const years = Object.keys(cantidadPedidosPorMes);
+
+  const datasets = years.map(year => ({
+    label: year,
+    backgroundColor: colorYear[year] || '#000000',
+    data: cantidadPedidosPorMes[year],
+    fill: false,
+  }));
 
   const cantidadPedidos = {
     data: {
       labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-      datasets: [
-        {
-          label: 'Pedidos',
-          /**
-           * These colors come from Tailwind CSS palette
-           * https://tailwindcss.com/docs/customizing-colors/#default-color-palette
-           */
-          backgroundColor: '#0694a2',
-          borderColor: '#0694a2',
-          data: cantidadPedidosPorMes,
-          fill: false,
-        },
-
-      ],
+      datasets: datasets,
     },
     options: {
       responsive: true,
@@ -55,6 +65,11 @@ function Charts(fechaInicioPedidos, fechaFinPedidos) {
         intersect: true,
       },
       scales: {
+        yAxes: [{
+          ticks: {
+            precision: 0
+          }
+        }],
         x: {
           display: true,
           scaleLabel: {
@@ -72,7 +87,7 @@ function Charts(fechaInicioPedidos, fechaFinPedidos) {
       },
     },
     legend: {
-      display: false,
+      display: true,
     },
   }
 
@@ -82,6 +97,25 @@ function Charts(fechaInicioPedidos, fechaFinPedidos) {
 }
 
 export default Charts;
+
+
+
+
+
+
+/* */
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -115,10 +149,6 @@ export const doughnutLegends = [
   { title: 'Diseño 3D', color: 'bg-blue-500' },
   { title: 'Terminado a mano', color: 'bg-teal-600' },
   { title: 'Vaceado', color: 'bg-purple-600' },
-]
-
-export const lineLegends = [
-  { title: 'Pedidos', color: 'bg-teal-600' },
 ]
 
 export const barLegends = [

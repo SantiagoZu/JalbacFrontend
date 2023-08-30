@@ -3,18 +3,14 @@ import moment from 'moment'
 import InfoCard from '../../components/Cards/InfoCard'
 import ChartCard from '../../components/Chart/ChartCard'
 import Calendario from './components/Calendario'
-import ChartLegend from '../../components/Chart/ChartLegend'
 import PageTitle from '../../components/Typography/PageTitle'
 import RoundIcon from '../../components/RoundIcon'
-import { Doughnut, Line } from 'react-chartjs-2'
+import { Doughnut, Bar } from 'react-chartjs-2'
 import { CartIcon, PeopleIcon } from '../../icons'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
 import { useClientes } from '../../services/hooks/useClientes'
 import { usePedidos } from '../../services/hooks/usePedidos'
-import Charts, {
-  doughnutLegends,
-  lineLegends
-} from '../../utils/demo/chartsData'
+import Charts from '../../utils/demo/chartsData'
 import Chart3 from '../../utils/demo/chartsData3'
 import Charts2 from '../../utils/demo/chartsData2'
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos'
@@ -91,8 +87,7 @@ function Dashboard() {
           <Calendario setFechaInicio={setFechaInicioPedidos} setFechaFin={setFechaFinPedidos}
             fechaInicio={fechaInicioPedidos} fechaFin={fechaFinPedidos} className='flex flex-row justify-center'></Calendario>
           <ChartCard title="Cantidad de pedidos">
-            <Line {...Charts(fechaInicioPedidos, fechaFinPedidos).cantidadPedidos} />
-            <ChartLegend legends={lineLegends} />
+            <Bar {...Charts(fechaInicioPedidos, fechaFinPedidos).cantidadPedidos} />
           </ChartCard>
         </div>
 
@@ -100,8 +95,7 @@ function Dashboard() {
           <Calendario setFechaInicio={setFechaInicioCantidadPedidos} setFechaFin={setFechaFinCantidadPedidos}
             fechaInicio={fechaInicioCantidadPedidos} fechaFin={fechaFinCantidadPedidos}></Calendario>
           <ChartCard title="Cantidad de pedidos por empleado">
-            <Line {...Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos).pedidosEmpleado} />
-            <ChartLegend legends={lineLegends} />
+            <Bar {...Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos).pedidosEmpleado} />
           </ChartCard>
         </div>
 
@@ -110,7 +104,6 @@ function Dashboard() {
             fechaInicio={fechaInicioServicio} fechaFin={fechaFinServicio}></Calendario>
           <ChartCard title="Servicio más solicitado">
             <Doughnut {...Chart3(fechaInicioServicio, fechaFinServicio).servicios} />
-            <ChartLegend legends={doughnutLegends} />
           </ChartCard>
         </div>
 
