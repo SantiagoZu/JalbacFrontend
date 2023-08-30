@@ -81,7 +81,7 @@ function Login() {
                       <span>Contraseña</span>
                       <div className="mt-1">
                         <CustomInput
-                          type="text"
+                          type="password"
                           id="contrasena"
                           name="contrasena"
                           placeholder="Contraseña"

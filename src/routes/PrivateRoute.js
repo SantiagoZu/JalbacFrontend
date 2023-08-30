@@ -26,6 +26,23 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         }
       />
     );
-  };
+};
+
+const LogeadoRoute = ({ component: Component, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        isAuthenticated() ? (
+          <Redirect to="/app" />
+        ) : (
+          <Component {...props} />
+        )
+      }
+    />
+  );
+};
+
+
   
-  export default PrivateRoute;
+export {PrivateRoute, LogeadoRoute};

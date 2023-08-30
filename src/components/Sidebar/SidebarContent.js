@@ -60,7 +60,11 @@ function SidebarContent() {
         nombre: item.nombrePermiso,
         icono: "Clipboard",
         url: "/app/pedidos",
-      });
+      }, {idPermiso: item.idPermiso,
+        nombre: "Pedidos entregados",
+        icono: "Entregado",
+        url: "/app/pedidosEntregados",})
+      
     }
     if (item.nombrePermiso === "Historial pedidos") {
       newPermisos.push({
@@ -71,14 +75,14 @@ function SidebarContent() {
       });
     }
 
-    if (item.nombrePermiso === "Pedidos entregados") {
-      newPermisos.push({
-        idPermiso: item.idPermiso,
-        nombre: item.nombrePermiso,
-        icono: "Clipboard",
-        url: "/app/pedidosEntregados",
-      });
-    }
+    // if (item.nombrePermiso === "Pedidos entregados") {
+    //   newPermisos.push({
+    //     idPermiso: item.idPermiso,
+    //     nombre: item.nombrePermiso,
+    //     icono: "Clipboard",
+    //     url: "/app/pedidosEntregados",
+    //   });
+    // }
 
   });
 

@@ -67,7 +67,10 @@ export const Routes = () => {
         }, {
           path: '/editarPedido',
           component: EditarPedido,
-        },);
+        },{
+          path: '/pedidosEntregados',
+          component: PedidosEntregado,
+        });
       }
       if (item.nombrePermiso === "Historial pedidos") {
         routes.push({
@@ -80,13 +83,7 @@ export const Routes = () => {
           });
       }
 
-      if (item.nombrePermiso === "Pedidos entregados") {
-        routes.push({
-          path: '/pedidosEntregados',
-          component: PedidosEntregado,
-        },
-        );
-      }
+      
     });
   }
 

@@ -1,7 +1,7 @@
 import React, { lazy } from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import AccessibleNavigationAnnouncer from './components/AccessibleNavigationAnnouncer'
-import PrivateRoute from './routes/PrivateRoute'
+import {PrivateRoute, LogeadoRoute} from './routes/PrivateRoute'
 
 const Layout = lazy(() => import('./containers/Layout'))
 const Login = lazy(() => import('./pages/login-accountPages/Login'))
@@ -15,7 +15,7 @@ function App() {
       <Router>
         <AccessibleNavigationAnnouncer />
         <Switch>
-          <Route path="/login" component={Login} />
+          <LogeadoRoute path="/login" component={Login} />
           <Route path="/recuperar-password" component={RecuperarPassword} />
           <Route path="/restablecer-password" component={RestablecerPassword} />
           <Route path="/Pagina404" component={Page404}/>

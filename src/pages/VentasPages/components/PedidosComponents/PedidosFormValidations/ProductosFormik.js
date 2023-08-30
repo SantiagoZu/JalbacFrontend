@@ -39,9 +39,7 @@ export const validateInputsAgregarProducto = async (values, validacionDocumento)
       console.log(e)
     }
   }
-  if (!values.nombreAnillido) {
-    errores.nombreAnillido = 'El campo nombre  es obligatorio'
-  } else if (!validationScheme.nombreAnillido.test(values.nombreAnillido)) {
+  if (!validationScheme.nombreAnillido.test(values.nombreAnillido)) {
     errores.nombreAnillido = 'El nombre no puede tener caracteres especiales'
   }
   if (!values.tipo) {

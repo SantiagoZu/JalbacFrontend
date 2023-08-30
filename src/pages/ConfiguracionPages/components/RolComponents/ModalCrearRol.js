@@ -75,7 +75,7 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
               <Label className="mt-4">
                 <span>Permisos</span>
               </Label>
-              <div className='grid grid-cols-3'>
+              <div className='grid grid-cols-2'>
                 {allPermisos.map((mapPermiso) => (
                   <div key={mapPermiso.idPermiso} className="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400 mt-2">
                     <Switch name="checked" className="mr-3" checked={select.some((permiso) => permiso.idPermiso === mapPermiso.idPermiso)} onChange={(checked) => handleChange(checked, mapPermiso.idPermiso)} />
