@@ -1,17 +1,17 @@
 import { useDetallePedidos } from '../../services/hooks/useDetallePedidos';
+import moment from 'moment';
 
 function Charts3(fechaInicioServicio, fechaFinServicio) {
-
-    const { detallePedidos } = useDetallePedidos()
+    const { detallePedidos } = useDetallePedidos();
     const fechaInicioServiciosFiltrar = fechaInicioServicio || '';
 
     const serviciosFiltrados = detallePedidos.filter(detalle => {
-        if (fechaInicioServiciosFiltrar != '') {
-            const fechaServicio = new Date(detalle.idPedidoNavigation.fechaPedido);
-            return fechaServicio >= new Date(fechaInicioServiciosFiltrar) &&
-                (!fechaFinServicio || fechaServicio <= new Date(fechaFinServicio));
+        if (fechaInicioServiciosFiltrar !== '') {
+            const fechaServicio = moment(detalle.idPedidoNavigation.fechaPedido);
+            return fechaServicio >= moment(fechaInicioServiciosFiltrar) &&
+                (!fechaFinServicio || fechaServicio <= moment(fechaFinServicio));
         }
-        return (!fechaFinServicio || new Date(detalle.idPedidoNavigation.fechaPedido) <= new Date(fechaFinServicio));
+        return (!fechaFinServicio || moment(detalle.idPedidoNavigation.fechaPedido) <= moment(fechaFinServicio));
     });
 
     const serviciosUtilizados = serviciosFiltrados.reduce((acc, detalle) => {
@@ -22,7 +22,7 @@ function Charts3(fechaInicioServicio, fechaFinServicio) {
             acc[tipoServicio]++;
         }
         return acc;
-    }, []);
+    }, {});
 
     const nombreServicios = Object.keys(serviciosUtilizados);
     const valoresServicios = Object.values(serviciosUtilizados);
@@ -47,9 +47,9 @@ function Charts3(fechaInicioServicio, fechaFinServicio) {
             cutoutPercentage: 80,
         },
         legend: {
-            display: false,
+            display: true,
         },
-    }
+    };
 
     return {
         servicios,
