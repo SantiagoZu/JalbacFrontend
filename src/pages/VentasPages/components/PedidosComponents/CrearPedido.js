@@ -73,7 +73,7 @@ function CrearPedido() {
   }
 
   function deteleDetalle(indexEditar) {
-    showAlertDeleted('Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
+    showAlertDeleted('¿Estas seguro que deseas eliminar este producto?', 'warning').then(response => {
       if (response.isConfirmed) setDetalles(detalles.filter((detallePedido, index) => indexEditar !== index))
     })
   }

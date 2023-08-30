@@ -21,6 +21,7 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
             title: message,
             icon: icon,
             showCancelButton: true,
+            cancelButtonText: 'Cancelar',
             confirmButtonColor: '#7e3af2',
             cancelButtonColor: '#d33',
             confirmButtonText: '¡Sí, eliminar!'
@@ -36,6 +37,7 @@ export const showCloseSesion = (message, icon, onDelete ,onClose) => {
         title: message,
         icon: icon,
         showCancelButton: true,
+        cancelButtonText: 'Cancelar',
         confirmButtonColor: '#7e3af2',
         cancelButtonColor: '#d33',
         confirmButtonText: '¡Sí, cerrar!'
@@ -66,6 +68,7 @@ function validarMotivoInactivacion(texto) {
     if (!texto) return Swal.showValidationMessage('Tienes que escribir un motivo de inactivación')
     if (!(/^[a-zA-ZÀ-ÿ0-9\s\,\"]{5,100}$/.test(texto))) Swal.showValidationMessage('El motivo de inactivación no debe tener caracteres especiales y debe tener minimo 5 caracteres')
 }
+
 export function alertEscribirMotivoInactivacion(inactivar) {
     return new Promise((resolve) => {
 
@@ -85,3 +88,14 @@ export function alertEscribirMotivoInactivacion(inactivar) {
     
     })
 }
+
+
+export function showMotivoInactivacion(motivo) {
+  Swal.fire({
+    title: 'Motivo de inactivación',
+    text: motivo,
+    confirmButtonColor: '#7e3af2',
+    confirmButtonText: 'Cerrar'
+  })
+}
+
