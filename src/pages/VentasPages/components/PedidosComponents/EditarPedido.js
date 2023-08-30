@@ -74,7 +74,7 @@ function EditarPedido() {
 
   async function deleteDetalle(idDetalle) {
     try {
-      const respuesta = await showAlertDeleted('¿Estas seguro que deseas eliminar este producto?', 'warning')
+      const respuesta = await showAlertDeleted('¿Estás seguro que deseas eliminar este producto?', 'warning')
       if (respuesta.isConfirmed) {
         await deleteDetallePedidos(idDetalle)
         await getDetallePedidos()
