@@ -39,7 +39,7 @@ export const validateInputsAgregarProducto = async (values, validacionDocumento)
       console.log(e)
     }
   }
-  if (!validationScheme.nombreAnillido.test(values.nombreAnillido)) {
+  if (values.nombreAnillido && !validationScheme.nombreAnillido.test(values.nombreAnillido)) {
     errores.nombreAnillido = 'El nombre no puede tener caracteres especiales'
   }
   if (!values.tipo) {
@@ -55,7 +55,7 @@ export const validateInputsAgregarProducto = async (values, validacionDocumento)
   } else if (!validationScheme.tamanoAnillo.test(values.tamanoAnillo)) {
     errores.tamanoAnillo = 'La medida no puede tener letras'
   }
-  if (!validationScheme.tamanoPiedra.test(values.tamanoPiedra)) {
+  if (values.tamanoPiedra && !validationScheme.tamanoPiedra.test(values.tamanoPiedra)) {
     errores.tamanoPiedra = 'El numero no puede tener letras'
   }
   if (!values.detalle) {
@@ -82,9 +82,7 @@ export const validateInputsEditarProducto = async (values, validacionDocumento) 
       console.log(e)
     }
   }
-  if (!values.nombreAnillido) {
-    errores.nombreAnillido = 'El campo nombre del anillo es oblígatorio'
-  } else if (!validationScheme.nombreAnillido.test(values.nombreAnillido)) {
+  if (values.nombreAnillido && !validationScheme.nombreAnillido.test(values.nombreAnillido)) {
     errores.nombreAnillido = 'El nombre no puede tener caracteres especiales'
   }
   if (!values.peso) {
@@ -98,7 +96,7 @@ export const validateInputsEditarProducto = async (values, validacionDocumento) 
     errores.tamanoAnillo = 'La medida no puede tener letras'
   }
   
-  if (!validationScheme.tamanoPiedra.test(values.tamanoPiedra)) {
+  if (values.tamanoPiedra && !validationScheme.tamanoPiedra.test(values.tamanoPiedra)) {
     errores.tamanoPiedra = 'El numero no puede tener letras'
   }
   if (!values.detalle) {
