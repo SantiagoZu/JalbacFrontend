@@ -147,17 +147,6 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                             />
                                             {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
                                         </Label>
-                                        <Label className="mt-4">
-                                            <span>Tamaño piedra(mm)</span>
-                                            <CustomInput
-                                                type="text"
-                                                id="tamanoPiedra"
-                                                name="tamanoPiedra"
-
-                                            />
-                                            {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
-                                        </Label>
-
                                     </div>
                                     <div className='flex-auto'>
                                         <Label className="mt-4">
@@ -173,15 +162,6 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                                 <option>Plata</option>
                                                 <option>Oro rosado</option>
                                             </Field>
-                                        </Label>
-                                        <Label className="mt-4">
-                                            <span>Detalles</span>
-                                            <CustomInput
-                                                type="text"
-                                                id="detalle"
-                                                name="detalle"
-                                            />
-                                            {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
                                             <span>Cantidad</span>
@@ -208,7 +188,30 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                             </datalist>
                                             {touched.documentoEmpleado && errors.documentoEmpleado && <SpanError>{errors.documentoEmpleado}</SpanError>}
                                         </Label>
+                                        <Label className="mt-4">
+                                            <span>Tamaño piedra(mm)</span>
+                                            <CustomInput
+                                                type="text"
+                                                id="tamanoPiedra"
+                                                name="tamanoPiedra"
+                                            />
+                                            {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
+                                        </Label>
                                     </div>
+                                </div>
+                                <div>
+                                    <Label className="mt-4">
+                                        <span>Detalle</span>
+                                        <Field
+                                            type="text"
+                                            id="detalle"
+                                            name="detalle"
+                                            placeholder='Las piedras son de color azul'
+                                            as='textarea'
+                                            className={STYLE_INPUT}
+                                        />
+                                        {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
+                                    </Label>
                                 </div>
                             </ModalBody>
                             <ModalFooter>

@@ -24,7 +24,7 @@ function Charts(fechaInicioPedidos, fechaFinPedidos) {
     if (fechaInicioPedidosFiltrar !== '') {
       const fechaPedido = moment(pedido.fechaPedido);
       return fechaPedido.isSameOrAfter(moment(fechaInicioPedidosFiltrar)) &&
-        (!fechaFinPedidos || fechaPedido.isSameOrBefore(moment(fechaFinPedidos)));
+        (!fechaFinPedidos || fechaPedido.isSameOrBefore(moment(fechaFinPedidos)) && pedido.isActivo);
     }
     return (!fechaFinPedidos || moment(pedido.fechaPedido).isSameOrBefore(moment(fechaFinPedidos)));
   });

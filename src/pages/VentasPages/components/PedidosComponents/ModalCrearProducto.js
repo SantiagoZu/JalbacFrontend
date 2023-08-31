@@ -1,6 +1,6 @@
 import React from 'react'
 import { Label } from '@windmill/react-ui'
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Textarea } from '@windmill/react-ui';
 import { showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Field, Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
@@ -102,16 +102,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                             />
                                             {touched.tamanoAnillo && errors.tamanoAnillo && <SpanError>{errors.tamanoAnillo}</SpanError>}
                                         </Label>
-                                        <Label className="mt-4">
-                                            <span>Tamaño piedra(mm)</span>
-                                            <CustomInput
-                                                type="text"
-                                                id="tamanoPiedra"
-                                                name="tamanoPiedra"
-                                                placeholder='1.5'
-                                            />
-                                            {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
-                                        </Label>
+
                                     </div>
                                     <div className='flex-auto'>
                                         <Label className="mt-4">
@@ -128,16 +119,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                                 <option>Oro rosado</option>
                                             </Field>
                                         </Label>
-                                        <Label className="mt-4">
-                                            <span>Detalle</span>
-                                            <CustomInput
-                                                type="text"
-                                                id="detalle"
-                                                name="detalle"
-                                                placeholder='Las piedras son de color azul'
-                                            />
-                                            {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
-                                        </Label>
+
                                         <Label className="mt-4">
                                             <span> Empleado </span>
                                             <Field
@@ -165,7 +147,32 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                             />
                                             {touched.cantidad && errors.cantidad && <SpanError>{errors.cantidad}</SpanError>}
                                         </Label>
+                                        <Label className="mt-4">
+                                            <span>Tamaño piedra(mm)</span>
+                                            <CustomInput
+                                                type="text"
+                                                id="tamanoPiedra"
+                                                name="tamanoPiedra"
+                                                placeholder='1.5'
+                                            />
+                                            {touched.tamanoPiedra && errors.tamanoPiedra && <SpanError>{errors.tamanoPiedra}</SpanError>}
+                                        </Label>
                                     </div>
+
+                                </div>
+                                <div>
+                                    <Label className="mt-4">
+                                        <span>Detalle</span>
+                                        <Field
+                                            type="text"
+                                            id="detalle"
+                                            name="detalle"
+                                            placeholder='Las piedras son de color azul'
+                                            as='textarea'
+                                            className={STYLE_INPUT}
+                                        />
+                                        {touched.detalle && errors.detalle && <SpanError>{errors.detalle}</SpanError>}
+                                    </Label>
                                 </div>
                             </ModalBody>
                             <ModalFooter>

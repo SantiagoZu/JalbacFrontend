@@ -11,11 +11,11 @@ const colorYear = {
     2024: '#f472b6',
     2025: '#ffe4e6',
     2026: '#94a3b8',
-  /*   2027: 'rgba(255, 159, 64, 0.2)',
-    2028: 'rgba(255, 205, 86, 0.2)',
-    2029: 'rgba(255, 159, 64, 0.2)',
-    2030: 'rgba(255, 205, 86, 0.2)', */
-  };
+    /*   2027: 'rgba(255, 159, 64, 0.2)',
+      2028: 'rgba(255, 205, 86, 0.2)',
+      2029: 'rgba(255, 159, 64, 0.2)',
+      2030: 'rgba(255, 205, 86, 0.2)', */
+};
 
 function Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos) {
     const { empleados } = useEmpleados();
@@ -28,7 +28,7 @@ function Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos) {
             const fechaPedidoEmpleado = moment(detalle.idPedidoNavigation.fechaPedido);
             return (
                 fechaPedidoEmpleado.isSameOrAfter(moment(fechaInicioCantidadPedidosFiltrar)) &&
-                (!fechaFinCantidadPedidos || fechaPedidoEmpleado.isSameOrBefore(moment(fechaFinCantidadPedidos)))
+                (!fechaFinCantidadPedidos || fechaPedidoEmpleado.isSameOrBefore(moment(fechaFinCantidadPedidos)) && detalle.idPedidoNavigation.isActivo)
             );
         }
         return (
@@ -57,9 +57,9 @@ function Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos) {
 
     const uniqueYears = [...new Set(detallesFiltrados.map(
         (detalle) => moment(detalle.idPedidoNavigation.fechaPedido).year())
-        )];  
-    uniqueYears.sort(); 
-    
+    )];
+    uniqueYears.sort();
+
     const labelsEmpleados = cantidadPedidosPorEmpleado.map((empleado) => empleado.empleadoNombre);
 
     const datasets = uniqueYears.map((year) => ({
@@ -88,9 +88,9 @@ function Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos) {
             scales: {
                 yAxes: [{
                     ticks: {
-                      precision: 0
+                        precision: 0
                     }
-                  }],   
+                }],
                 x: {
                     display: true,
                     scaleLabel: {

@@ -139,7 +139,7 @@ function Clientes() {
 
       <div className="flex ml-auto mb-6 w-full">
         <div className="flex gap-3 flex-1 justify-start">
-          <p className='text-white self-center'> Filtrar pedidos por:</p>
+          <p className='dark:text-white font-semibold text-black self-center'> Filtrar clientes por:</p>
           <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}>
             {inactivar ? 'Activos' : 'Inactivos'}
           </Button>

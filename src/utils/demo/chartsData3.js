@@ -9,7 +9,7 @@ function Charts3(fechaInicioServicio, fechaFinServicio) {
         if (fechaInicioServiciosFiltrar !== '') {
             const fechaServicio = moment(detalle.idPedidoNavigation.fechaPedido);
             return fechaServicio >= moment(fechaInicioServiciosFiltrar) &&
-                (!fechaFinServicio || fechaServicio <= moment(fechaFinServicio));
+                (!fechaFinServicio || fechaServicio <= moment(fechaFinServicio) && detalle.idPedidoNavigation.isActivo);
         }
         return (!fechaFinServicio || moment(detalle.idPedidoNavigation.fechaPedido) <= moment(fechaFinServicio));
     });
