@@ -17,6 +17,9 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import { validateInputs } from './PedidosFormValidations/PedidosFormik'
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
+
+import {handleInput }  from "../../../../helpers/validacionesInput";
+
 function EditarPedido() {
   const history = useHistory()
   const location = useLocation()
@@ -61,10 +64,12 @@ function EditarPedido() {
     setDataTable2(detallePedidos2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
   }, [detallePedidos, pageTable2]);
 
+  console.log(clientePedido)
   const { updatePedidos } = usePedidos()
-  const { clientes, validacionDocumento } = useClientes()
+  const { clientes } = useClientes()
   const clientesDropdown = [
-    ...clientes.map(cliente => cliente.estado ? <option value={cliente.documento}>{cliente.nombre} {cliente.apellido} </option> : null)
+    ...clientes.map(cliente => cliente.estado ? (<option value={`${cliente.nombre} ${cliente.apellido}`} data-documento={cliente.documento}>D.I {cliente.documento}</option>) : null)
+
   ]
   const initialValuesPedido = {
     documentoCliente: clientePedido.documento,
@@ -72,6 +77,7 @@ function EditarPedido() {
     isActivo: pedido.isActivo || ''
   }
 
+   
   async function deleteDetalle(idDetalle) {
     try {
       const respuesta = await showAlertDeleted('¿Estás seguro que deseas eliminar este producto?', 'warning')
@@ -89,12 +95,18 @@ function EditarPedido() {
       getDetallePedidos()
     }
   }, [modalIsOpenCrearProducto, modalIsOpenEditarProducto])
+
+  const [valueInputCliente, setValueInputCliente] = useState(`${clientePedido.nombre} ${clientePedido.apellido}`);
+
+
+  
+
   return (
     <>
       <PageTitle>Editar pedido</PageTitle>
       <Formik
         initialValues={initialValuesPedido}
-        validate={values => validateInputs(values, validacionDocumento)}
+        validate={values => validateInputs(values)}
         onSubmit={values => {
           const valuesPedido = {
             ...values,
@@ -103,36 +115,65 @@ function EditarPedido() {
             fechaPedido: pedido.fechaPedido,
             isActivo: pedido.isActivo
           };
-          const clienteSeleccionado = clientes.find(cliente => cliente.documento == values.documentoCliente)
-          valuesPedido.idCliente = clienteSeleccionado.idCliente
-          updatePedidos(idPedido, valuesPedido).then((response) => {
-            showAlertCorrect('Pedido editado correctamente', 'success', () => null)
-            setTimeout(() => {
-              history.push('/app/pedidos')
-            }, 2600);
-          }).catch(response => {
-            showAlertIncorrect('No se pudo editar el pedido', 'error');
-          });
-        }}
+
+          const valueDatalist = document.getElementById( "documentoClienteVisible").value
+          let optionSelected = document.querySelector(`#dataListCliente option[value='${valueDatalist}']`)
+          if(optionSelected) {
+            const valueOptionSelected = optionSelected.getAttribute('data-documento')
+
+            const clienteSeleccionado = clientes.find(cliente => cliente.documento == valueOptionSelected)
+            valuesPedido.idCliente = clienteSeleccionado.idCliente
+            updatePedidos(idPedido, valuesPedido).then((response) => {
+              showAlertCorrect('Pedido editado correctamente', 'success', () => null)
+              setTimeout(() => {
+                history.push('/app/pedidos')
+              }, 2600);
+            }).catch(response => {
+                showAlertIncorrect('No se pudo editar el pedido', 'error');
+              });
+          } else {
+
+          }
+
+        }
+          
+        }
       >
-        {({ errors, handleSubmit, touched }) => (
+        {({ setFieldTouched , setFieldValue, errors, handleSubmit, touched }) => (
           <form onSubmit={handleSubmit}>
             <div className='flex flex-wrap'>
               <Label className="my-5 mr-5 flex-none ">
                 <span> Clientes </span>
-                <Field
+                
+                <input
                   list="dataListCliente"
                   name='documentoCliente'
-                  id="documentoCliente"
+                  id="documentoClienteVisible"
                   className={STYLE_INPUT}
                   type="text"
                   as='input'
-                  required={true}
+                  onChange={(event) => {
+                    handleInput(setValueInputCliente, setFieldValue, setFieldTouched , "documentoClienteVisible", "dataListCliente", "documentoClienteHidden")
+                    setValueInputCliente(event.target.value)
+                  }}
+ 
+                  value={valueInputCliente}
+                  placeholder='Josue Barreto'
                 />
+
+                <Field
+                  list="dataListCliente"
+                  id="documentoClienteHidden"
+                  name="documentoClienteHidden"
+                  className="hidden"
+                  type="text"
+                  placeholder='Josue Barreto'
+                />
+
                 <datalist id="dataListCliente" >
                   {clientesDropdown}
                 </datalist>
-                {touched.documentoCliente && errors.documentoCliente && <SpanError>{errors.documentoCliente}</SpanError>}
+                {touched.documentoClienteHidden && errors.documentoClienteHidden && <SpanError>{errors.documentoClienteHidden}</SpanError>}
               </Label>
               <Label className=" m-5 flex-none ">
                 <span>Fecha Entrega</span>

@@ -2,18 +2,15 @@ import React from 'react'
 import { Card, CardBody, Modal, ModalHeader } from '@windmill/react-ui'
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { CardDetalles } from './CardDetalles'
-import { Exclamation } from '../../../../icons'
 
 export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
     const DEVUELTO = 4
     const { detallePedidos, getDetallePedidos } = useDetallePedidos()
-    const HAY_DEVUELTOS = detallePedidos.filter((detallePedido, i) => pedido.idPedido == detallePedido.idPedido && detallePedido.idEstado == DEVUELTO).length != 0
-    if (HAY_DEVUELTOS !== null && !HAY_DEVUELTOS) {
-    //   isClose() 
-    }
+    const HAY_DEVUELTOS = detallePedidos.filter((detallePedido ) => pedido.idPedido == detallePedido.idPedido && detallePedido.idEstado == DEVUELTO).length != 0
     function recargarCarta(val) {
         if (val) getDetallePedidos()
     }
+   
     return (
         <>
             <Modal isOpen={isOpen} onClose={isClose}>

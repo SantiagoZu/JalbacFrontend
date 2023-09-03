@@ -152,8 +152,6 @@ function Pedidos() {
           <div className=' flex justify-start gap-3'>
             <p className='dark:text-white font-semibold text-black self-center'>Fase</p>
             <select  className={STYLE_INPUT.replace('form-input', 'form-select') } onChange={(value) => setFiltrar(value.target.value)}>
-
-
               <option value="en producción">En producción</option>
               <option value="recibido">Recibido</option>
               <option value="devuelto">Devuelto</option>
@@ -256,7 +254,7 @@ function Pedidos() {
                         ) : null}
 
                         {!ES_ACTIVO ? (
-                          <Button  title='Mostrar motivo de inactivación' onClick={() => showMotivoInactivacion(pedido.motivoInactivacion)} layout="link" size="icon" aria-label="Delete"  >
+                          <Button  title='Ver motivo de inactivación' onClick={() => showMotivoInactivacion(pedido.motivoInactivacion)} layout="link" size="icon" aria-label="Delete"  >
                             <Exclamation className='text-yellow-500 w-5 h-5' aria-hidden="true" />
                           </Button>
                         ) : null}

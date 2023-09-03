@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React  from 'react'
 import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
@@ -10,13 +10,15 @@ import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados';
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 
+import {handleInput }  from "../../../../helpers/validacionesInput";
+
 export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarTabla = undefined, idDetalleAEditar = undefined, empleadoEncargado = undefined }) => {
     let initialValuesDetalle
     const { updateDetallePedidos } = useDetallePedidos();
-    const { empleados, validacionDocumento } = useEmpleados()
+    const { empleados} = useEmpleados()
 
     const empleadosDropdown = [
-        ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
+      ...empleados.map(empleado => empleado.estado ? (<option value={`${empleado.nombre} ${empleado.apellido}`} data-documento={empleado.documento}>D.I {empleado.documento}</option>) : null)
     ]
     if (detalleAEditar.idDetallePedido === undefined) {
         initialValuesDetalle = {
@@ -31,6 +33,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
             documentoEmpleado: detalleAEditar.documentoEmpleado || '',
         };
     }
+    
     else {
 
         initialValuesDetalle = {
@@ -48,12 +51,15 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
             idEstado: detalleAEditar.idEstado || '',
             motivoDevolucion: detalleAEditar.motivoDevolucion || '',
         };
+    
     }
+
+    const [valueInputEmpleado, setValueInputEmpleado] = React.useState(`${empleadoEncargado.nombre} ${empleadoEncargado.apellido}`);
     return (
         <>
             <Formik
                 initialValues={initialValuesDetalle}
-                validate={values => validateInputsEditarProducto(values, validacionDocumento)}
+                validate={values => validateInputsEditarProducto(values)}
                 onSubmit={(values, { resetForm }) => {
                     const valuesDetalle = {
                         ...values,
@@ -63,41 +69,57 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                         motivoDevolucion: ''
                     };
                     if (detalleAEditar.idDetallePedido === undefined) { // uso este modal desde la vista Crear pedido
-                        const valuesDetalleTabla = {
-                            idDetalle: idDetalleAEditar,
-                            nombreAnillido: values.nombreAnillido || '',
-                            tipo: values.tipo || '',
-                            peso: values.peso || '',
-                            tamanoAnillo: values.tamanoAnillo || '',
-                            tamanoPiedra: values.tamanoPiedra || '',
-                            material: values.material || '',
-                            detalle: values.detalle || '',
-                            cantidad: values.cantidad || '',
-                            documentoEmpleado: values.documentoEmpleado || '',
-                            idEstado: 1,
-                            motivoDevolucion: '',
+
+                        const valueDatalist = document.getElementById( "documentoEmpleadoVisible").value
+                        let optionSelected = document.querySelector(`#dataListEmpleado option[value='${valueDatalist}']`)
+                        if (optionSelected) {
+
+                          const valueOptionSelected = optionSelected.getAttribute('data-documento')
+                          const valuesDetalleTabla = {
+                              idDetalle: idDetalleAEditar,
+                              nombreAnillido: values.nombreAnillido || '',
+                              tipo: values.tipo || '',
+                              peso: values.peso || '',
+                              tamanoAnillo: values.tamanoAnillo || '',
+                              tamanoPiedra: values.tamanoPiedra || '',
+                              material: values.material || '',
+                              detalle: values.detalle || '',
+                              cantidad: values.cantidad || '',
+                              documentoEmpleado: valueOptionSelected || '',
+                              idEstado: 1,
+                              motivoDevolucion: '',
+                          }
+                          showAlertCorrect('El producto ha sido editado', 'success', isClose)
+                          recargarTabla(valuesDetalleTabla)
+                          isClose()  
                         }
-                        showAlertCorrect('El producto ha sido editado', 'success', isClose)
-                        recargarTabla(valuesDetalleTabla)
-                        isClose()
+                        
                     }
                     else { //uso la vista desde Editar pedido
-                        const empleadoDetalle = empleados.find(empleado => empleado.documento == values.documentoEmpleado)
-                        valuesDetalle.idEmpleado = empleadoDetalle.idEmpleado
 
-                        updateDetallePedidos(detalleAEditar.idDetallePedido, valuesDetalle).then(response => {
+                        const valueDatalist = document.getElementById( "documentoEmpleadoVisible").value
+                        let optionSelected = document.querySelector(`#dataListEmpleado option[value='${valueDatalist}']`)
+                        if (optionSelected) {
+                          
+                          const valueOptionSelected = optionSelected.getAttribute('data-documento')
+                          const empleadoDetalle = empleados.find(empleado => empleado.documento == valueOptionSelected)
+                          valuesDetalle.idEmpleado = empleadoDetalle.idEmpleado
+
+                          updateDetallePedidos(detalleAEditar.idDetallePedido, valuesDetalle).then(response => {
                             resetForm();
                             showAlertCorrect('Producto editado correctamente', 'success', isClose)
                             isClose()
-                        }).catch(response => {
-                            showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
+                          }).catch(response => {
+                              showAlertIncorrect('No se pudo editar el producto', 'error', isClose);
 
-                        })
+                            })
+                        }
                     }
 
                 }}
             >
-                {({ errors, handleSubmit, touched }) => (
+                {({ errors, handleSubmit, touched , setFieldTouched, setFieldValue}) => (
+
                     <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
                             <ModalHeader className='mb-3'>Editar producto</ModalHeader>
@@ -174,19 +196,38 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
                                         </Label>
                                         <Label className="mt-4">
                                             <span> Empleado </span>
-                                            <Field
+                                            <input
+
                                                 list="dataListEmpleado"
-                                                name='documentoEmpleado'
-                                                id="documentoEmpleado"
+                                                name='documentoEmpleadoVisible'
+                                                id="documentoEmpleadoVisible"
                                                 className={STYLE_INPUT}
                                                 type="text"
-                                                as='input'
-                                                required={true}
+                                                placeholder='Santiago'
+                                                onChange={(event) => {
+                                                  handleInput(setValueInputEmpleado, setFieldValue, setFieldTouched , "documentoEmpleadoVisible", "dataListEmpleado", "documentoEmpleadoHidden")
+                                                  setValueInputEmpleado(event.target.value)
+                                                }}
+
+                                                value={valueInputEmpleado}
                                             />
+
+                                            <Field
+                                                list="dataListEmpleado"
+                                                name='documentoEmpleadoHidden'
+                                                id="documentoEmpleadoHidden"
+                                                className="hidden"
+                                                type="text"
+                                                as='input'
+                                                placeholder='Santiago'
+                                            />
+                      
                                             <datalist id="dataListEmpleado" >
                                                 {empleadosDropdown}
                                             </datalist>
-                                            {touched.documentoEmpleado && errors.documentoEmpleado && <SpanError>{errors.documentoEmpleado}</SpanError>}
+                                            {touched.documentoEmpleadoHidden && errors.documentoEmpleadoHidden && <SpanError>{errors.documentoEmpleadoHidden}</SpanError>}
+
+
                                         </Label>
                                         <Label className="mt-4">
                                             <span>Tamaño piedra(mm)</span>

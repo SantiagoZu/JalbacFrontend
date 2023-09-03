@@ -12,17 +12,15 @@ import {
   Button,
   Pagination,
   Input,
-  Badge
 } from '@windmill/react-ui'
-import { SearchIcon , PlusCircle} from '../../../../icons'
+import { SearchIcon } from '../../../../icons'
 import { usePedidos } from '../../../../services/hooks/usePedidos';
 import { ModalDetallePedido } from './ModalDetallePedido';
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist'
-import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
-import { useClientes } from '../../../../services/hooks/useClientes'
 
 function PedidosEntregados() {
+
   const ENTREGADO = 3
   const { pedidos, pedidosEmpleado, idUsuario } = usePedidos()
   const pedidos2 = pedidos.concat([])
@@ -66,20 +64,16 @@ function PedidosEntregados() {
     ));
   };
 
-  const [filtrar, setFiltrar] = useState('')
-  const [inactivar, setInactivar] = useState(false)
-  function toggleDatatableIsActivo() {
-    setInactivar(inactivar => !inactivar)
-  }
   useEffect(() => {
     let filteredData = searchFilter(pedidos, search)
-    filteredData = filteredData.filter(pedido => pedido.isActivo == !inactivar && pedido.idEstadoNavigation.nombre.toLowerCase().includes(filtrar.toLowerCase()) && pedido.idEstado == ENTREGADO)
+    filteredData = filteredData.filter(pedido =>  pedido.idEstado === ENTREGADO)
     setTotalResults(filteredData.length)
 
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
     );
 
-  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search, filtrar, inactivar])
+  }, [ES_ADMINISTRADOR ? pedidos : pedidosEmpleado, pageTable2, search])
+
 
   const searcher = (e) => {
     setSearch(e.target.value)
@@ -89,15 +83,9 @@ function PedidosEntregados() {
     <>
       <PageTitle>Pedidos entregados</PageTitle>
 
-      <div className="flex ml-auto mb-6 w-full">
-        <div className="flex gap-3 flex-1 justify-start ">
-          <p className='text-white self-center'> Filtrar pedidos por:</p>
-          <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
-            {inactivar ? 'Activos' : 'Inactivos'}
-          </Button>
-        </div>
+      <div className="flex ml-auto mb-6 w-full justify-end">
         
-        <div className='flex-2'>
+        <div className=''>
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
               <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
@@ -111,6 +99,7 @@ function PedidosEntregados() {
             />
           </div>
         </div>
+
       </div>
       <TableContainer className="mb-8">
         <Table>
@@ -119,7 +108,6 @@ function PedidosEntregados() {
               <TableCell className="text-white">Fecha Recibido</TableCell>
               <TableCell className="text-white">Cliente</TableCell>
               <TableCell className="text-white">Fecha Entrega</TableCell>
-              <TableCell className="text-white">Estado</TableCell>
               <TableCell className="text-white">Acciones</TableCell>
             </tr>
           </TableHeader>
@@ -139,10 +127,6 @@ function PedidosEntregados() {
                     </TableCell>
                     <TableCell>
                       <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fechaEntrega)}</p>
-                    </TableCell>
-                    
-                    <TableCell>
-                      <Badge className="text-xs text-gray-600 dark:text-gray-400" type={pedido.isActivo ? "success" : "danger"}>{pedido.isActivo ? 'Activo' : 'Inactivo'}</Badge>
                     </TableCell>
                     
                     <TableCell>

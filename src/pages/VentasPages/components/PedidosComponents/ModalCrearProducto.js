@@ -1,6 +1,6 @@
 import React from 'react'
 import { Label } from '@windmill/react-ui'
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Textarea } from '@windmill/react-ui';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button} from '@windmill/react-ui';
 import { showAlertIncorrect } from '../../../../helpers/Alertas';
 import { Field, Formik } from 'formik';
 import { CustomInput } from '../../../../components/CustomInput';
@@ -9,15 +9,21 @@ import { initialValuesAgregarProducto, validateInputsAgregarProducto } from './P
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { useEmpleados } from '../../../../services/hooks/useEmpleados'
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
+
+import {handleInput }  from "../../../../helpers/validacionesInput";
+
 export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, recargarTabla = undefined }) => {
     const { postDetallePedidos } = useDetallePedidos();
     const { empleados, validacionDocumento } = useEmpleados()
     const empleadosDropdown = [
-        ...empleados.map(empleado => empleado.estado ? <option value={empleado.documento}>{empleado.nombre} {empleado.apellido} </option> : null)
+    ...empleados.map(empleado => empleado.estado ? (<option value={`${empleado.nombre} ${empleado.apellido}`} data-documento={empleado.documento}>D.I {empleado.documento}</option>) : null)
 
     ]
+
     let postDetallePedidoArray = []
 
+  
+  const [valueInputEmpleado, setValueInputEmpleado] = React.useState('');
     return (
         <>
             <Formik
@@ -31,12 +37,15 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                         idEstado: 1,
                     };
                     if (idPedido === undefined) {
+                        valuesDetalle.documentoEmpleado = valueInputEmpleado
                         recargarTabla(valuesDetalle)
                         isClose()
                     } else {
-                        const empleadoProducto = empleados.find(empleado => empleado.documento == values.documentoEmpleado)
+                        const empleadoProducto = empleados.find(empleado => empleado.documento == valueInputEmpleado)
                         valuesDetalle.idEmpleado = empleadoProducto.idEmpleado
+                        valuesDetalle.documentoEmpleado = empleadoProducto.documento
                         postDetallePedidoArray.push(valuesDetalle)
+                        console.log(valuesDetalle)
                         postDetallePedidos(postDetallePedidoArray).then(response => {
                             resetForm();
                             isClose()
@@ -49,7 +58,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                     resetForm();
                 }}
             >
-                {({ errors, handleSubmit, touched }) => (
+                {({ errors, handleSubmit, touched , setFieldValue, setFieldTouched}) => (
 
                     <form onSubmit={handleSubmit}>
                         <Modal isOpen={isOpen} onClose={isClose}>
@@ -122,19 +131,33 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
 
                                         <Label className="mt-4">
                                             <span> Empleado </span>
+                                            <input
+
+                                                list="dataListEmpleado"
+                                                name='documentoEmpleadoVisible'
+                                                id="documentoEmpleadoVisible"
+                                                className={STYLE_INPUT}
+                                                type="text"
+                                                placeholder='Santiago'
+                                                onChange={() => {
+                                                  handleInput(setValueInputEmpleado, setFieldValue, setFieldTouched , "documentoEmpleadoVisible", "dataListEmpleado", "documentoEmpleadoHidden")
+                                                }}
+                                            />
+
                                             <Field
                                                 list="dataListEmpleado"
-                                                name='documentoEmpleado'
-                                                id="documentoEmpleado"
-                                                className={STYLE_INPUT}
+                                                name='documentoEmpleadoHidden'
+                                                id="documentoEmpleadoHidden"
+                                                className="hidden"
                                                 type="text"
                                                 as='input'
                                                 placeholder='Santiago'
                                             />
+                      
                                             <datalist id="dataListEmpleado" >
                                                 {empleadosDropdown}
                                             </datalist>
-                                            {touched.documentoEmpleado && errors.documentoEmpleado && <SpanError>{errors.documentoEmpleado}</SpanError>}
+                                            {touched.documentoEmpleadoHidden && errors.documentoEmpleadoHidden && <SpanError>{errors.documentoEmpleadoHidden}</SpanError>}
 
                                         </Label>
                                         <Label className="mt-4">

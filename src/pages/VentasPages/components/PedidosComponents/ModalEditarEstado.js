@@ -1,7 +1,8 @@
 import React from 'react'
 import { Label } from '@windmill/react-ui'
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
-import { showAlertCorrect, showAlertIncorrect } from '../../../../helpers/Alertas';
+import { showAlertCorrect } from '../../../../helpers/Alertas';
+
 import { Formik, Field } from 'formik';
 import { SpanError } from '../../../../components/styles/styles';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'

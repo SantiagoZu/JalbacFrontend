@@ -11,7 +11,7 @@ export const initialValuesAgregarProducto = {
   cantidad: '',
   idEstado: 1,
   idPedido: 1,
-  documentoEmpleado: '',
+  documentoEmpleadoHidden: null,
   motivoDevolucion: '',
 
 
@@ -27,18 +27,13 @@ export const validationScheme = {
   motivoDevolucion: regex.motivoDevolucion
 }
 
-export const validateInputsAgregarProducto = async (values, validacionDocumento) => {
+export const validateInputsAgregarProducto = async (values) => {
   let errores = {};
-  if (!values.documentoEmpleado ) {
-    errores.documentoEmpleado = 'Tienes que seleccionar un empleado'
-  } else {
-    try {
-      const existEmpleado = await validacionDocumento(values.documentoEmpleado)
-      if (!existEmpleado.isExistoso) errores.documentoEmpleado = 'Este empleado no se encuentra registrado'
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  if(values.documentoEmpleadoHidden == null) {
+
+    errores.documentoEmpleadoHidden = 'Este empleado no se encuentra registrado'
+  } 
+
   if (values.nombreAnillido && !validationScheme.nombreAnillido.test(values.nombreAnillido)) {
     errores.nombreAnillido = 'El nombre no puede tener caracteres especiales'
   }
@@ -70,18 +65,11 @@ export const validateInputsAgregarProducto = async (values, validacionDocumento)
   }
   return errores;
 };
-export const validateInputsEditarProducto = async (values, validacionDocumento) => {
+export const validateInputsEditarProducto = async (values) => {
   let errores = {};
-  if (values.documentoEmpleado === null) {
-    errores.documentoEmpleado = 'Tienes que seleccionar un cliente'
-  } else {
-    try {
-      const existEmpleado = await validacionDocumento(values.documentoEmpleado)
-      if (!existEmpleado.isExistoso) errores.documentoEmpleado = 'Este empleado no se encuentra registrado'
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  if (values.documentoEmpleadoHidden === null) {
+    errores.documentoEmpleadoHidden = 'Este empleado no se encuentra registrado'
+  } 
   if (values.nombreAnillido && !validationScheme.nombreAnillido.test(values.nombreAnillido)) {
     errores.nombreAnillido = 'El nombre no puede tener caracteres especiales'
   }

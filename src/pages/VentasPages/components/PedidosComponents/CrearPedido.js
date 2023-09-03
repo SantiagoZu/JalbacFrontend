@@ -15,9 +15,12 @@ import { usePedidos } from '../../../../services/hooks/usePedidos'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom'
 import STYLE_INPUT from '../../../../helpers/styleInputDatalist';
 
+import {handleInput }  from "../../../../helpers/validacionesInput";
+
 function CrearPedido() {
   const history = useHistory()
   const [detalleAEditar, setDetalleAEditar] = useState();
+  const [empleadoEncargado, setEmpleadoEncargado] = useState();
   const [idDetalle, setIdDetalle] = useState()
   const [modalIsOpenCrearProducto, setModalIsOpenCrearProducto] = useState(false)
   const [modalIsOpenEditarProducto, setModalIsOpenEditarProducto] = useState(false)
@@ -29,22 +32,23 @@ function CrearPedido() {
     setModalIsOpenCrearProducto(false);
   }
 
-  function openModalEditarProducto(detalle, idDetalle) {
+  function openModalEditarProducto(detalle, empleadoEncargado, index) {
     setModalIsOpenEditarProducto(true);
     setDetalleAEditar(detalle)
-    setIdDetalle(idDetalle)
+    setEmpleadoEncargado(empleadoEncargado)
+    setIdDetalle(index)
   }
   function closeModalEditarProducto() {
     setModalIsOpenEditarProducto(false);
   }
 
   const { postPedidos } = usePedidos()
-  const { clientes, validacionDocumento } = useClientes()
+  const { clientes } = useClientes()
   const { empleados } = useEmpleados();
   const clientesDropdown = [
-    ...clientes.map(cliente => cliente.estado ? (<option value={cliente.documento}>{cliente.nombre} {cliente.apellido}</option>) : null)
+    ...clientes.map(cliente => cliente.estado ? (<option value={`${cliente.nombre} ${cliente.apellido}`} data-documento={cliente.documento}>D.I {cliente.documento}</option>) : null)
   ]
-
+  
   const [detalles, setDetalles] = useState([]);
 
   const detalles2 = detalles.concat([])
@@ -78,18 +82,25 @@ function CrearPedido() {
     })
   }
 
+  const [valueInputCliente, setValueInputCliente] = useState('');
+
+
+  console.log(valueInputCliente)
   return (
     <>
       <PageTitle>Crear pedido</PageTitle>
       <Formik
         initialValues={initialValues}
-        validate={(values) => validateInputs(values, validacionDocumento)}
-        onSubmit={(values, { resetForm }) => {
+        validate={(values) => validateInputs(values)}
+        onSubmit={ (values, { resetForm }) => {
           const valuesPedido = {
             ...values,
+            documentoCliente : valueInputCliente,
             idEstado: 1,
             detallesPedido: detalles
           };
+          console.log(values)
+            
           if (detalles.length <= 0) {
             showAlertIncorrect('Tienes que agregar almenos un producto', 'error', () => null);
           }
@@ -109,24 +120,37 @@ function CrearPedido() {
 
         }}
       >
-        {({ errors, handleSubmit, touched }) => (
+        {({ setFieldTouched ,errors, handleSubmit, touched , setFieldValue}) => (
+
           <form onSubmit={handleSubmit} >
             <div className='flex mb-4 gap-3 ml-auto flex-wrap'>
               <Label className="my-5 mr-4">
                 <span> Clientes </span>
-                <Field
+                <input
                   list="dataListCliente"
                   name='documentoCliente'
-                  id="documentoCliente"
+                  id="documentoClienteVisible"
                   className={STYLE_INPUT}
                   type="text"
-                  as='input'
+                  placeholder='Josue Barreto'
+                  onChange={() => {
+                    handleInput(setValueInputCliente, setFieldValue, setFieldTouched , "documentoClienteVisible", "dataListCliente", "documentoClienteHidden")
+                  }}
+                />
+
+                <Field
+                  list="dataListCliente"
+                  id="documentoClienteHidden"
+                  name="documentoClienteHidden"
+                  className="hidden"
+                  type="text"
                   placeholder='Josue Barreto'
                 />
+
                 <datalist id="dataListCliente" >
                   {clientesDropdown}
                 </datalist>
-                {touched.documentoCliente && errors.documentoCliente && <SpanError>{errors.documentoCliente}</SpanError>}
+                {touched.documentoClienteHidden && errors.documentoClienteHidden && <SpanError>{errors.documentoClienteHidden}</SpanError>}
               </Label>
 
               <Label className=" m-5 ">
@@ -212,7 +236,9 @@ function CrearPedido() {
                   <TableCell>
                     <div className="flex items-center space-x-4">
                       <Button layout="link" size="icon" aria-label="Edit" >
-                        <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido, index)} />
+                        <EditIcon className="w-5 h-5" aria-hidden="true" onClick={() => openModalEditarProducto(detallePedido, empleados.find(empleado => {
+                          return empleado.documento == detallePedido.documentoEmpleado
+                        }), index)} />
                       </Button>
 
                       <Button layout="link" size="icon" aria-label="Delete" onClick={() => deteleDetalle(index)} >
@@ -244,7 +270,7 @@ function CrearPedido() {
         <ModalCrearProducto isOpen={modalIsOpenCrearProducto} isClose={closeModalCrearProducto} recargarTabla={(detalle) => getDetalle(detalle)} />
       )}
       {modalIsOpenEditarProducto && (
-        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} detalleAEditar={detalleAEditar} recargarTabla={detalle => getUpdatedDetalle(detalle)} idDetalleAEditar={idDetalle} />
+        <ModalEditarProducto isOpen={modalIsOpenEditarProducto} isClose={closeModalEditarProducto} detalleAEditar={detalleAEditar} recargarTabla={detalle => getUpdatedDetalle(detalle)} idDetalleAEditar={idDetalle} empleadoEncargado={empleadoEncargado} />
       )}
 
 
