@@ -31,7 +31,6 @@ export const useClientes = () => {
     const validacionDocumento = async (documento) => {
         const response = await instance.post(`/${documento}`);
         return response.data;
-        
     };
 
     return {

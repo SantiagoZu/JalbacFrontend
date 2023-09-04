@@ -1,12 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useClientes } from '../../services/hooks/useClientes'
-
-import { Input } from '@windmill/react-ui'
-import PageTitle from '../../components/Typography/PageTitle'
-
-import { ModalEditarCliente } from './components/ClientesComponents/ModalEditarCliente'
-import { ModalCrearCliente } from './components/ClientesComponents/ModalCrearCliente'
-
 import {
   Table,
   TableHeader,
@@ -18,18 +10,24 @@ import {
   Button,
   Badge,
   Pagination,
+  Input
 } from '@windmill/react-ui'
-import { EditIcon, TrashIcon } from '../../icons';
-import { SearchIcon, PlusCircle } from '../../icons';
-import response from '../../utils/demo/dataClientes';
+import { EditIcon, TrashIcon, SearchIcon, PlusCircle } from '../../icons';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
+import PageTitle from '../../components/Typography/PageTitle'
+import { ModalEditarCliente } from './components/ClientesComponents/ModalEditarCliente'
+import { ModalCrearCliente } from './components/ClientesComponents/ModalCrearCliente'
+import { useClientes } from '../../services/hooks/useClientes'
 
-const response2 = response.concat([])
+
+
 
 function Clientes() {
 
   const { clientes, deleteClientes, getClientes } = useClientes();
   const clientes2 = clientes.concat([])
+  console.log(clientes2)
+
   const [modalIsOpenCreate, setModalIsOpenCreate] = useState(false);
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   const [dataCliente, setDataCliente] = useState([]);
@@ -58,6 +56,7 @@ function Clientes() {
       cliente.telefono.toLowerCase().includes(searchTerm)
     ));
   };
+
   const [inactivar, setInactivar] = useState(false)
   function toggleDatatableIsActivo() {
     setInactivar(inactivar => !inactivar)
@@ -96,7 +95,6 @@ function Clientes() {
     setModalIsOpenEdit(false);
   }
 
-
   function setData(obj) {
     setDataCliente(obj);
   }
@@ -133,7 +131,6 @@ function Clientes() {
   }, [modalIsOpenCreate, modalIsOpenEdit])
 
   return (
-
     <>
       <PageTitle>Clientes</PageTitle>
 
