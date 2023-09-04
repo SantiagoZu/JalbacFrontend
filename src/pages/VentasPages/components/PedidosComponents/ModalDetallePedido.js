@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Modal, ModalHeader } from '@windmill/react-ui';
 import { useDetallePedidos } from '../../../../services/hooks/useDetallePedidos'
 import { CardDetalles } from './CardDetalles'

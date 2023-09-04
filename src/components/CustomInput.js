@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field } from 'formik';
-import { minDate, returnDate } from '../helpers/parseDate';
+import { minDate} from '../helpers/parseDate';
 
 export const CustomInput = ({ type, id, name, placeholder, options, onBlur=null}) => {
     if (type === 'select') {
