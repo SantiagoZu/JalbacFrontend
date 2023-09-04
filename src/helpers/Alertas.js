@@ -15,7 +15,7 @@ export const showAlertIncorrect = (message, icon) => {
         showConfirmButton: false
     });
 }
-export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
+export const showAlertDeleted = (message, icon, secondMessage, secondIcon, confirmText) => {
     return new Promise((resolve) => {
         Swal.fire({
             title: message,
@@ -23,7 +23,7 @@ export const showAlertDeleted = (message, icon, secondMessage, secondIcon) => {
             showCancelButton: true,
             confirmButtonColor: '#7e3af2',
             cancelButtonColor: '#d33',
-            confirmButtonText: '¡Sí, eliminar!'
+            confirmButtonText: confirmText ? confirmText : '¡Sí, eliminar!'
         }).then((result) => {
             resolve(result);
             

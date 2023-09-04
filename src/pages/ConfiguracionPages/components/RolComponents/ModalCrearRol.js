@@ -16,10 +16,8 @@ import { Switch } from "antd";
 export const ModalCrearRol = ({ isOpen, isClose }) => {
 
   const { postRoles, validacionRol } = useRoles();
-  const [nombreError, setNombreError] = useState('');
   const { allPermisos } = usePermisos();
   const [select, setSelect] = useState([]);
-
 
   const handleChange = (checked, permisoId) => {
     if (checked) {
@@ -31,7 +29,6 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
       setSelect((prevS) => prevS.filter((id) => id.idPermiso !== permisoId));
     }
   };
-
 
   return (
     <Formik
@@ -68,7 +65,6 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
                     placeholder="Empleado"
                   />
                   {touched.rol && errors.rol && <SpanError>{errors.rol}</SpanError>}
-
                 </div>
               </Label>
 
@@ -104,7 +100,5 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
         </form>
       )}
     </Formik>
-
-
   )
 }

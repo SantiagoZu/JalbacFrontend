@@ -13,15 +13,9 @@ export const usePermisos = () => {
 
     useEffect(() => {
         getAllPermisos();
-
-        if (cookie != '') {
-            const unencryptToken = jwtDecode(cookie);
-            const idUsuario = unencryptToken.unique_name;
-            getPermisos(idUsuario);
-        }
-        else {
-            console.log('No se puede brother')
-        }
+        const unencryptToken = jwtDecode(cookie);
+        const idUsuario = unencryptToken.unique_name;
+        getPermisos(idUsuario);
     }, []);
 
     const getPermisos = async (id) => {
@@ -31,13 +25,13 @@ export const usePermisos = () => {
         return permisos;
     }
 
-    const getAllPermisos = async () =>{
+    const getAllPermisos = async () => {
         const response = await instance.get()
         const data = response.data.resultado;
         setAllPermisos(data)
     }
 
-    const getPermisosRol = async (idRol) =>{
+    const getPermisosRol = async (idRol) => {
         return await instance.get(`/PorRol/${idRol}`)
     }
 

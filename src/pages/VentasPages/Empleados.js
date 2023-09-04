@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Input } from '@windmill/react-ui'
-import PageTitle from '../../components/Typography/PageTitle'
-import { ModalEditarEmpleado } from './components/EmpleadosComponents/ModalEditarEmpleado'
-import { ModalCrearEmpleado } from './components/EmpleadosComponents/ModalCrearEmpleado';
 import {
   Table,
   TableHeader,
@@ -14,16 +10,15 @@ import {
   Button,
   Pagination,
   Badge,
-  Transition,
+  Input
 } from '@windmill/react-ui'
+import PageTitle from '../../components/Typography/PageTitle'
 import { EditIcon, TrashIcon, SearchIcon, PlusCircle } from '../../icons';
-import response from '../../utils/demo/dataEmpleados';
 import { showAlertDeleted, showAlertCorrect, showAlertIncorrect } from '../../helpers/Alertas';
-import { useEmpleados } from '../../services/hooks/useEmpleados';
+import { ModalEditarEmpleado } from './components/EmpleadosComponents/ModalEditarEmpleado'
+import { ModalCrearEmpleado } from './components/EmpleadosComponents/ModalCrearEmpleado';
 import { Skeleton } from 'antd';
-
-const response2 = response.concat([])
-
+import { useEmpleados } from '../../services/hooks/useEmpleados';
 
 function Empleados() {
 
@@ -33,11 +28,10 @@ function Empleados() {
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
-  // pagination setup
+
   const resultsPerPage = 5
   const [totalResults, setTotalResults] = useState(empleados2.length)
 
-  // pagination change control
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
@@ -62,8 +56,6 @@ function Empleados() {
     setPageTable2(1)
   }
 
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
     let filteredData = searchFilter(empleados2, search);
     filteredData = filteredData.filter(empleado => empleado.estado == !inactivar)
@@ -72,17 +64,11 @@ function Empleados() {
     // cargarEmpleados();
   }, [empleados, pageTable2, search, inactivar]);
 
-
-
-
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({});
 
-  /* Despliegue modal editar */
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  /* Despliegue modal editar */
   const [modalIsOpenCrear, setModalIsOpenCrear] = useState(false);
 
-  //funcion para buscar
   const searcher = (e) => {
     setSearch(e.target.value)
   }

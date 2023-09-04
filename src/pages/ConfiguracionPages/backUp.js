@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react'
-
-import { Input, HelperText, Label, Select, Textarea } from '@windmill/react-ui'
-import { Modal, ModalHeader, ModalBody, ModalFooter, } from '@windmill/react-ui';
-import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
-
 import {
   Table,
   TableHeader,
@@ -13,56 +7,58 @@ import {
   TableRow,
   TableFooter,
   TableContainer,
-  Badge,
-  Avatar,
   Button,
   Pagination,
+  Input
 } from '@windmill/react-ui'
-import { SearchIcon } from '../../icons';
-import response from '../../utils/demo/dataBackup'
-import Swal from 'sweetalert2'
+import { showAlertDeleted, showAlertIncorrect, showAlertCorrect} from '../../helpers/Alertas';
+import PageTitle from '../../components/Typography/PageTitle'
+import { SearchIcon, PlusCircle} from '../../icons';
+import { useBackup } from '../../services/hooks/useBackup'
+import moment from 'moment';
 
-const response2 = response.concat([])
 
-function Usuario() {
+function Backup() {
 
+  const { backup, getBackup, getBackupDownload, postBackup, idUsuario } = useBackup();
+  const backup2 = backup.concat([])
+  const objectPost = { idEmpleado: parseInt(idUsuario) }
+
+  const resultsPerPage = 5
+  const [totalResults, setTotalResults] = useState(backup2.length)
   const [pageTable2, setPageTable2] = useState(1)
-
   const [dataTable2, setDataTable2] = useState([])
 
-  // pagination setup
-  const resultsPerPage = 10
-  const totalResults = response.length
-
-  // pagination change control
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
 
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
-    setDataTable2(response2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
-  }, [pageTable2])
+    setTotalResults(backup2.length)
+    setDataTable2(backup2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
+  }, [pageTable2, backup])
 
-  const alertEliminado = () => {
-    Swal.fire({
-      title: '¿Estás seguro que desea crear el BackUp?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, crear'
-    }).then((result) => {
+  function openModalCreate(obj) {
+    console.log(obj)
+    showAlertDeleted(
+      '¿Estás seguro que deseas crear una copia de seguridad?',
+      'question',
+      '',
+      '',
+      '¡Sí, crear!',
+    ).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire(
-          'Creado!',
-          'El BackUp se ha creado correctamente.',
-          'success'
-        )
+        getBackupDownload()
+        postBackup(obj)
+          .then(response => {
+            showAlertCorrect('Copia de seguridad creada correctamente', 'success');
+          })
+          .catch(response => {
+            console.log(response)
+              showAlertIncorrect('Error al crear la copia de seguridad', 'error');
+          });
       }
-    })
-
+    });
   }
 
   return (
@@ -70,11 +66,8 @@ function Usuario() {
       <PageTitle>Copias de seguridad</PageTitle>
 
       <div className="flex ml-auto mb-6">
-        <Button onClick={alertEliminado}>
+        <Button iconRight={PlusCircle} onClick={() => openModalCreate(objectPost)}>
           Crear BackUp
-          <span className="ml-2" aria-hidden="true">
-            +
-          </span>
         </Button>
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
@@ -91,37 +84,38 @@ function Usuario() {
       <TableContainer className="mb-8">
         <Table>
           <TableHeader>
-            <tr >
+            <tr>
               <TableCell>Usuario</TableCell>
               <TableCell>Fecha BackUp</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {dataTable2.map((NoConfioEnNingunaEsNormalQueTodasFallen, i) => (
-              <TableRow key={i}>
-                
+            {dataTable2.length === 0 ? (<TableRow>
+              <TableCell colSpan={10} className='text-center'>No se encontraron datos</TableCell>
+            </TableRow>) : (dataTable2.map((backup) => (
+              <TableRow key={backup.idBackup}>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{NoConfioEnNingunaEsNormalQueTodasFallen.Usuario}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{backup.idEmpleadoNavigation.nombre} {backup.idEmpleadoNavigation.apellido}</p>
                 </TableCell>
                 <TableCell>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{NoConfioEnNingunaEsNormalQueTodasFallen.fecha}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{moment(backup.fechaBackup).format('YYYY-MM-DD')}</p>
                 </TableCell>
               </TableRow>
-            ))}
+            )))}
           </TableBody>
         </Table>
         <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            onChange={onPageChangeTable2}
-            label="Table navigation"
-          />
+          {totalResults > 0 && (
+            <Pagination
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onChange={onPageChangeTable2}
+              label="Table navigation"
+            />
+          )}
         </TableFooter>
       </TableContainer>
-
     </>
-  )
-}
+  )}
 
-export default Usuario
+export default Backup;
