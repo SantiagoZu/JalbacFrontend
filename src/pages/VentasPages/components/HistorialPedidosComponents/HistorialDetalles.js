@@ -79,32 +79,32 @@ function HistorialDetalles() {
                         {dataTable2.map(detallePedido => (
                             <TableRow key={detallePedido.idDetallePedido}>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.nombreAnillido ? detallePedido.nombreAnillido : "No aplica"}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.servicio}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.servicio}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.peso}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.peso}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoAnillo}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.tamanoAnillo}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.tamanoPiedra}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.tamanoPiedra ? detallePedido.tamanoPiedra : 'No aplica'}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.material}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.material}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.detalle}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.detalle}</p>
                                 </TableCell>
                                 <TableCell>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
+                                    <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{detallePedido.cantidad}</p>
                                 </TableCell>
                                 <TableCell>
                                     {empleados.map((empleado) => {
-                                        return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}{' '}{empleado.apellido}</p> : null
+                                        return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{empleado.nombre}{' '}{empleado.apellido}</p> : null
                                     })}
                                 </TableCell>
                                 <TableCell >

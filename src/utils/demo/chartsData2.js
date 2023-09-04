@@ -88,7 +88,7 @@ function Charts2(fechaInicioCantidadPedidos, fechaFinCantidadPedidos) {
             scales: {
                 yAxes: [{
                     ticks: {
-                        precision: 0
+                        precision: -1
                     }
                 }],
                 x: {

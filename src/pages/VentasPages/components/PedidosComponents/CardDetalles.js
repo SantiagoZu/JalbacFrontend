@@ -12,7 +12,7 @@ import { usePedidos } from '../../../../services/hooks/usePedidos'
 
 export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined, isActivo }) => {
     const { updateDetallePedidos } = useDetallePedidos()
-    
+
     const { updatePedidos } = usePedidos()
     const DEVUELTO = 4
     const PRODUCCION = 2
@@ -81,7 +81,7 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
             if (detallesDevueltos.length == 0) {
                 pedidoValues.idEstado = PRODUCCION
                 await updatePedidos(pedido.idPedido, pedidoValues)
-                
+
             }
             recargarCarta(true)
         } catch (error) {
@@ -111,12 +111,18 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
                 <div>
                     <div className='flex flex-row'>
                         <div className='space-y-1 mr-4 mb-1'>
-                            <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
-                                Nombre anillo
-                            </p>
-                            <p >
-                                {detallePedido.nombreAnillido}
-                            </p>
+                            {
+                                detallePedido.nombreAnillido ? (
+                                    <>
+                                        <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
+                                            Nombre anillo
+                                        </p>
+                                        <p>
+                                            {detallePedido.nombreAnillido}
+                                        </p>
+                                    </>
+                                ) : null
+                            }
                             <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
                                 Tipo de servicio
                             </p>
@@ -129,13 +135,27 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
                             <p >
                                 {detallePedido.peso}
                             </p>
-                            <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
-                                Tamaño piedra(mm)
-                            </p>
-                            <p>
-                                {detallePedido.tamanoPiedra}
-                            </p>
-
+                            {
+                                detallePedido.tamanoPiedra ? (
+                                    <>
+                                        <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
+                                            Tamaño piedra(mm)
+                                        </p>
+                                        <p>
+                                            {detallePedido.tamanoPiedra}
+                                        </p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
+                                            Tamaño anillo
+                                        </p>
+                                        <p>
+                                            {detallePedido.tamanoAnillo}
+                                        </p>
+                                    </>
+                                )
+                            }
                         </div>
 
                         <div className='space-y-1 mb-1'>
@@ -158,18 +178,25 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
                             <p>
                                 {detallePedido.idEstadoNavigation.nombre}
                             </p>
-                            <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
-                                Tamaño anillo
-                            </p>
-                            <p>
-                                {detallePedido.tamanoAnillo}
-                            </p>
+                            {
+                                detallePedido.tamanoPiedra ? (
+                                    <>
+                                        <p className=" text-gray-700 dark:text-gray-300 font-bold text-sm">
+                                            Tamaño anillo
+                                        </p>
+                                        <p>
+                                            {detallePedido.tamanoAnillo}
+                                        </p>
+                                    </>
+                                ) : null
+                            }
+
 
                         </div>
 
 
                     </div>
-                    <div className='relative'>
+                    <div className='relative mt-2'>
                         <div className='flex flex-row space-x-4'>
                             <p className=" text-gray-700 dark:text-gray-300 font-bold text-center text-sm">
                                 Empleado
@@ -199,8 +226,6 @@ export const CardDetalles = ({ detallePedido, pedido, recargarCarta = undefined,
                             ) : null}
                         </div>
                     </div>
-
-
                 </div>
             </CardBody>
         </Card>
