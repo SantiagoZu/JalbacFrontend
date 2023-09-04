@@ -16,7 +16,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
     const { postDetallePedidos } = useDetallePedidos();
     const { empleados, validacionDocumento } = useEmpleados()
     const empleadosDropdown = [
-    ...empleados.map(empleado => empleado.estado ? (<option value={`${empleado.nombre} ${empleado.apellido}`} data-documento={empleado.documento}>D.I {empleado.documento}</option>) : null)
+    ...empleados.map(empleado => empleado.estado ? (<option value={`${empleado.nombre} ${empleado.apellido}`} data-documento={empleado.documento}>ID {empleado.documento}</option>) : null)
 
     ]
 
