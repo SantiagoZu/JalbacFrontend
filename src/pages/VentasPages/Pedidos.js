@@ -14,6 +14,7 @@ import { alertEscribirMotivoInactivacion, showAlertCorrect, alertInactivar , sho
 import { useClientes } from '../../services/hooks/useClientes'
 import STYLE_INPUT from '../../helpers/styleInputDatalist'
 
+//prueba commit
 
 function Pedidos() {
   const RECIBIDO = 1
@@ -144,7 +145,7 @@ function Pedidos() {
       <PageTitle>Pedidos</PageTitle>
 
       <div className="flex ml-auto mb-6 w-full">
-        <div className="flex gap-3 flex-1 justify-start">
+        <div className=" flex gap-3 flex-1 justify-start">
           <p className='dark:text-white font-semibold text-black self-center'> Filtrar pedidos por:</p>
           <Button className="bg-cyan-500" onClick={toggleDatatableIsActivo}  >
             {inactivar ? 'Activos' : 'Inactivos'}
@@ -159,12 +160,13 @@ function Pedidos() {
             </select>
           </div>
           
+      
         </div>
         <Button iconRight={PlusCircle} onClick={() => history.push('/app/crearPedido')} className='mr-6'>
           Crear pedido
         </Button>
         <div >
-          <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
+          <div className=" relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center content-center pl-2">
               <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
             </div>
