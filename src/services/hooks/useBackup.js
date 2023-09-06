@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FetchData } from "../GenericAxios";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
+import moment from "moment";
 
 export const useBackup = () => {
     const [backup, setBackup] = useState([]);
@@ -25,14 +26,13 @@ export const useBackup = () => {
         const response = await instance.get('/Download', {
             responseType: 'blob',
         });
-        const data = response.data.resultado;
-        const blob = new Blob([data], { type: 'application/octet-stream' });
+        const blob = new Blob([response.data], { type: 'application/octet-stream' });
         const url = window.URL.createObjectURL(blob);
 
         // Crea un enlace temporal y simula un clic para descargar el archivo
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'Backup.bak');
+        link.setAttribute('download', `Backup${moment().format("DD/MM/YYYY")}.bak`);
         document.body.appendChild(link);
         link.click();
 

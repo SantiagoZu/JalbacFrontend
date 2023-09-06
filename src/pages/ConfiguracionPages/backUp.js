@@ -11,18 +11,23 @@ import {
   Pagination,
   Input
 } from '@windmill/react-ui'
-import { showAlertDeleted, showAlertIncorrect, showAlertCorrect} from '../../helpers/Alertas';
-import PageTitle from '../../components/Typography/PageTitle'
-import { SearchIcon, PlusCircle} from '../../icons';
-import { useBackup } from '../../services/hooks/useBackup'
 import moment from 'moment';
+import { showAlertDeleted, showAlertIncorrect, showAlertCorrect } from '../../helpers/Alertas';
+import PageTitle from '../../components/Typography/PageTitle'
+import { SearchIcon, PlusCircle } from '../../icons';
+import { useBackup } from '../../services/hooks/useBackup'
+import { useUsuarios } from '../../services/hooks/useUsuarios'
+import { useEmpleados } from '../../services/hooks/useEmpleados'
+
 
 
 function Backup() {
 
   const { backup, getBackup, getBackupDownload, postBackup, idUsuario } = useBackup();
-  const backup2 = backup.concat([])
-  const objectPost = { idEmpleado: parseInt(idUsuario) }
+  const { usuarios } = useUsuarios();
+  const { empleados } = useEmpleados();
+  const backup2 = backup ? backup.concat([]) : [];
+  const objectPost = { idEmpleado: parseInt("") }
 
   const resultsPerPage = 5
   const [totalResults, setTotalResults] = useState(backup2.length)
@@ -34,12 +39,21 @@ function Backup() {
   }
 
   useEffect(() => {
-    setTotalResults(backup2.length)
-    setDataTable2(backup2.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
+    if (backup) {
+      setTotalResults(backup.length)
+      setDataTable2(backup.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
+    }
   }, [pageTable2, backup])
-
   function openModalCreate(obj) {
-    console.log(obj)
+    const idEmpleadoInt = parseInt(obj.idEmpleado);;
+
+    const newObj = {
+      ...obj,
+      idEmpleado: idEmpleadoInt,
+    };
+
+    console.log(newObj)
+
     showAlertDeleted(
       '¿Estás seguro que deseas crear una copia de seguridad?',
       'question',
@@ -48,19 +62,27 @@ function Backup() {
       '¡Sí, crear!',
     ).then((result) => {
       if (result.isConfirmed) {
-        getBackupDownload()
-        postBackup(obj)
+        postBackup(newObj)
           .then(response => {
+            getBackupDownload()
             showAlertCorrect('Copia de seguridad creada correctamente', 'success');
           })
           .catch(response => {
             console.log(response)
-              showAlertIncorrect('Error al crear la copia de seguridad', 'error');
+            showAlertIncorrect('Error al crear la copia de seguridad', 'error');
           });
       }
     });
   }
 
+  const usuarioActual = usuarios.find(usuario => usuario.idUsuario == idUsuario);
+  if (usuarioActual) {
+    const correoUsuario = usuarioActual.correo;
+    const empleadoConMismoCorreo = empleados.filter(empleado => empleado.idUsuarioNavigation.correo === correoUsuario);
+    if (empleadoConMismoCorreo.length > 0) {
+      objectPost.idEmpleado = empleadoConMismoCorreo.map(empleado => empleado.idEmpleado);
+    }
+  }
   return (
     <>
       <PageTitle>Copias de seguridad</PageTitle>
@@ -116,6 +138,7 @@ function Backup() {
         </TableFooter>
       </TableContainer>
     </>
-  )}
+  )
+}
 
 export default Backup;
