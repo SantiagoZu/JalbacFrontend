@@ -15,7 +15,7 @@ import { useClientes } from '../../services/hooks/useClientes'
 import STYLE_INPUT from '../../helpers/styleInputDatalist'
 
 //prueba commit
-
+//otro cambio
 function Pedidos() {
   const RECIBIDO = 1
   const EN_PRODUCCION = 2
