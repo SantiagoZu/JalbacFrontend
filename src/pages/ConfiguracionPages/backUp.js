@@ -23,7 +23,7 @@ import { useEmpleados } from '../../services/hooks/useEmpleados'
 
 function Backup() {
 
-  const { backup, getBackup, getBackupDownload, postBackup, idUsuario } = useBackup();
+  const { backup, getBackupDownload, postBackup, idUsuario } = useBackup();
   const { usuarios } = useUsuarios();
   const { empleados } = useEmpleados();
   const backup2 = backup ? backup.concat([]) : [];
@@ -33,6 +33,7 @@ function Backup() {
   const [totalResults, setTotalResults] = useState(backup2.length)
   const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
+  const [search, setSearch] = useState("")
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
@@ -40,10 +41,13 @@ function Backup() {
 
   useEffect(() => {
     if (backup) {
-      setTotalResults(backup.length)
-      setDataTable2(backup.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
+      let filteredData = searchFilter(backup2, search);
+      setTotalResults(filteredData.length)
+      setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage))
     }
-  }, [pageTable2, backup])
+  }, [pageTable2, backup, search])
+
+
   function openModalCreate(obj) {
     const idEmpleadoInt = parseInt(obj.idEmpleado);;
 
@@ -83,6 +87,24 @@ function Backup() {
       objectPost.idEmpleado = empleadoConMismoCorreo.map(empleado => empleado.idEmpleado);
     }
   }
+
+  const searchFilter = (data, searchValue) => {
+    if (!searchValue) {
+      return data;
+    }
+
+    const searchTerm = searchValue.toLowerCase();
+    return data.filter((backup) => (
+      backup.idEmpleadoNavigation.nombre.toLowerCase().includes(searchTerm) ||
+      backup.idEmpleadoNavigation.apellido.toLowerCase().includes(searchTerm) ||
+      backup.fechaBackup.toLowerCase().includes(searchTerm)
+    ));
+  };
+
+  const searcher = (e) => {
+    setSearch(e.target.value)
+  }
+
   return (
     <>
       <PageTitle>Copias de seguridad</PageTitle>
@@ -99,6 +121,8 @@ function Backup() {
             <Input
               className="pl-8 text-gray-700"
               placeholder="Buscar BackUp"
+              value={search}
+              onChange={searcher}
             />
           </div>
         </div>
