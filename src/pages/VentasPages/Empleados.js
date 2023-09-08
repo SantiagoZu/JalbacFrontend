@@ -61,7 +61,6 @@ function Empleados() {
     filteredData = filteredData.filter(empleado => empleado.estado == !inactivar)
     setTotalResults(filteredData.length)
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
-    // cargarEmpleados();
   }, [empleados, pageTable2, search, inactivar]);
 
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState({});
