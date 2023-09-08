@@ -63,16 +63,14 @@ function SidebarContent() {
       }, {idPermiso: item.idPermiso,
         nombre: "Pedidos entregados",
         icono: "Entregado",
-        url: "/app/pedidosEntregados",})
-      
-    }
-    if (item.nombrePermiso === "Historial pedidos") {
-      newPermisos.push({
+        url: "/app/pedidosEntregados",}
+      , {
         idPermiso: item.idPermiso,
-        nombre: item.nombrePermiso,
+        nombre: "Historial pedidos",
         icono: "DocumentGlass",
         url: "/app/historial",
-      });
+      })
+      
     }
 
     // if (item.nombrePermiso === "Pedidos entregados") {

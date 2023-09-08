@@ -102,7 +102,6 @@ function Empleados() {
           .then(response => {
             showAlertCorrect('Empleado eliminado correctamente.', 'success');
             setEliminadoExistoso(true)
-
           })
           .catch(response => {
             if (response.response.data?.errorMessages[0] !== null) {

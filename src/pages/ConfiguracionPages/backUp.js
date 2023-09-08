@@ -28,6 +28,7 @@ function Backup() {
   const [totalResults, setTotalResults] = useState(backup2.length)
   const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
+  const [creadoExitoso, setCreadoExitoso] = useState(false)
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
@@ -39,7 +40,6 @@ function Backup() {
   }, [pageTable2, backup])
 
   function openModalCreate(obj) {
-    console.log(obj)
     showAlertDeleted(
       '¿Estás seguro que deseas crear una copia de seguridad?',
       'question',
@@ -51,6 +51,7 @@ function Backup() {
         getBackupDownload()
         postBackup(obj)
           .then(response => {
+            setCreadoExitoso(true)
             showAlertCorrect('Copia de seguridad creada correctamente', 'success');
           })
           .catch(response => {
@@ -60,6 +61,14 @@ function Backup() {
       }
     });
   }
+
+  useEffect(() => {
+    if (creadoExitoso) {
+      getBackup()
+      setCreadoExitoso(false)
+    }
+  }, [creadoExitoso])
+  
 
   return (
     <>

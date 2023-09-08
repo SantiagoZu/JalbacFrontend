@@ -8,7 +8,7 @@ const Roles = lazy(() => import('../pages/ConfiguracionPages/Roles'))
 const Empleados = lazy(() => import('../pages/VentasPages/Empleados'))
 const Clientes = lazy(() => import('../pages/VentasPages/Clientes'))
 const Pedidos = lazy(() => import('../pages/VentasPages/Pedidos'))
-const Backup = lazy(() => import('../pages/ConfiguracionPages/Backup'))
+const Backup = lazy(() => import('../pages/ConfiguracionPages/backUp'))
 const CrearPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/CrearPedido'))
 const EditarPedido = lazy(() => import('../pages/VentasPages/components/PedidosComponents/EditarPedido'))
 const Historial = lazy(() => import('../pages/VentasPages/historialEstado'))
@@ -70,20 +70,14 @@ export const Routes = () => {
         },{
           path: '/pedidosEntregados',
           component: PedidosEntregado,
-        });
-      }
-      if (item.nombrePermiso === "Historial pedidos") {
-        routes.push({
+        },{
           path: '/historial',
           component: Historial,
-        },
-          {
-            path: '/mostrarDetalles',
-            component: HistorialDetalles
-          });
+        },{
+          path: '/mostrarDetalles',
+          component: HistorialDetalles
+        });
       }
-
-      
     });
   }
 

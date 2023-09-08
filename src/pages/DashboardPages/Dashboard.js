@@ -6,7 +6,7 @@ import Calendario from './components/Calendario'
 import PageTitle from '../../components/Typography/PageTitle'
 import RoundIcon from '../../components/RoundIcon'
 import { Doughnut, Bar } from 'react-chartjs-2'
-import { CartIcon, PeopleIcon } from '../../icons'
+import { CartIcon, PeopleIcon, User } from '../../icons'
 import { useEmpleados } from '../../services/hooks/useEmpleados'
 import { useClientes } from '../../services/hooks/useClientes'
 import { usePedidos } from '../../services/hooks/usePedidos'
@@ -63,7 +63,7 @@ function Dashboard() {
       <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
         <InfoCard title="Clientes" value={clientesFiltrados.length}>
           <RoundIcon
-            icon={CartIcon}
+            icon={User}
             iconColorClass="text-blue-500 dark:text-blue-100"
             bgColorClass="bg-blue-100 dark:bg-blue-500"
             className="mr-4"
