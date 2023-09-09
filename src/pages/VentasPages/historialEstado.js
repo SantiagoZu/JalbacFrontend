@@ -17,11 +17,22 @@ import { SearchIcon, History } from '../../icons';
 import { useHisEstadoPedido } from '../../services/hooks/useHisEstadoPedido'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ModalHistorialPedidos } from './components/HistorialPedidosComponents/ModalHistorialPedidos';
+import {usePedidos} from '../../services/hooks/usePedidos'
+
+import {useEmpleados} from '../../services/hooks/useEmpleados'
 
 function HistorialEstadoPedidos() {
   const history = useHistory();
-  const { hisEstadoPedido } = useHisEstadoPedido()
-  const hisPedidos2 = hisEstadoPedido.concat([])
+  const {idUsuario , pedidosEmpleado , pedidos} = usePedidos()
+  const {empleados} = useEmpleados()
+  const { hisEstadoPedido, hisEstadoPedidoEmpleado} = useHisEstadoPedido()
+
+  const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
+
+  const ES_ADMINISTRADOR = empleadoLogged !== undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() == 'administrador' : null
+
+  const hisPedidos2 = ES_ADMINISTRADOR ? hisEstadoPedido.concat([]) :  hisEstadoPedidoEmpleado.concat([])
+
   const [pageTable2, setPageTable2] = useState(1)
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
@@ -53,7 +64,7 @@ function HistorialEstadoPedidos() {
   useEffect(() => {
     const filteredData = searchFilter(hisPedidos2, search);
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
-  }, [hisEstadoPedido, pageTable2, search]);
+  }, [ES_ADMINISTRADOR ? hisEstadoPedidoEmpleado : hisEstadoPedido, pageTable2, search]);
 
   const searcher = (e) => {
     setSearch(e.target.value)

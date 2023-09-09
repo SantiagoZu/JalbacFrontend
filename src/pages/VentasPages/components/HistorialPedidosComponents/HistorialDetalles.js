@@ -76,8 +76,8 @@ function HistorialDetalles() {
                         </tr>
                     </TableHeader>
                     <TableBody className="w-12">
-                        {dataTable2.map(detallePedido => (
-                            <TableRow key={detallePedido.idDetallePedido}>
+                        {dataTable2.map(( detallePedido , index  )=> (
+                            <TableRow key={index}>
                                 <TableCell>
                                     <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.nombreAnillido}</p>
                                 </TableCell>
@@ -103,8 +103,8 @@ function HistorialDetalles() {
                                     <p className="text-xs text-gray-600 dark:text-gray-400">{detallePedido.cantidad}</p>
                                 </TableCell>
                                 <TableCell>
-                                    {empleados.map((empleado) => {
-                                        return empleado.idEmpleado == detallePedido.idEmpleado ? <p className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}{' '}{empleado.apellido}</p> : null
+                                    {empleados.map((empleado , index) => {
+                                        return empleado.idEmpleado == detallePedido.idEmpleado ? <p key={index}  className="text-xs text-gray-600 dark:text-gray-400">{empleado.nombre}{' '}{empleado.apellido}</p> : null
                                     })}
                                 </TableCell>
                                 <TableCell >

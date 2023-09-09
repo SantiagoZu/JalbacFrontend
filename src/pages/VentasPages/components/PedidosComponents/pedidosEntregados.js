@@ -23,18 +23,19 @@ function PedidosEntregados() {
 
   const ENTREGADO = 3
   const { pedidos, pedidosEmpleado, idUsuario } = usePedidos()
-  const pedidos2 = pedidos.concat([])
+  const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
+  const [idPedido, setIdPedido] = useState({})
+  const [isPedidoActivo, setIsPedidoActivo] = useState(true)
+  const { empleados } = useEmpleados()
+  const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
+  const ES_ADMINISTRADOR = empleadoLogged !== undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() === 'administrador' : null
+
+  const pedidos2 = ES_ADMINISTRADOR ? pedidos.concat([]) : pedidosEmpleado.concat([])
   const [search, setSearch] = useState("")
   const [dataTable2, setDataTable2] = useState([])
   const [pageTable2, setPageTable2] = useState(1)
   const resultsPerPage = 5
   const [totalResults, setTotalResults] = useState(pedidos2.length)
-  const [modalIsOpenDetallePedido, setModalIsOpenDetallePedido] = useState(false)
-  const [idPedido, setIdPedido] = useState({})
-  const [isPedidoActivo, setIsPedidoActivo] = useState(true)
-  const {empleados} = useEmpleados()
-  const empleadoLogged = empleados.find(empleado => empleado.idUsuario == idUsuario)
-  const ES_ADMINISTRADOR = empleadoLogged != undefined ? empleadoLogged.idUsuarioNavigation.idRolNavigation.nombre.toLowerCase() == 'administrador' : null
 
   function openModalDetallePedido(pedido, activo) {
     setModalIsOpenDetallePedido(true);
@@ -45,7 +46,7 @@ function PedidosEntregados() {
   function closeModalDetallePedido() {
     setModalIsOpenDetallePedido(false);
   }
-  
+
   function onPageChangeTable2(p) {
     setPageTable2(p)
   }
@@ -65,8 +66,8 @@ function PedidosEntregados() {
   };
 
   useEffect(() => {
-    let filteredData = searchFilter(pedidos, search)
-    filteredData = filteredData.filter(pedido =>  pedido.idEstado === ENTREGADO)
+    let filteredData = searchFilter(pedidos2, search)
+    filteredData = filteredData.filter(pedido => pedido.idEstado === ENTREGADO)
     setTotalResults(filteredData.length)
 
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage)
@@ -84,18 +85,18 @@ function PedidosEntregados() {
       <PageTitle>Pedidos entregados</PageTitle>
 
       <div className="flex ml-auto mb-6 w-full justify-end">
-        
+
         <div className=''>
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
               <SearchIcon className="w-4 h-4 dark:text-white" aria-hidden="true" />
             </div>
             <Input
-              className={STYLE_INPUT.replace('pl-4','pl-8')}
+              className={STYLE_INPUT.replace('pl-4', 'pl-8')}
               placeholder="Buscar pedido"
               value={search}
               onChange={searcher}
-              
+
             />
           </div>
         </div>
@@ -128,7 +129,7 @@ function PedidosEntregados() {
                     <TableCell>
                       <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fechaEntrega)}</p>
                     </TableCell>
-                    
+
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Button layout="link" size="icon" aria-label="Edit" onClick={() => openModalDetallePedido(pedido, pedido.isActivo)}>
@@ -158,7 +159,7 @@ function PedidosEntregados() {
       </TableContainer>
 
       <ModalDetallePedido isOpen={modalIsOpenDetallePedido} isClose={closeModalDetallePedido} pedido={idPedido} isActivo={isPedidoActivo} />
-      
+
     </>
   )
 }
