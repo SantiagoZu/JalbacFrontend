@@ -17,14 +17,14 @@ export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
                 <ModalHeader className='mb-5'>Detalles de productos devueltos</ModalHeader>
                 <div className='-m-5 p-4 text-sm text-gray-700 dark:text-gray-400'>
                     <div className='grid grid-cols-2 gap-2'>
-                        {HAY_DEVUELTOS ? detallePedidos.map(detallePedido => pedido.idPedido == detallePedido.idPedido && detallePedido.idEstado == DEVUELTO ? (
+                        {HAY_DEVUELTOS ? detallePedidos.map(( detallePedido , index  )=> pedido.idPedido == detallePedido.idPedido && detallePedido.idEstado == DEVUELTO ? (
                             <>
-                                <div key={detallePedido.idDetallePedido}>
-                                    <CardDetalles key={detallePedido.idDetallePedido} detallePedido={detallePedido} pedido={pedido} recargarCarta={val => recargarCarta(val)} />
-                                    <Card className='mb-3 shadow-md w-auto '>
-                                        <CardBody className="h-full dark:bg-gray-700 bg-gray-100 flex flex-col justify-center">
-                                            <p className='text-center font-bold text-white'>Motivos de devolucion</p>
-                                            <ListaMotivosDevolucion motivosDevolucion={detallePedido.motivoDevolucion} />
+                                <div >
+                                    <CardDetalles key={index}    detallePedido={detallePedido} pedido={pedido} recargarCarta={val => recargarCarta(val)} />
+                                    <Card key={index + 1}  className='mb-3 shadow-md w-auto '>
+                                        <CardBody  className="h-full dark:bg-gray-700 bg-gray-100 flex flex-col justify-center">
+                                            <p  className='text-center font-bold text-white'>Motivos de devolucion</p>
+                                            <ListaMotivosDevolucion     motivosDevolucion={detallePedido.motivoDevolucion} />
                                         </CardBody>
                                     </Card>
                                 </div>
@@ -47,8 +47,8 @@ const ListaMotivosDevolucion = ({ motivosDevolucion }) => {
         numeroMotivos--
         return (
             <div className="m-2 relative" key={i}>
-                <p className='text-center'>{motivo}</p>
-                <p className='absolute text-yellow-500 w-5 top-0 right-0 -mr-4' >{numeroMotivos}</p>
+                <p key={i + 1} className='text-center'>{motivo}</p>
+                <p key={i + 2} className='absolute text-yellow-500 w-5 top-0 right-0 -mr-4' >{numeroMotivos}</p>
             </div>
         )
     }

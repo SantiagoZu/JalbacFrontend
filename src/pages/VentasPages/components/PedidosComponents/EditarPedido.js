@@ -68,7 +68,7 @@ function EditarPedido() {
   const { updatePedidos } = usePedidos()
   const { clientes } = useClientes()
   const clientesDropdown = [
-    ...clientes.map(cliente => cliente.estado ? (<option value={`${cliente.nombre} ${cliente.apellido}`} data-documento={cliente.documento}>ID {cliente.documento}</option>) : null)
+    ...clientes.map(( cliente , index  )=> cliente.estado ? (<option key={index} value={`${cliente.nombre} ${cliente.apellido}`} data-documento={cliente.documento}>D.I {cliente.documento}</option>) : null)
 
   ]
   const initialValuesPedido = {

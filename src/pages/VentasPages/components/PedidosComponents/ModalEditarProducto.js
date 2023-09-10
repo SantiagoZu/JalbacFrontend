@@ -18,7 +18,7 @@ export const ModalEditarProducto = ({ isOpen, isClose, detalleAEditar, recargarT
     const { empleados} = useEmpleados()
 
     const empleadosDropdown = [
-      ...empleados.map(empleado => empleado.estado ? (<option value={`${empleado.nombre} ${empleado.apellido}`} data-documento={empleado.documento}>ID {empleado.documento}</option>) : null)
+      ...empleados.map(( empleado, index ) => empleado.estado ? (<option key={index} value={`${empleado.nombre} ${empleado.apellido}`} data-documento={empleado.documento}>D.I {empleado.documento}</option>) : null)
     ]
     if (detalleAEditar.idDetallePedido === undefined) {
         initialValuesDetalle = {

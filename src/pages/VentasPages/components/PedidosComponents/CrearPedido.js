@@ -46,7 +46,7 @@ function CrearPedido() {
   const { clientes } = useClientes()
   const { empleados } = useEmpleados();
   const clientesDropdown = [
-    ...clientes.map(cliente => cliente.estado ? (<option value={`${cliente.nombre} ${cliente.apellido}`} data-documento={cliente.documento}>ID {cliente.documento}</option>) : null)
+    ...clientes.map(( cliente , index  )=> cliente.estado ? (<option key = {index} value={`${cliente.nombre} ${cliente.apellido}`} data-documento={cliente.documento}>D.I {cliente.documento}</option>) : null)
   ]
   
   const [detalles, setDetalles] = useState([]);
@@ -143,6 +143,7 @@ function CrearPedido() {
                   id="documentoClienteHidden"
                   name="documentoClienteHidden"
                   className="hidden"
+                  value="1"
                   type="text"
                   placeholder='Josue Barreto'
                 />
