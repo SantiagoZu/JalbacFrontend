@@ -23,7 +23,7 @@ import { useEmpleados } from '../../services/hooks/useEmpleados'
 
 function Backup() {
 
-  const { backup, getBackupDownload, postBackup, idUsuario } = useBackup();
+  const { backup, getBackupDownload, postBackup, idUsuario, getBackup } = useBackup();
   const { usuarios } = useUsuarios();
   const { empleados } = useEmpleados();
   const backup2 = backup ? backup.concat([]) : [];
@@ -34,6 +34,7 @@ function Backup() {
   const [pageTable2, setPageTable2] = useState(1)
   const [dataTable2, setDataTable2] = useState([])
   const [search, setSearch] = useState("")
+  const [creadoExitoso, setCreadoExitoso] = useState(false)
 
   function onPageChangeTable2(p) {
     setPageTable2(p)
@@ -56,7 +57,6 @@ function Backup() {
       idEmpleado: idEmpleadoInt,
     };
 
-    console.log(newObj)
 
     showAlertDeleted(
       '¿Estás seguro que deseas crear una copia de seguridad?',
@@ -69,6 +69,7 @@ function Backup() {
         postBackup(newObj)
           .then(response => {
             getBackupDownload()
+            setCreadoExitoso(true)
             showAlertCorrect('Copia de seguridad creada correctamente', 'success');
           })
           .catch(response => {
@@ -101,6 +102,14 @@ function Backup() {
     ));
   };
 
+  useEffect(() => {
+    if (creadoExitoso) {
+      getBackup()
+      setCreadoExitoso(false)
+    }
+  },[creadoExitoso])
+  
+
   const searcher = (e) => {
     setSearch(e.target.value)
   }
@@ -116,7 +125,7 @@ function Backup() {
         <div className="flex justify-center flex-1 ml-5">
           <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
             <div className="absolute inset-y-0 flex items-center pl-2">
-              <SearchIcon className="w-4 h-4" aria-hidden="true" />
+              <SearchIcon className="w-4 h-4 text-white dark:text-black" aria-hidden="true" />
             </div>
             <Input
               className="pl-8 text-gray-700"
