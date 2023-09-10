@@ -49,7 +49,7 @@ function RecuperarPassword() {
                   aria-hidden="true"
                   className="object-cover w-full h-full"
                   src={recuperarContrasena}
-                  alt="Office"
+                  alt="Recuperar contraseña"
                 />
               </div>
               <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
