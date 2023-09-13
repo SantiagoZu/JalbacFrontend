@@ -64,7 +64,7 @@ function HistorialEstadoPedidos() {
   useEffect(() => {
     const filteredData = searchFilter(hisPedidos2, search);
     setDataTable2(filteredData.slice((pageTable2 - 1) * resultsPerPage, pageTable2 * resultsPerPage));
-  }, [ES_ADMINISTRADOR ? hisEstadoPedidoEmpleado : hisEstadoPedido, pageTable2, search]);
+  }, [ES_ADMINISTRADOR ? hisEstadoPedido : hisEstadoPedidoEmpleado, pageTable2, search]);
 
   const searcher = (e) => {
     setSearch(e.target.value)
@@ -113,7 +113,7 @@ function HistorialEstadoPedidos() {
               <TableCell>Cliente</TableCell>
               <TableCell>Fecha entrega</TableCell>
               <TableCell>Detalles producto</TableCell>
-              <TableCell>Historial estados</TableCell>
+              <TableCell>Historial fases</TableCell>
             </tr>
           </TableHeader>
           <TableBody>

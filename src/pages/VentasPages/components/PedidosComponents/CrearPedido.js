@@ -85,7 +85,6 @@ function CrearPedido() {
   const [valueInputCliente, setValueInputCliente] = useState('');
 
 
-  console.log(valueInputCliente)
   return (
     <>
       <PageTitle>Crear pedido</PageTitle>
@@ -99,7 +98,6 @@ function CrearPedido() {
             idEstado: 1,
             detallesPedido: detalles
           };
-          console.log(values)
             
           if (detalles.length <= 0) {
             showAlertIncorrect('Tienes que agregar almenos un producto', 'error', () => null);

@@ -23,7 +23,7 @@ export const ModalDetallePedidoDevuelto = ({ isOpen, isClose, pedido }) => {
                                     <CardDetalles key={index}    detallePedido={detallePedido} pedido={pedido} recargarCarta={val => recargarCarta(val)} />
                                     <Card key={index + 1}  className='mb-3 shadow-md w-auto '>
                                         <CardBody  className="h-full dark:bg-gray-700 bg-gray-100 flex flex-col justify-center">
-                                            <p  className='text-center font-bold text-white'>Motivos de devolucion</p>
+                                            <p  className='text-center font-bold text-black dark:text-white'>Motivos de devolucion</p>
                                             <ListaMotivosDevolucion     motivosDevolucion={detallePedido.motivoDevolucion} />
                                         </CardBody>
                                     </Card>
@@ -48,7 +48,7 @@ const ListaMotivosDevolucion = ({ motivosDevolucion }) => {
         return (
             <div className="m-2 relative" key={i}>
                 <p key={i + 1} className='text-center'>{motivo}</p>
-                <p key={i + 2} className='absolute text-yellow-500 w-5 top-0 right-0 -mr-4' >{numeroMotivos}</p>
+                <p key={i + 2} className='absolute text-yellow-500 w-5 top-0 right-0 -mr-6' >{numeroMotivos}</p>
             </div>
         )
     }

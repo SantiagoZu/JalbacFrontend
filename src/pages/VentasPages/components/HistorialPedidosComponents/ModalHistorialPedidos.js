@@ -12,13 +12,13 @@ export const ModalHistorialPedidos = ({ isOpen, isClose, pedido }) => {
     return (    
         <>
             <Modal isOpen={isOpen} onClose={isClose}>
-                <ModalHeader>Estados por los que ha pasado el pedido</ModalHeader>
+                <ModalHeader>Fases por las que ha pasado el pedido</ModalHeader>
                 <ModalBody>
                     <TableContainer>
                         <Table>
                             <TableHeader>
                                 <tr>
-                                    <TableCell>Estado cambiado</TableCell>
+                                    <TableCell>Fase cambiada</TableCell>
                                     <TableCell>Fecha cambiado</TableCell>
                                 </tr>
                             </TableHeader>

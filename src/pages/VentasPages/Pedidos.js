@@ -164,7 +164,7 @@ return (
         {inactivar ? 'Activos' : 'Inactivos'}
       </Button>
       <div className=' flex justify-start gap-3'>
-        <p className='dark:text-white font-semibold text-black self-center'>Fase</p>
+        <p className='dark:text-white font-semibold text-black self-center'>Fase:</p>
         <select className={STYLE_INPUT.replace('form-input', 'form-select' )} onChange={(value)=>
           setFiltrar(value.target.value)}>
           <option value="en producción">En producción</option>
@@ -222,8 +222,7 @@ return (
             <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fechaPedido)}</p>
           </TableCell>
           <TableCell>
-            <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idClienteNavigation.nombre}
-              {pedido.idClienteNavigation.apellido}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{pedido.idClienteNavigation.nombre} {pedido.idClienteNavigation.apellido}</p>
           </TableCell>
           <TableCell>
             <p className="text-xs text-gray-600 dark:text-gray-400">{parsearFecha(pedido.fechaEntrega)}</p>

@@ -69,7 +69,7 @@ function RecuperarPassword() {
                         placeholder="email@email.com"
                       />
                       {touched.correo && errors.correo && <SpanError>{errors.correo}</SpanError>}
-                      <i>Al siguiente correo se le enviara un link para restablecer su constraseña.</i>
+                      <i>Al siguiente correo se le enviará un link para restablecer su constraseña.</i>
                     </Label>
                     <div className='flex gap-3'>
                       <Button block tag={Link} className="mt-4" onClick={handleSubmit}>

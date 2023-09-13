@@ -72,7 +72,7 @@ function HistorialDetalles() {
                             <TableCell>Detalle</TableCell>
                             <TableCell>Cantidad</TableCell>
                             <TableCell>Empleado encargado</TableCell>
-                            <TableCell>Historial estados</TableCell>
+                            <TableCell>Historial fases</TableCell>
                         </tr>
                     </TableHeader>
                     <TableBody className="w-12">

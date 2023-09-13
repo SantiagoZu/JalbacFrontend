@@ -16,13 +16,13 @@ export const ModalHistorialDetalles = ({ isOpen, isClose, detalle }) => {
 
         <>
             <Modal isOpen={isOpen} onClose={isClose}>
-                <ModalHeader>Estados por los que ha pasado el detalle</ModalHeader>
+                <ModalHeader>Fases por las que ha pasado el detalle</ModalHeader>
                 <ModalBody>
                     <TableContainer>
                         <Table>
                             <TableHeader>
                                 <tr>
-                                    <TableCell>Estado cambiado</TableCell>
+                                    <TableCell>Fase cambiada</TableCell>
                                     <TableCell>Fecha cambiado</TableCell>
                                 </tr>
                             </TableHeader>

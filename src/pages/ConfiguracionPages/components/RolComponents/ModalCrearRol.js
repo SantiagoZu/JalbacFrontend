@@ -41,9 +41,10 @@ export const ModalCrearRol = ({ isOpen, isClose }) => {
           permisos: select
         };
         postRoles(updatedValues).then(response => {
-          isClose()
+          isClose();
           resetForm();
           showAlertCorrect('Rol creado correctamente', 'success')
+          setSelect([])
           // window.location.reload();
         }).catch(response => {
           showAlertIncorrect('No se pudo crear el rol', 'error')

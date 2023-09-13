@@ -91,7 +91,7 @@ export const ModalCrearProducto = ({ isOpen, isClose, idPedido = undefined, reca
                                             {touched.tipo && errors.tipo && <SpanError>{errors.tipo}</SpanError>}
                                         </Label>
                                         <Label className="mt-4">
-                                            <span>peso(gr)</span>
+                                            <span>Peso(gr)</span>
                                             <CustomInput
                                                 type="text"
                                                 id="peso"
