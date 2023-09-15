@@ -30,7 +30,7 @@ export const validateInputs = (values) => {
     if (!values.documento) {
         errores.documento = 'El campo documento es oblígatorio.'
     } else if (!validationScheme.documento.test(values.documento)) {
-        errores.documento = 'El campo documento debe tener mínimo 4 caracteres.'
+        errores.documento = 'El campo documento debe tener de 6 a 15 carácteres.'
     } 
 
     if (!values.apellido) {
@@ -42,7 +42,7 @@ export const validateInputs = (values) => {
     if (!values.telefono) {
         errores.telefono = 'El campo telefono es oblígatorio.'
     } else if (!validationScheme.telefono.test(values.telefono)) {
-        errores.telefono = 'El campo telefono debe ser válido.'
+        errores.telefono = 'El campo telefono debe tener de 7 a 14 carácteres.'
     }
 
     return errores;
